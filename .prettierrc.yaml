@@ -1,0 +1,8 @@
+# .prettierrc
+semi: false
+tabWidth: 4
+singleQuote: true
+trailingComma: "all"
+bracketSpacing: true
+jsxBracketSameLine: false
+parser: "babylon"

@@ -1,5 +1,8 @@
 import path from 'path'
 
+import { App } from '@client/index'
+import { renderToString } from 'react-dom/server'
+
 const html = () => `
     <!DOCTYPE html>
     <head>
@@ -7,9 +10,8 @@ const html = () => `
     </head>
     <html>
         <body>
-            <div id="root">
-                <div class="loading"><h1>Loading</h1></div>
-            </div>
+
+            <react />
 
             <script src="build/client.build.js"></script>
         </body>
@@ -18,6 +20,9 @@ const html = () => `
 
 export default function(app) {
     app.get('/', (req, res) => {
-        res.send(html())
+        const markup = renderToString(<App />)
+
+        const render = html().replace('<react />', markup)
+        res.send(render)
     })
 }

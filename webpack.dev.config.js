@@ -6,19 +6,23 @@ const nodeExternals = require('webpack-node-externals')
 const NodemonPlugin = require('nodemon-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+// Client prefix for SSR
+const autoprefixer = require('autoprefixer')
+
+// Offline Plugin
+const OfflinePlugin = require('offline-plugin')
+
 const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'development'
 
-const commonModule = {
-    loaders: [
-        {
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loaders: 'babel-loader',
-        },
-    ],
-}
+const commonModule = [
+    {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loaders: 'babel-loader',
+    },
+]
 
 const resolve = {
     alias,
@@ -31,10 +35,33 @@ const serverConfig = {
     entry: [
         'babel-polyfill',
         'webpack/hot/poll?1000',
-        path.resolve(__dirname, 'src/server/index.js'),
+        path.resolve(__dirname, 'src/server/server.js'),
     ],
 
-    module: commonModule,
+    module: {
+        loaders: [
+            ...commonModule,
+            {
+                test: /\.(png|ico|svg|jpg|gif)$/,
+                exclude: /(node_modules)/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        emitFile: false,
+                        publicPath: path.resolve(__dirname, './public/images'),
+                    },
+                },
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'css-loader/locals',
+                    },
+                ],
+            },
+        ],
+    },
 
     watch: true,
 
@@ -65,7 +92,31 @@ const clientConfig = {
 
     entry: ['babel-polyfill', path.resolve(__dirname, 'src/client/index.jsx')],
 
-    module: commonModule,
+    module: {
+        loaders: [
+            ...commonModule,
+            {
+                test: [/\.svg$/, /\.jpe?g$/, /\.png$/],
+                loader: 'file-loader',
+                options: {
+                    name: 'public/images/[name].[ext]',
+                    publicPath: url => url.replace(/public/, ''),
+                },
+            },
+            {
+                test: /\.css$/,
+                loader: 'style-loader!css-loader',
+            },
+            {
+                test: /\.scss$/,
+                loader: 'style-loader!css-loader!sass-loader',
+            },
+            {
+                test: /\.sass$/,
+                loader: 'style-loader!css-loader!sass-loader',
+            },
+        ],
+    },
 
     resolve,
 

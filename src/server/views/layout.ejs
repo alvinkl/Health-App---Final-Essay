@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" <%- helmet.htmlAttributes.toString() %>>
 
 <head>
+
+    <%- helmet.title.toString() %>
+        <%- helmet.meta.toString() %>
+            <%- helmet.link.toString() %>
 
 </head>
 
 <body>
 
-    <div id="root">
-        <%- markup %>
-    </div>
+    <div id="root"><%- markup %></div>
 
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
+                .then(function () { console.log('[Service Worker] Registered') })
+        }
+    </script>
+
+    <script src="static/build/client.build.js"></script>
 </body>
 
 </html>

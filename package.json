@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "webpack --config webpack.dev.config.js",
+        "start": "rimraf ./build && webpack --config webpack.dev.config.js",
         "start-nodemon": "nodemon src/server/index.js --exec babel-node"
     },
     "repository": {

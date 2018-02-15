@@ -10,8 +10,8 @@ import { cookieKey } from './config/keys'
 
 const app = express()
 
-// Use Pug JS as templating Engine
-app.set('views', path.join(__dirname, '/views'))
+// Use EJS as templating Engine
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // Secure HTTP Headers
@@ -37,7 +37,7 @@ app.use(passport.session())
 // Routes
 routes(app)
 
-app.use(express.static('public'))
+app.use(express.static(__dirname + '../public'))
 
 const PORT = process.env.PORT || 8000
 app.listen(PORT)

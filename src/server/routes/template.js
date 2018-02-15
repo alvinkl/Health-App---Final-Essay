@@ -22,7 +22,8 @@ export default function(app) {
     app.get('/', (req, res) => {
         const markup = renderToString(<App />)
 
-        const render = html().replace('<react />', markup)
-        res.send(render)
+        res.render('layout', {
+            markup,
+        })
     })
 }

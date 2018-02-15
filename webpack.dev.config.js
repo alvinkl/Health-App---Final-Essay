@@ -50,6 +50,10 @@ const serverConfig = {
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
+    node: {
+        __dirname: true,
+    },
+
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'server.build.js',

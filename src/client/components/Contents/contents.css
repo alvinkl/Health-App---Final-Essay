@@ -1,9 +1,3 @@
-.root {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    height: 33em;
-}
 
 .gridList {
     height: 100% !important;

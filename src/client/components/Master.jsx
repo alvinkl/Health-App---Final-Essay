@@ -5,6 +5,20 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
+import Header from '@components/Header'
+import Navbar from '@components/Navbar'
+import Sidebar from '@components/Sidebar'
+
+const style = {
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        height: '33em',
+        overflowY: 'scroll',
+    },
+}
+
 export default ({ children, isSSR, userAgent }) => {
     const props = arguments
 
@@ -119,7 +133,11 @@ export default ({ children, isSSR, userAgent }) => {
                 <meta name="theme-color" content="#3f51b5" />
             </Helmet>
             <MuiThemeProvider muiTheme={muiTheme}>
-                {childrenWithProps}
+                <Header />
+                <main style={style.root}>{childrenWithProps}</main>
+                <Navbar />
+
+                <Sidebar />
             </MuiThemeProvider>
         </Fragment>
     )

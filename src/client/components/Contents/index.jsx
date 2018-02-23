@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
@@ -30,9 +30,9 @@ class Contents extends Component {
         const { user } = this.state
 
         return (
-            <main className={styles.root}>
+            <Fragment>
                 <ContentHeader {...{ user }} />
-            </main>
+            </Fragment>
         )
     }
 }

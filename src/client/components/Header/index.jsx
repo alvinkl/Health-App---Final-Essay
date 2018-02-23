@@ -16,7 +16,6 @@ const Header = props => (
         onLeftIconButtonClick={handleClick}
         onTitleClick={handleClick}
         iconClassNameRight="muidocs-icon-navigation-expand-more"
-        style={style.appbar}
     />
 )
 

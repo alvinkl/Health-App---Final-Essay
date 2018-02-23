@@ -18,8 +18,8 @@ const nearbyIcon = <IconLocationOn />
  */
 
 const paperStyle = {
-    width: '96.5vw',
-    bottom: '2vh',
+    width: '100vw',
+    bottom: '0vh',
     position: 'fixed',
 }
 

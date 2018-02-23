@@ -1,0 +1,45 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "globals": {
+        "ENV": true
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": ["react", "prettier"],
+    "extends": ["eslint:recommended", "plugin:react/recommended", "prettier"],
+    "settings": {
+        "react": {
+            "createClass": "createClass"
+        }
+    },
+    "rules": {
+        "prettier/prettier": [
+            "warn",
+            {
+                "singleQuote": true,
+                "semi": false,
+                "trailingComma": "es5",
+                "useTabs": false,
+                "bracketSpacing": true,
+                "tabWidth": 4
+            }
+        ],
+        "no-console": "warn",
+        "no-unused-vars": "warn",
+        "linebreak-style": ["warn", "unix"],
+        "quotes": ["warn", "single"],
+        "react/display-name": [0],
+        "react/prop-types": [1]
+    }
+}

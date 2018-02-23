@@ -1,29 +1,20 @@
-import path from 'path'
+import React from 'react'
+import { Helmet } from 'react-helmet'
 
-import { App } from '@client/index'
+import App from '@client/App'
 import { renderToString } from 'react-dom/server'
 
-const html = () => `
-    <!DOCTYPE html>
-    <head>
-
-    </head>
-    <html>
-        <body>
-
-            <react />
-
-            <script src="build/client.build.js"></script>
-        </body>
-    </html>
-`
-
 export default function(app) {
-    app.get('/', (req, res) => {
-        const markup = renderToString(<App />)
+    app.get('*', (req, res) => {
+        const markup = renderToString(
+            <App isSSR={true} userAgent={req.headers['user-agent']} />
+        )
+
+        const helmet = Helmet.renderStatic()
 
         res.render('layout', {
             markup,
+            helmet,
         })
     })
 }

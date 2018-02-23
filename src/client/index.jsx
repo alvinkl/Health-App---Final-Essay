@@ -1,4 +1,5 @@
 import React from 'react'
 import { render } from 'react-dom'
+import App from './App'
 
-export const App = () => <h1>React App</h1>
+render(<App />, document.getElementById('root'))

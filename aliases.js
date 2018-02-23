@@ -9,6 +9,7 @@ const serverAliases = {
 
 const clientAliases = {
     '@client': path.resolve(__dirname, './src/client'),
+    '@components': path.resolve(__dirname, './src/client/components'),
 }
 
 const sharedAliases = {

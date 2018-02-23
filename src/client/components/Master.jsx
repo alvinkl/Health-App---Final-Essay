@@ -44,6 +44,11 @@ export default ({ children, isSSR, userAgent }) => {
                     type="image/x-icon"
                 />
 
+                {/* <link
+                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                    rel="stylesheet"
+                /> */}
+
                 <meta charSet="UTF-8" />
                 <meta
                     name="viewport"

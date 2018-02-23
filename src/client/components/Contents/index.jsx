@@ -1,23 +1,9 @@
 import React, { Component } from 'react'
 import { isEmpty } from 'lodash'
 
-import Avatar from 'material-ui/Avatar'
-import Paper from 'material-ui/Paper'
-import styles from './contents.css'
+import ContentHeader from './ContentHeader'
 
-// const styles = {
-//     root: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//         justifyContent: 'space-around',
-//         height: '33em',
-//     },
-//     gridList: {
-//         width: 500,
-//         height: 450,
-//         overflowY: 'auto',
-//     },
-// }
+import styles from './contents.css'
 
 class Contents extends Component {
     constructor() {
@@ -41,11 +27,11 @@ class Contents extends Component {
     }
 
     render() {
+        const { user } = this.state
+
         return (
             <main className={styles.root}>
-                <Paper>
-                    <h1>React App</h1>
-                </Paper>
+                <ContentHeader {...{ user }} />
             </main>
         )
     }

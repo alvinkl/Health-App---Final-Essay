@@ -6,7 +6,38 @@
 }
 
 .gridList {
-    width: 500;
-    height: 450;
-    overflow-y: auto;
+    height: 100% !important;
+}
+
+.gridList > div{
+    height: 12vh !important;
+}
+
+.userBar {
+    width: 100%;
+    height: 12vh;
+    margin-top: 1.5vh;
+
+    /* display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto) */
+}
+
+.avatarUser {
+    margin-top: 2.5vh;
+    margin-left: 4vw;
+}
+
+.textcenter {
+    text-align: center;
+}
+
+.chip {
+    margin: 4;
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
 }

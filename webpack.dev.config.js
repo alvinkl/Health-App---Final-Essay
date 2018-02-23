@@ -97,7 +97,11 @@ const serverConfig = {
 const clientConfig = {
     name: 'client',
 
-    entry: ['babel-polyfill', path.resolve(__dirname, 'src/client/index.jsx')],
+    entry: [
+        'react-hot-loader/patch',
+        'babel-polyfill',
+        path.resolve(__dirname, 'src/client/index.jsx'),
+    ],
 
     module: {
         loaders: [
@@ -139,7 +143,10 @@ const clientConfig = {
 
     resolve,
 
-    plugins: [new webpack.HotModuleReplacementPlugin()],
+    plugins: [
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+    ],
 
     devServer: {
         host: '0.0.0.0',

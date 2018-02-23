@@ -7,6 +7,7 @@ const STATIC_CACHE = [
     '/',
 
     '/static/build/client.build.js',
+    'https://fonts.googleapis.com/icon?family=Material+Icons',
 ]
 
 self.addEventListener('install', event => {
@@ -15,7 +16,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(STATIC_VERSION).then(cache => {
             cache.addAll(STATIC_CACHE)
-        }),
+        })
     )
 })
 
@@ -34,7 +35,7 @@ const cachingStrategy = event => {
     console.log(
         event.request.url,
         STATIC_CACHE,
-        isInArray(event.request.url, STATIC_CACHE),
+        isInArray(event.request.url, STATIC_CACHE)
     )
     if (isInArray(event.request.url, STATIC_CACHE))
         return caches.match(event.request)

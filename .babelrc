@@ -4,6 +4,7 @@
         "transform-class-properties",
         "transform-object-rest-spread",
         "transform-react-constant-elements",
-        "transform-react-inline-elements"
+        "transform-react-inline-elements",
+        "react-hot-loader/babel"
     ]
 }

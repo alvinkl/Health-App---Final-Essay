@@ -55,8 +55,15 @@ const serverConfig = {
             {
                 test: /\.css$/,
                 use: [
+                    { loader: 'isomorphic-style-loader' },
                     {
-                        loader: 'css-loader/locals',
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: '[name]__[local]___[hash:base64:5]',
+                            sourceMap: true,
+                        },
                     },
                 ],
             },
@@ -105,7 +112,19 @@ const clientConfig = {
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader',
+                use: [
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: '[name]__[local]___[hash:base64:5]',
+                        },
+                    },
+                ],
             },
             {
                 test: /\.scss$/,

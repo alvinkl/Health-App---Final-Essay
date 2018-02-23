@@ -9,7 +9,7 @@ export default ({ children, isSSR, userAgent }) => {
     const props = arguments
 
     const childrenWithProps = React.Children.map(children, child =>
-        React.cloneElement(child, { ...props }),
+        React.cloneElement(child, { ...props })
     )
 
     let muiT = {
@@ -27,7 +27,7 @@ export default ({ children, isSSR, userAgent }) => {
                 primary3Color: cyan100,
             },
         },
-        muiT,
+        muiT
     )
 
     return (
@@ -44,13 +44,13 @@ export default ({ children, isSSR, userAgent }) => {
                     type="image/x-icon"
                 />
 
-                <meta charset="UTF-8" />
+                <meta charSet="UTF-8" />
                 <meta
                     name="viewport"
                     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
                 />
 
-                <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+                <meta httpEquiv="X-UA-Compatible" content="ie-edge" />
 
                 <link rel="manifest" href="static/manifest.json" />
 

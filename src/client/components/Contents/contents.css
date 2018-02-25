@@ -4,12 +4,12 @@
 }
 
 .gridList > div{
-    height: 12vh !important;
+    height: 13vh !important;
 }
 
 .userBar {
     width: 100%;
-    height: 12vh;
+    height: 13vh;
     margin-top: 1.5vh;
 
     /* display: grid;

@@ -16,11 +16,11 @@ class Sidebar extends Component {
         return (
             <Drawer
                 docked={false}
-                open={true}
+                open={false}
                 style={style.drawer}
                 // onRequestChange={open => this.setState({ open })}
             >
-                <MenuItem onClick={this.handleClose}>Menu Item</MenuItem>
+                <MenuItem onClick={this.handleClose}>Menu Item 1</MenuItem>
                 <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>
             </Drawer>
         )

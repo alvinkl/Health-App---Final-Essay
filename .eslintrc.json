@@ -39,8 +39,6 @@
         "no-console": "warn",
         "no-unused-vars": "warn",
         "linebreak-style": ["warn", "unix"],
-        "quotes": ["warn", "single"],
-        "react/display-name": [0],
-        "react/prop-types": [1]
+        "quotes": ["warn", "single"]
     }
 }

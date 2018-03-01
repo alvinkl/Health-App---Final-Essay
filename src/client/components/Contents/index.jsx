@@ -1,33 +1,30 @@
 import React, { Component, Fragment } from 'react'
+import T from 'prop-types'
 import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
 
-import styles from './contents.css'
+// import styles from './contents.css'
 
 class Contents extends Component {
-    constructor() {
-        super()
+    static propTypes = {
+        // from redux
+        user: T.object.isRequired,
+        fetchUserData: T.func.isRequired,
     }
 
-    state = {
-        user: {},
+    static initialAction = () => {
+        return this.props.fetchUserData()
     }
 
     componentDidMount() {
-        const { user } = this.state
-        if (isEmpty(user)) this.fetchData()
-    }
+        const { user, fetchUserData } = this.props
 
-    fetchData = async () => {
-        const res = await fetch('https://jsonplaceholder.typicode.com/users/1')
-        const data = await res.json()
-        console.log(data)
-        this.setState({ user: data })
+        if (isEmpty(user)) fetchUserData()
     }
 
     render() {
-        const { user } = this.state
+        const { user } = this.props
 
         return (
             <Fragment>
@@ -38,5 +35,15 @@ class Contents extends Component {
 }
 
 // import withStyles from 'isomorphic-style-loader/lib/withStyles'
+import { connect } from 'react-redux'
+import { fetchUserData } from '@actions/user'
 
-export default Contents
+const mapStateToProps = state => ({
+    ...state.user,
+})
+
+const mapDispatchToProps = dispatch => ({
+    fetchUserData: event => dispatch(fetchUserData(event)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Contents)

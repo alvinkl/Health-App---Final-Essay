@@ -8,6 +8,7 @@ import { StaticRouter } from 'react-router'
 import { Provider } from 'react-redux'
 
 import configureStore from '@client/store'
+import appReducer from '@client/reducers'
 
 import routes from '@client/routes'
 
@@ -15,7 +16,20 @@ export default function(app) {
     app.get('*', (req, res) => {
         const staticContext = {}
 
-        const store = configureStore()
+        const user = {
+            user_id: 123123,
+            user_name: 'Sally The Fatty',
+            profile_img: '',
+
+            dietary_plan: {
+                target_calories: '2000 cal',
+                current_calories: '835 cal',
+                target_weight: '75 kg',
+                current_weight: '83 kg',
+            },
+        }
+
+        const store = configureStore(appReducer, { user })
 
         // console.log('REDUCER', appReducer)
         const markup = renderToString(
@@ -26,17 +40,14 @@ export default function(app) {
             </Provider>
         )
 
-        const preloadedState = store.getState()
+        const finalState = store.getState()
 
         const helmet = Helmet.renderStatic()
 
         res.render('layout', {
             markup,
             helmet,
-            preloadedState: JSON.stringify(preloadedState).replace(
-                /</g,
-                '\\u003c'
-            ),
+            preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
         })
     })
 }

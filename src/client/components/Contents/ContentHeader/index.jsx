@@ -1,4 +1,5 @@
 import React from 'react'
+import T from 'prop-types'
 
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
@@ -19,26 +20,49 @@ const style = {
     },
 }
 
-const ContentHeader = props => {
+const ContentHeader = ({
+    user: {
+        user_id,
+        user_name,
+        profile_img,
+
+        dietary_plan: {
+            target_calories,
+            current_calories,
+            target_weight,
+            current_weight,
+        },
+    },
+}) => {
+    let $avatar = ''
+    if (profile_img)
+        $avatar = (
+            <Avatar size={55} src={profile_img} className={styles.avatarUser} />
+        )
+    else
+        $avatar = (
+            <Avatar size={55} className={styles.avatarUser}>
+                {user_name[0]}
+            </Avatar>
+        )
+
     return (
-        <Paper className={styles.userBar} zDepth={3}>
+        <Paper className={styles.userBar} zDepth={3} id={user_id}>
             <GridList cols={3} className={styles.gridList}>
-                <GridTile cols={0.7}>
-                    <Avatar size={55} className={styles.avatarUser}>
-                        A
-                    </Avatar>
-                </GridTile>
+                <GridTile cols={0.7}>{$avatar}</GridTile>
                 <GridTile cols={1.15}>
                     <div className={styles.wrapper}>
                         <Chip style={style.chip}>
                             <FontIcon className="material-icons">
                                 &#xE56C;
                             </FontIcon>
+                            &nbsp;{current_calories}
                         </Chip>
                         <Chip style={style.chip}>
                             <FontIcon className="material-icons">
                                 &#xE56C;
                             </FontIcon>
+                            &nbsp;{current_weight}
                         </Chip>
                     </div>
                 </GridTile>
@@ -65,5 +89,11 @@ const ContentHeader = props => {
         </Paper>
     )
 }
+
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => ({
+    user: state.user,
+})
 
 export default ContentHeader

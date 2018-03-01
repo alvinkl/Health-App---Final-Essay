@@ -28,7 +28,7 @@ class Contents extends Component {
 
         return (
             <Fragment>
-                <ContentHeader {...{ user }} />
+                <ContentHeader user={user} />
             </Fragment>
         )
     }
@@ -39,7 +39,7 @@ import { connect } from 'react-redux'
 import { fetchUserData } from '@actions/user'
 
 const mapStateToProps = state => ({
-    ...state.user,
+    user: state.user,
 })
 
 const mapDispatchToProps = dispatch => ({

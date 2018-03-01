@@ -30,7 +30,6 @@
         "css-loader": "^0.28.9",
         "ejs": "^2.5.7",
         "express": "^4.16.2",
-        "extensible-runtime": "^4.1.0",
         "file-loader": "^1.1.6",
         "helmet": "^3.11.0",
         "lodash": "^4.17.5",

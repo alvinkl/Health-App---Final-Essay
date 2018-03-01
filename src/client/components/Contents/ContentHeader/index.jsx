@@ -13,6 +13,11 @@ const style = {
     chip: {
         margin: 4,
         width: '30vw',
+        height: '100%',
+    },
+    majorChip: {
+        width: '46vw',
+        height: '100%',
     },
     smallChip: {
         margin: 4,
@@ -50,35 +55,29 @@ const ContentHeader = ({
         <Paper className={styles.userBar} zDepth={3} id={user_id}>
             <GridList cols={3} className={styles.gridList}>
                 <GridTile cols={0.7}>{$avatar}</GridTile>
-                <GridTile cols={1.15}>
+                <GridTile cols={2.3}>
                     <div className={styles.wrapper}>
-                        <Chip style={style.chip}>
+                        <Chip style={style.majorChip}>
                             <FontIcon className="material-icons">
                                 &#xE56C;
                             </FontIcon>
-                            &nbsp;{current_calories}
+                            &nbsp;{current_calories} / {target_calories}
                         </Chip>
+                        <Chip style={style.smallChip}>
+                            <FontIcon className="material-icons">
+                                &#xE56C;
+                            </FontIcon>
+                        </Chip>
+                    </div>
+
+                    <div className={styles.wrapper}>
                         <Chip style={style.chip}>
                             <FontIcon className="material-icons">
                                 &#xE56C;
                             </FontIcon>
                             &nbsp;{current_weight}
                         </Chip>
-                    </div>
-                </GridTile>
-                <GridTile cols={1.15}>
-                    <div className={styles.wrapper}>
                         <Chip style={style.chip}>
-                            <FontIcon className="material-icons">
-                                &#xE56C;
-                            </FontIcon>
-                        </Chip>
-                        <Chip style={style.smallChip}>
-                            <FontIcon className="material-icons">
-                                &#xE56C;
-                            </FontIcon>
-                        </Chip>
-                        <Chip style={style.smallChip}>
                             <FontIcon className="material-icons">
                                 &#xE56C;
                             </FontIcon>

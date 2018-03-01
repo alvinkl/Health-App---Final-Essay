@@ -58,10 +58,10 @@ export default ({ children, isSSR, userAgent }) => {
                     type="image/x-icon"
                 />
 
-                {/* <link
+                <link
                     href="https://fonts.googleapis.com/icon?family=Material+Icons"
                     rel="stylesheet"
-                /> */}
+                />
 
                 <meta charSet="UTF-8" />
                 <meta

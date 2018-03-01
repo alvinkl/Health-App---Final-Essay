@@ -23,6 +23,9 @@ const style = {
         margin: 4,
         width: '14vw',
     },
+    fontIconSize: {
+        fontSize: '14px',
+    },
 }
 
 const ContentHeader = ({
@@ -58,13 +61,19 @@ const ContentHeader = ({
                 <GridTile cols={2.3}>
                     <div className={styles.wrapper}>
                         <Chip style={style.majorChip}>
-                            <FontIcon className="material-icons">
+                            <FontIcon
+                                className="material-icons"
+                                style={style.fontIconSize}
+                            >
                                 &#xE56C;
                             </FontIcon>
                             &nbsp;{current_calories} / {target_calories}
                         </Chip>
                         <Chip style={style.smallChip}>
-                            <FontIcon className="material-icons">
+                            <FontIcon
+                                className="material-icons"
+                                style={style.fontIconSize}
+                            >
                                 &#xE56C;
                             </FontIcon>
                         </Chip>
@@ -72,13 +81,19 @@ const ContentHeader = ({
 
                     <div className={styles.wrapper}>
                         <Chip style={style.chip}>
-                            <FontIcon className="material-icons">
-                                &#xE56C;
+                            <FontIcon
+                                className="material-icons"
+                                style={style.fontIconSize}
+                            >
+                                accessibility
                             </FontIcon>
                             &nbsp;{current_weight}
                         </Chip>
                         <Chip style={style.chip}>
-                            <FontIcon className="material-icons">
+                            <FontIcon
+                                className="material-icons"
+                                style={style.fontIconSize}
+                            >
                                 &#xE56C;
                             </FontIcon>
                         </Chip>

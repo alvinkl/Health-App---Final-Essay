@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router'
+import { ConnectedRouter } from 'react-router-redux'
 
 import Master from './components/Master'
 

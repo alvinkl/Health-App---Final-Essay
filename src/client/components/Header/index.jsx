@@ -1,4 +1,6 @@
 import React from 'react'
+import T from 'prop-types'
+
 import { AppBar } from 'material-ui'
 
 const handleClick = () => console.log('hey hey')
@@ -8,6 +10,7 @@ const style = {
         boxShadow:
             '0 10px 30px rgba(0, 0, 0, 0.19), 0 6px 10px rgba(0, 0, 0, 0.23)',
     },
+    textAlign: 'center',
 }
 
 export const Header = ({ openSidebar }) => (
@@ -18,6 +21,10 @@ export const Header = ({ openSidebar }) => (
         iconClassNameRight="muidocs-icon-navigation-expand-more"
     />
 )
+
+Header.propTypes = {
+    openSidebar: T.func.isRequired,
+}
 
 import { connect } from 'react-redux'
 import { openSidebar } from '@actions/common'

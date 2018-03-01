@@ -4,6 +4,8 @@ import T from 'prop-types'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 
+import SidebarHeader from './SidebarHeader'
+
 const style = {
     drawer: {
         width: '80vw !important',
@@ -34,6 +36,7 @@ class Sidebar extends Component {
                 style={style.drawer}
                 onRequestChange={this.handleRequestChange}
             >
+                <SidebarHeader />
                 <MenuItem onClick={this.handleClose}>Menu Item 1</MenuItem>
                 <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>
             </Drawer>

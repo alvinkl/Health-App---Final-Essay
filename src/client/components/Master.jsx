@@ -14,7 +14,7 @@ const style = {
         display: 'flex',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
-        height: '33em',
+        height: '91vh',
         overflowY: 'scroll',
     },
 }

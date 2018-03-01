@@ -10,13 +10,20 @@ const style = {
     },
 }
 
-const Header = props => (
+export const Header = ({ openSidebar }) => (
     <AppBar
         title="Health App"
-        onLeftIconButtonClick={handleClick}
+        onLeftIconButtonClick={openSidebar}
         onTitleClick={handleClick}
         iconClassNameRight="muidocs-icon-navigation-expand-more"
     />
 )
 
-export default Header
+import { connect } from 'react-redux'
+import { openSidebar } from '@actions/common'
+
+const mapDispatchToProps = dispatch => ({
+    openSidebar: event => dispatch(openSidebar(event)),
+})
+
+export default connect(null, mapDispatchToProps)(Header)

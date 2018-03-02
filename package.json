@@ -44,6 +44,8 @@
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.2",
         "react-router-redux": "^4.0.8",
+        "react-transition-group": "^2.2.1",
+        "recharts": "^1.0.0-beta.10",
         "redux": "^3.7.2",
         "redux-thunk": "^2.2.0",
         "sass-loader": "^6.0.6",

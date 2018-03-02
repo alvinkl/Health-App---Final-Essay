@@ -10,12 +10,16 @@ const style = {
         boxShadow:
             '0 10px 30px rgba(0, 0, 0, 0.19), 0 6px 10px rgba(0, 0, 0, 0.23)',
     },
+    noShadow: {
+        boxShadow: 'none !important',
+    },
     textAlign: 'center',
 }
 
 export const Header = ({ openSidebar }) => (
     <AppBar
         title="Health App"
+        style={style.noShadow}
         onLeftIconButtonClick={openSidebar}
         onTitleClick={handleClick}
         iconClassNameRight="muidocs-icon-navigation-expand-more"

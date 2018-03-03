@@ -12,6 +12,8 @@ import {
 
 import Paper from 'material-ui/Paper'
 
+import style from './charts.style.js'
+
 const data = [
     { name: 'Mo 7', breakfast: 800, lunch: 1000, dinner: 400, snacks: 200 },
     { name: 'Mo 8', breakfast: 700, lunch: 1398, dinner: 210, snacks: 100 },
@@ -22,39 +24,31 @@ const data = [
     { name: 'Mo 13', breakfast: 1000, lunch: 500, dinner: 100, snacks: 100 },
 ]
 
-const style = {
-    paper: {
-        height: '50vh',
-        width: '90vw',
-        marginTop: '-23vh',
-        textAlign: 'center',
-        position: 'relative',
-    },
-    barChart: {
-        margin: '0 auto',
-        marginTop: '2vh',
-    },
-}
-
 const Chart = props => {
     return (
         <Paper style={style.paper} zDepth={2}>
-            <BarChart
-                width={300}
-                height={300}
-                data={data}
-                style={style.barChart}
-            >
-                <XAxis dataKey="name" />
-                <YAxis hide />
-                <CartesianGrid strokeDasharray="1 1" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="breakfast" stackId="a" fill="#FFCA28" />
-                <Bar dataKey="lunch" stackId="a" fill="#03A9F4" />
-                <Bar dataKey="dinner" stackId="a" fill="#FF9800" />
-                <Bar dataKey="snacks" stackId="a" fill="#8BC34A" />
-            </BarChart>
+            <div style={style.alignLeft}>
+                <h3>Calories</h3>
+                <h2>15870</h2>
+                <div>
+                    <p>Daily Average: 2267</p>
+                    <p>Goal: 2555kcal</p>
+                </div>
+            </div>
+
+            <ResponsiveContainer width="100%" height="60%">
+                <BarChart data={data} style={style.barChart}>
+                    <XAxis dataKey="name" />
+                    <YAxis hide />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="breakfast" stackId="a" fill="#FFCA28" />
+                    <Bar dataKey="lunch" stackId="a" fill="#03A9F4" />
+                    <Bar dataKey="dinner" stackId="a" fill="#FF9800" />
+                    <Bar dataKey="snacks" stackId="a" fill="#8BC34A" />
+                </BarChart>
+            </ResponsiveContainer>
         </Paper>
     )
 }

@@ -63,6 +63,8 @@ export default ({ children, isSSR, userAgent }) => {
                     rel="stylesheet"
                 />
 
+                <link href="static/build/style/style.css" rel="stylesheet" />
+
                 <meta charSet="UTF-8" />
                 <meta
                     name="viewport"

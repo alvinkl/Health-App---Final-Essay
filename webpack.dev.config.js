@@ -9,6 +9,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 // Client prefix for SSR
 const autoprefixer = require('autoprefixer')
 
+// CSS config for server and client
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
 // Offline Plugin
 const OfflinePlugin = require('offline-plugin')
 
@@ -16,13 +19,36 @@ const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'development'
 
-const commonModule = [
-    {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loaders: 'babel-loader',
+// Babel - Loader
+const babel_loader = {
+    loader: 'babel-loader',
+    options: {
+        presets: ['env', 'react'],
+        plugins: [
+            ['transform-class-properties'],
+            ['transform-object-rest-spread'],
+            ['transform-react-constant-elements'],
+            ['transform-react-inline-elements'],
+            // require('babel-plugin-react-hot-loader/babel'),
+        ],
     },
-]
+}
+
+const server_babel_loader = Object.assign({}, babel_loader, {
+    options: {
+        plugins: [
+            ...babel_loader.options.plugins,
+            [
+                'css-modules-transform',
+                {
+                    generateScopedName: '[name]__[local]__[hash:base64:5]',
+                    extensions: ['.css'],
+                },
+            ],
+        ],
+    },
+})
+const client_babel_loader = Object.assign({}, babel_loader, {})
 
 const resolve = {
     alias,
@@ -40,7 +66,11 @@ const serverConfig = {
 
     module: {
         loaders: [
-            ...commonModule,
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loaders: server_babel_loader,
+            },
             {
                 test: /\.(png|ico|svg|jpg|gif)$/,
                 exclude: /(node_modules)/,
@@ -51,21 +81,6 @@ const serverConfig = {
                         publicPath: path.resolve(__dirname, './public/images'),
                     },
                 },
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    { loader: 'isomorphic-style-loader' },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            importLoaders: 1,
-                            localIdentName: '[name]__[local]___[hash:base64:5]',
-                            sourceMap: true,
-                        },
-                    },
-                ],
             },
         ],
     },
@@ -105,7 +120,11 @@ const clientConfig = {
 
     module: {
         loaders: [
-            ...commonModule,
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loaders: client_babel_loader,
+            },
             {
                 test: [/\.svg$/, /\.jpe?g$/, /\.png$/],
                 loader: 'file-loader',
@@ -116,19 +135,19 @@ const clientConfig = {
             },
             {
                 test: /\.css$/,
-                use: [
-                    {
-                        loader: 'style-loader',
-                    },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                            importLoaders: 1,
-                            localIdentName: '[name]__[local]___[hash:base64:5]',
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            query: {
+                                localIdentName:
+                                    '[name]__[local]__[hash:base64:5]',
+                                modules: true,
+                            },
                         },
-                    },
-                ],
+                    ],
+                }),
             },
             {
                 test: /\.scss$/,
@@ -146,6 +165,10 @@ const clientConfig = {
     plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
+        new ExtractTextPlugin({
+            filename: 'style/style.css',
+            allChunks: true,
+        }),
     ],
 
     devServer: {

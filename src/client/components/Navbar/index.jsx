@@ -52,7 +52,7 @@ class Navbar extends Component {
                         onClick={() => this.select(1)}
                     />
                     <BottomNavigationItem
-                        label="Nearby"
+                        label="Report"
                         icon={reportIcon}
                         onClick={() => this.select(2)}
                     />

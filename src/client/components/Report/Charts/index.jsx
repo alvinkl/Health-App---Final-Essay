@@ -12,7 +12,7 @@ import {
 
 import Paper from 'material-ui/Paper'
 
-import style from './charts.style.js'
+import style from './charts.css'
 
 const data = [
     { name: 'Mo 7', breakfast: 800, lunch: 1000, dinner: 400, snacks: 200 },
@@ -26,8 +26,8 @@ const data = [
 
 const Chart = props => {
     return (
-        <Paper style={style.paper} zDepth={2}>
-            <div style={style.alignLeft}>
+        <Paper className={style.paper} zDepth={2}>
+            <div className={style.alignLeft}>
                 <h3>Calories</h3>
                 <h2>15870</h2>
                 <div>
@@ -37,7 +37,7 @@ const Chart = props => {
             </div>
 
             <ResponsiveContainer width="100%" height="60%">
-                <BarChart data={data} style={style.barChart}>
+                <BarChart data={data} className={style.barChart}>
                     <XAxis dataKey="name" />
                     <YAxis hide />
                     <CartesianGrid strokeDasharray="3 3" />

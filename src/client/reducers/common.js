@@ -2,6 +2,8 @@ import { OPEN_SIDEBAR, CLOSE_SIDEBAR } from '../actions/common'
 
 export const initial_state = {
     sidebar: false,
+    isSSR: false,
+    userAgent: null,
 }
 
 export default function common(state = initial_state, action) {

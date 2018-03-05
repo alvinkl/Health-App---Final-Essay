@@ -5,8 +5,13 @@ const STATIC_CACHE = [
     '/static/favicon.ico',
     '/static/manifest.json',
     '/',
+    '/report',
+    '/diary',
 
     '/static/build/client.build.js',
+    '/static/build/style/style.css',
+
+    'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
     'https://fonts.googleapis.com/icon?family=Material+Icons',
 ]
 

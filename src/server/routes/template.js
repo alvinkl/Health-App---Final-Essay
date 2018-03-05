@@ -10,6 +10,8 @@ import { Provider } from 'react-redux'
 import configureStore from '@client/store'
 import appReducer from '@client/reducers'
 
+import { initial_state as common_state } from '@client/reducers/common'
+
 import routes from '@client/routes'
 
 export default function(app) {
@@ -29,7 +31,13 @@ export default function(app) {
             },
         }
 
-        const store = configureStore(appReducer, { user })
+        const common = {
+            ...common_state,
+            isSSR: true,
+            userAgent: req.headers['user-agent'],
+        }
+
+        const store = configureStore(appReducer, { user, common })
 
         // console.log('REDUCER', appReducer)
         const markup = renderToString(

@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import T from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { renderRoutes } from 'react-router-config'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -20,13 +21,9 @@ const style = {
     },
 }
 
-const Master = ({ children, isSSR, userAgent }) => {
+const Master = ({ route, isSSR, userAgent }) => {
     const props = arguments
     console.log(props)
-
-    const childrenWithProps = React.Children.map(children, child =>
-        React.cloneElement(child, { ...props })
-    )
 
     let muiT = {
         avatar: {
@@ -138,7 +135,7 @@ const Master = ({ children, isSSR, userAgent }) => {
             </Helmet>
             <MuiThemeProvider muiTheme={muiTheme}>
                 <Header />
-                <main style={style.root}>{childrenWithProps}</main>
+                <main style={style.root}>{renderRoutes(route.routes)}</main>
                 <Navbar />
 
                 <Sidebar />
@@ -148,7 +145,7 @@ const Master = ({ children, isSSR, userAgent }) => {
 }
 
 Master.propTypes = {
-    children: T.node.isRequired,
+    route: T.object.isRequired,
     isSSR: T.bool.isRequired,
     userAgent: T.string.isRequired,
 }

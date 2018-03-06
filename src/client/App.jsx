@@ -1,19 +1,9 @@
-import React from 'react'
-import { Switch, Route } from 'react-router'
-import { ConnectedRouter } from 'react-router-redux'
-
-import Master from './components/Master'
+import { renderRoutes } from 'react-router-config'
 
 import routes from './routes'
 
 import './style.css'
 
-const App = () => (
-    <Master>
-        <Switch>
-            {routes.map((r, i) => <Route key={r.name + i} {...r} />)}
-        </Switch>
-    </Master>
-)
+const App = () => renderRoutes(routes)
 
 export default App

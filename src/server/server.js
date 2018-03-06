@@ -8,6 +8,8 @@ import helmet from 'helmet'
 import routes from './routes'
 import { cookieKey } from './config/keys'
 
+import 'isomorphic-fetch'
+
 const app = express()
 
 // Use EJS as templating Engine

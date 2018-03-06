@@ -1,23 +1,24 @@
+// React
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
 import App from '@client/App'
+
+// React Router
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
+import { renderRoutes, matchRoutes } from 'react-router-config'
+import routes from '@client/routes'
 
+// Redux
 import { Provider } from 'react-redux'
-
 import configureStore from '@client/store'
 import appReducer from '@client/reducers'
-
 import { initial_state as common_state } from '@client/reducers/common'
-
-import routes from '@client/routes'
 
 export default function(app) {
     app.get('*', (req, res) => {
-        const staticContext = {}
-
+        /* Setting up redux */
         const user = {
             user_id: 123123,
             user_name: 'Sally The Fatty',
@@ -38,24 +39,41 @@ export default function(app) {
         }
 
         const store = configureStore(appReducer, { user, common })
+        /* End of Setting up redux */
 
-        // console.log('REDUCER', appReducer)
-        const markup = renderToString(
-            <Provider store={store}>
-                <StaticRouter location={req.url} context={staticContext}>
-                    <App isSSR={true} userAgent={req.headers['user-agent']} />
-                </StaticRouter>
-            </Provider>
-        )
+        /* Start of Setting up React Router and initial actions */
+        const client_routes = matchRoutes(routes, req.url)
+        const initial_actions = client_routes.map(({ route }) => {
+            let { initialAction } = route.component
+            return initialAction instanceof Function
+                ? initialAction(store)
+                : Promise.resolve(null)
+        })
+        /* End of Setting up React Router and initial actions */
 
-        const finalState = store.getState()
+        return Promise.all(initial_actions).then(data => {
+            const staticContext = {}
 
-        const helmet = Helmet.renderStatic()
+            const markup = renderToString(
+                <Provider store={store}>
+                    <StaticRouter location={req.url} context={staticContext}>
+                        {renderRoutes(routes)}
+                    </StaticRouter>
+                </Provider>
+            )
 
-        res.render('layout', {
-            markup,
-            helmet,
-            preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
+            const finalState = store.getState()
+
+            const helmet = Helmet.renderStatic()
+
+            res.render('layout', {
+                markup,
+                helmet,
+                preloadedState: JSON.stringify(finalState).replace(
+                    /</g,
+                    '\\u003c'
+                ),
+            })
         })
     })
 }

@@ -12,7 +12,7 @@ const style = {
     },
 }
 
-class Diary extends Component {
+class Report extends Component {
     render() {
         return (
             <Fragment>
@@ -25,4 +25,4 @@ class Diary extends Component {
     }
 }
 
-export default Diary
+export default Report

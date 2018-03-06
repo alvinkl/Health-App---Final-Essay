@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom'
 import { AppContainer } from 'react-hot-loader'
 
 import { Provider } from 'react-redux'
-import appReducer from './reducers'
 import configureStore from './store'
 
 import App from './App'

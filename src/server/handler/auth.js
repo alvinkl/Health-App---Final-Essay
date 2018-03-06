@@ -3,5 +3,9 @@ export const handleAuthCallback = (req, res, next) => {
 }
 
 export const handleGetCurrentUser = (req, res, next) => {
-    res.send(req.user)
+    res.set({
+        'Content-Type': 'application/json',
+    })
+
+    res.json(req.user)
 }

@@ -14,6 +14,8 @@ import configureStore from '@client/store'
 import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
 
+import { responseTemplate } from './response'
+
 export const renderTemplate = (req, res, next) => {
     /* Setting up redux */
     let user = {
@@ -81,7 +83,7 @@ export const renderTemplate = (req, res, next) => {
 
         const helmet = Helmet.renderStatic()
 
-        res.render('layout', {
+        responseTemplate(res, 'layout', {
             markup,
             helmet,
             preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),

@@ -38,6 +38,7 @@ class Navbar extends Component {
     }
 
     render() {
+        console.log(this.context)
         return (
             <Paper zDepth={1} style={paperStyle}>
                 <BottomNavigation selectedIndex={this.state.selectedIndex}>

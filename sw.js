@@ -31,7 +31,7 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('fetch', event => {
-    console.log('[Service Worker] Fetching something...', event)
+    console.log('[Service Worker] Fetching something...')
     event.respondWith(cachingStrategy(event))
 })
 

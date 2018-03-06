@@ -1,6 +1,6 @@
 import Contents from '@components/Contents'
-import Report from '@components/Report'
 import Diary from '@components/Diary'
+import Report from '@components/Report'
 
 const route = [
     {

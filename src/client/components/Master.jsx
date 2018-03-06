@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import T from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -19,8 +20,9 @@ const style = {
     },
 }
 
-export default ({ children, isSSR, userAgent }) => {
+const Master = ({ children, isSSR, userAgent }) => {
     const props = arguments
+    console.log(props)
 
     const childrenWithProps = React.Children.map(children, child =>
         React.cloneElement(child, { ...props })
@@ -144,3 +146,18 @@ export default ({ children, isSSR, userAgent }) => {
         </Fragment>
     )
 }
+
+Master.propTypes = {
+    children: T.node.isRequired,
+    isSSR: T.bool.isRequired,
+    userAgent: T.string.isRequired,
+}
+
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ common: { isSSR, userAgent } }) => ({
+    isSSR,
+    userAgent,
+})
+
+export default connect(mapStateToProps)(Master)

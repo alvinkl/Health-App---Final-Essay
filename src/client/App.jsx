@@ -8,8 +8,8 @@ import routes from './routes'
 
 import './style.css'
 
-const App = props => (
-    <Master isSSR={props.isSSR} userAgent={props.userAgent}>
+const App = () => (
+    <Master>
         <Switch>
             {routes.map((r, i) => <Route key={r.name + i} {...r} />)}
         </Switch>

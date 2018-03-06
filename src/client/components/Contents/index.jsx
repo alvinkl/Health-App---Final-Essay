@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
 
+import { fetchUserData } from '@actions/user'
 // import styles from './contents.css'
 
 class Contents extends Component {
@@ -13,8 +14,8 @@ class Contents extends Component {
         fetchUserData: T.func.isRequired,
     }
 
-    static initialAction = () => {
-        return this.props.fetchUserData()
+    static initialAction = store => {
+        return store.dispatch(fetchUserData())
     }
 
     componentDidMount() {
@@ -36,7 +37,6 @@ class Contents extends Component {
 
 // import withStyles from 'isomorphic-style-loader/lib/withStyles'
 import { connect } from 'react-redux'
-import { fetchUserData } from '@actions/user'
 
 const mapStateToProps = state => ({
     user: state.user,

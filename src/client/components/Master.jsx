@@ -23,7 +23,6 @@ const style = {
 
 const Master = ({ route, isSSR, userAgent }) => {
     const props = arguments
-    console.log(props)
 
     let muiT = {
         avatar: {

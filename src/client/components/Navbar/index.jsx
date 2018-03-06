@@ -17,13 +17,25 @@ const paperStyle = {
     position: 'fixed',
 }
 
+const getRouteIndex = router => {
+    const { route: { location: { pathname } } } = router
+    switch (pathname) {
+        case '/':
+            return 0
+        case '/diary':
+            return 1
+        case '/report':
+            return 2
+    }
+}
+
 class Navbar extends Component {
     static contextTypes = {
         router: T.object,
     }
 
     state = {
-        selectedIndex: 0,
+        selectedIndex: getRouteIndex(this.context.router),
     }
 
     select = index => {
@@ -38,7 +50,6 @@ class Navbar extends Component {
     }
 
     render() {
-        console.log(this.context)
         return (
             <Paper zDepth={1} style={paperStyle}>
                 <BottomNavigation selectedIndex={this.state.selectedIndex}>

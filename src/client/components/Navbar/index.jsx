@@ -1,52 +1,71 @@
 import React, { Component } from 'react'
+import T from 'prop-types'
 import FontIcon from 'material-ui/FontIcon'
 import {
     BottomNavigation,
     BottomNavigationItem,
 } from 'material-ui/BottomNavigation'
 import Paper from 'material-ui/Paper'
-import IconLocationOn from 'material-ui/svg-icons/communication/location-on'
 
-const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>
-const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>
-const nearbyIcon = <IconLocationOn />
-
-/**
- * A simple example of `BottomNavigation`, with three labels and icons
- * provided. The selected `BottomNavigationItem` is determined by application
- * state (for instance, by the URL).
- */
+const homeIcon = <FontIcon className="material-icons">home</FontIcon>
+const diaryIcon = <FontIcon className="material-icons">book</FontIcon>
+const reportIcon = <FontIcon className="material-icons">timeline</FontIcon>
 
 const paperStyle = {
-    width: '96.5vw',
-    bottom: '2vh',
+    width: '100vw',
+    bottom: '0vh',
     position: 'fixed',
 }
 
+const getRouteIndex = router => {
+    const { route: { location: { pathname } } } = router
+    switch (pathname) {
+        case '/':
+            return 0
+        case '/diary':
+            return 1
+        case '/report':
+            return 2
+    }
+}
+
 class Navbar extends Component {
-    state = {
-        selectedIndex: 0,
+    static contextTypes = {
+        router: T.object,
     }
 
-    select = index => this.setState({ selectedIndex: index })
+    state = {
+        selectedIndex: getRouteIndex(this.context.router),
+    }
+
+    select = index => {
+        this.setState({ selectedIndex: index })
+
+        let link = '/'
+        if (index === 0) link = '/'
+        else if (index === 1) link = '/diary'
+        else if (index === 2) link = '/report'
+
+        return this.context.router.history.push(link)
+    }
 
     render() {
         return (
             <Paper zDepth={1} style={paperStyle}>
                 <BottomNavigation selectedIndex={this.state.selectedIndex}>
                     <BottomNavigationItem
-                        label="Recents"
-                        icon={recentsIcon}
+                        label="Home"
+                        icon={homeIcon}
                         onClick={() => this.select(0)}
                     />
                     <BottomNavigationItem
-                        label="Favorites"
-                        icon={favoritesIcon}
+                        label="Diary"
+                        icon={diaryIcon}
                         onClick={() => this.select(1)}
                     />
                     <BottomNavigationItem
-                        label="Nearby"
-                        icon={nearbyIcon}
+                        label="Report"
+                        icon={reportIcon}
                         onClick={() => this.select(2)}
                     />
                 </BottomNavigation>

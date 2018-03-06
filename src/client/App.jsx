@@ -1,16 +1,9 @@
-import React from 'react'
+import { renderRoutes } from 'react-router-config'
 
-import Master from './components/Master'
-import Header from './components/Header'
-import Contents from './components/Contents'
-import Navbar from './components/Navbar'
+import routes from './routes'
 
-const App = props => (
-    <Master isSSR={props.isSSR} userAgent={props.userAgent}>
-        <Header />
-        <Contents />
-        <Navbar />
-    </Master>
-)
+import './style.css'
+
+const App = () => renderRoutes(routes)
 
 export default App

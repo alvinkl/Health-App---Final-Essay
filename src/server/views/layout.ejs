@@ -4,8 +4,8 @@
 <head>
 
     <%- helmet.title.toString() %>
-        <%- helmet.meta.toString() %>
-            <%- helmet.link.toString() %>
+    <%- helmet.meta.toString() %>
+    <%- helmet.link.toString() %>
 
 </head>
 
@@ -17,10 +17,16 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
                 .then(function () { console.log('[Service Worker] Registered') })
+                .catch(function(err) { console.log('[Service Worker] Fails to register', err)  })
         }
     </script>
 
+    <script>
+        window.__INITIAL_STATE__ = <%- preloadedState %>;
+    </script>
+
     <script src="static/build/client.build.js"></script>
+    
 </body>
 
 </html>

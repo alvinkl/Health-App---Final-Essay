@@ -1,0 +1,17 @@
+.alignLeft {
+    text-align: left;
+    margin-left: 3vh;
+}
+
+.paper {
+    height: 70vh;
+    width: 90vw;
+    margin-top: -10vh;
+    text-align: center;
+    position: relative;
+}
+
+.barChart {
+    margin: 0 auto;
+    margin-top: 2vh;
+}

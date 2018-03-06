@@ -1,9 +1,23 @@
 {
     "presets": ["react", "env"],
-    "plugins": [
-        "transform-class-properties",
-        "transform-object-rest-spread",
-        "transform-react-constant-elements",
-        "transform-react-inline-elements"
-    ]
+    "env": {
+        "server": {
+            "plugins": [
+                "transform-class-properties",
+                "transform-object-rest-spread",
+                "transform-react-constant-elements",
+                "transform-react-inline-elements",
+                "react-hot-loader/babel",
+            ]
+        },
+        "client": {
+            "plugins": [
+                "transform-class-properties",
+                "transform-object-rest-spread",
+                "transform-react-constant-elements",
+                "transform-react-inline-elements",
+                "react-hot-loader/babel"
+            ]
+        }
+    }
 }

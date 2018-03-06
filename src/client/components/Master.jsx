@@ -1,17 +1,27 @@
 import React, { Fragment } from 'react'
+import T from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { renderRoutes } from 'react-router-config'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
-export default ({ children, isSSR, userAgent }) => {
-    const props = arguments
+import Header from '@components/Header'
+import Navbar from '@components/Navbar'
+import Sidebar from '@components/Sidebar'
 
-    const childrenWithProps = React.Children.map(children, child =>
-        React.cloneElement(child, { ...props }),
-    )
+const style = {
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        height: '100vh',
+        overflowY: 'scroll',
+    },
+}
 
+const Master = ({ route, isSSR, userAgent }) => {
     let muiT = {
         avatar: {
             borderColor: null,
@@ -27,7 +37,7 @@ export default ({ children, isSSR, userAgent }) => {
                 primary3Color: cyan100,
             },
         },
-        muiT,
+        muiT
     )
 
     return (
@@ -44,13 +54,20 @@ export default ({ children, isSSR, userAgent }) => {
                     type="image/x-icon"
                 />
 
-                <meta charset="UTF-8" />
+                <link
+                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                    rel="stylesheet"
+                />
+
+                <link href="static/build/style/style.css" rel="stylesheet" />
+
+                <meta charSet="UTF-8" />
                 <meta
                     name="viewport"
                     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
                 />
 
-                <meta http-equiv="X-UA-Compatible" content="ie-edge" />
+                <meta httpEquiv="X-UA-Compatible" content="ie-edge" />
 
                 <link rel="manifest" href="static/manifest.json" />
 
@@ -114,8 +131,27 @@ export default ({ children, isSSR, userAgent }) => {
                 <meta name="theme-color" content="#3f51b5" />
             </Helmet>
             <MuiThemeProvider muiTheme={muiTheme}>
-                {childrenWithProps}
+                <Header />
+                <main style={style.root}>{renderRoutes(route.routes)}</main>
+                <Navbar />
+
+                <Sidebar />
             </MuiThemeProvider>
         </Fragment>
     )
 }
+
+Master.propTypes = {
+    route: T.object.isRequired,
+    isSSR: T.bool.isRequired,
+    userAgent: T.string.isRequired,
+}
+
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ common: { isSSR, userAgent } }) => ({
+    isSSR,
+    userAgent,
+})
+
+export default connect(mapStateToProps)(Master)

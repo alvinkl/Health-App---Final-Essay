@@ -5,8 +5,14 @@ const STATIC_CACHE = [
     '/static/favicon.ico',
     '/static/manifest.json',
     '/',
+    '/report',
+    '/diary',
 
     '/static/build/client.build.js',
+    '/static/build/style/style.css',
+
+    'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
+    'https://fonts.googleapis.com/icon?family=Material+Icons',
 ]
 
 self.addEventListener('install', event => {
@@ -15,7 +21,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(STATIC_VERSION).then(cache => {
             cache.addAll(STATIC_CACHE)
-        }),
+        })
     )
 })
 
@@ -25,7 +31,7 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('fetch', event => {
-    console.log('[Service Worker] Fetching something...', event)
+    console.log('[Service Worker] Fetching something...')
     event.respondWith(cachingStrategy(event))
 })
 
@@ -34,7 +40,7 @@ const cachingStrategy = event => {
     console.log(
         event.request.url,
         STATIC_CACHE,
-        isInArray(event.request.url, STATIC_CACHE),
+        isInArray(event.request.url, STATIC_CACHE)
     )
     if (isInArray(event.request.url, STATIC_CACHE))
         return caches.match(event.request)

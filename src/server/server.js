@@ -8,6 +8,7 @@ import helmet from 'helmet'
 import routes from './routes'
 import { cookieKey } from './config/keys'
 
+require('es6-promise').polyfill()
 import 'isomorphic-fetch'
 
 const app = express()

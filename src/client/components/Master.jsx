@@ -22,8 +22,6 @@ const style = {
 }
 
 const Master = ({ route, isSSR, userAgent }) => {
-    const props = arguments
-
     let muiT = {
         avatar: {
             borderColor: null,

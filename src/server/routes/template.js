@@ -2,8 +2,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
-import App from '@client/App'
-
 // React Router
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
@@ -51,7 +49,7 @@ export default function(app) {
         })
         /* End of Setting up React Router and initial actions */
 
-        return Promise.all(initial_actions).then(data => {
+        return Promise.all(initial_actions).then(() => {
             const staticContext = {}
 
             const markup = renderToString(

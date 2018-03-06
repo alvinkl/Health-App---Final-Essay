@@ -1,6 +1,7 @@
 import passport from 'passport'
 
 import { handleAuthCallback, handleGetCurrentUser } from '@server/handler/auth'
+import { mustAuthenticate } from './middleware'
 
 export default function(r) {
     r.get(
@@ -14,5 +15,5 @@ export default function(r) {
         handleAuthCallback
     )
 
-    r.get('/auth/current_user', handleGetCurrentUser)
+    r.get('/auth/current_user', mustAuthenticate, handleGetCurrentUser)
 }

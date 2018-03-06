@@ -1,20 +1,18 @@
 import passport from 'passport'
 
-module.exports = app => {
-    app.get(
+import { handleAuthCallback, handleGetCurrentUser } from '@server/handler/auth'
+
+export default function(r) {
+    r.get(
         '/auth/google',
         passport.authenticate('google', { scope: ['profile', 'email'] })
     )
 
-    app.get(
+    r.get(
         '/auth/google/callback',
         passport.authenticate('google'),
-        (req, res) => {
-            res.redirect('/')
-        }
+        handleAuthCallback
     )
 
-    app.get('/api/current_user', (req, res) => {
-        res.send(req.user)
-    })
+    r.get('/auth/current_user', handleGetCurrentUser)
 }

@@ -9,3 +9,8 @@ export const handleGetCurrentUser = (req, res, next) => {
 
     res.json(req.user)
 }
+
+export const handleNotFoundRoute = (req, res) => {
+    responseError(res, 404, 'Invalid Route')
+    return
+}

@@ -5,6 +5,10 @@ const serverAliases = {
     '@config': path.resolve(__dirname, './src/server/config'),
     '@routes': path.resolve(__dirname, './src/server/routes'),
     '@services': path.resolve(__dirname, './src/server/services'),
+    '@handler': path.resolve(__dirname, './src/server/handler'),
+    '@functions': path.resolve(__dirname, './src/server/functions'),
+    '@validation': path.resolve(__dirname, './src/server/validation'),
+    '@types': path.resolve(__dirname, './src/server/types'),
 }
 
 const clientAliases = {

@@ -90,3 +90,4 @@ export const renderTemplate = (req, res, next) => {
         })
     })
 }
+

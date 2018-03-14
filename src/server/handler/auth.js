@@ -1,3 +1,5 @@
+import { responseError } from './response'
+
 export const handleAuthCallback = (req, res, next) => {
     res.redirect('/')
 }

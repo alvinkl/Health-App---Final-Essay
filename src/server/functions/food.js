@@ -27,7 +27,7 @@ export const getFoodData = async query => {
         })
     )
 
-    if (err) return Promise.resolve([err])
+    if (err) return Promise.reject(err)
 
     const data = await response.json()
 
@@ -35,5 +35,5 @@ export const getFoodData = async query => {
 
     const food = generateFood(data.foods)
 
-    return Promise.resolve([null, food])
+    return Promise.resolve(food)
 }

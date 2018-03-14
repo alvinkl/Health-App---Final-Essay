@@ -1,16 +1,22 @@
+import eq from '@helper/checkObjectStructure'
+
+const getFoodType = {
+    query: '',
+}
+
 export const validateSanitizeGetFood = param => {
+    if (!eq(param, getFoodType)) return ['Invalid parameter!']
+
     const { query } = param
 
-    if (typeof query === 'string') {
-        if (query.length) {
-            return [
-                false,
-                {
-                    query,
-                },
-            ]
-        }
+    if (!(typeof query === 'string') || !query) {
+        return ['Invalid query']
     }
 
-    return [true]
+    return [
+        false,
+        {
+            query,
+        },
+    ]
 }

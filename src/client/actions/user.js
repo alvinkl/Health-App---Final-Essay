@@ -22,7 +22,7 @@ export const fetchUserData = () => async (dispatch, getState) => {
         user_name: 'Sally The Fatty',
         profile_img: '',
 
-        dietary_plan: {
+        diet_plan: {
             target_calories: '2000 cal',
             current_calories: '835 cal',
             target_weight: '75 kg',

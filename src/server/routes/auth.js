@@ -19,6 +19,11 @@ export default function(r) {
         handleAuthCallback
     )
 
+    r.get('/auth/logout', (req, res) => {
+        req.logout()
+        res.redirect('/')
+    })
+
     r.get('/auth/current_user', mustAuthenticate, handleGetCurrentUser)
 
     r.get('/api*', mustAuthenticate, handleNotFoundRoute)

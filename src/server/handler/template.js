@@ -17,33 +17,24 @@ import { initial_state as common_state } from '@client/reducers/common'
 import { responseTemplate } from './response'
 
 export const renderTemplate = (req, res) => {
+    console.log('REQUEST SESSION = ', req.session)
     /* Setting up redux */
-    let user = {
-        user_id: 0,
-        user_name: '',
-        profile_img: '',
-
-        dietary_plan: {
-            target_calories: '',
-            current_calories: '',
-            target_weight: '',
-            current_weight: '',
-        },
-    }
+    let user = {}
 
     if (req.user) {
-        const { id, displayName, photos, gender } = req.user
+        const { googleID, name, profile_img, email, gender } = req.user
 
         user = {
-            user_id: id,
-            user_name: displayName,
-            profile_img: photos[0].value || '',
+            googleID,
+            name,
+            profile_img,
             gender,
+            email,
 
-            dietary_plan: {
-                target_calories: '2500 cal',
+            diet_plan: {
+                target_calories: 2500,
                 current_calories: '835 cal',
-                target_weight: '75 kg',
+                target_weight: 70,
                 current_weight: '83 kg',
             },
         }

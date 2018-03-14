@@ -16,7 +16,7 @@ import { initial_state as common_state } from '@client/reducers/common'
 
 import { responseTemplate } from './response'
 
-export const renderTemplate = (req, res, next) => {
+export const renderTemplate = (req, res) => {
     /* Setting up redux */
     let user = {
         user_id: 0,
@@ -90,4 +90,3 @@ export const renderTemplate = (req, res, next) => {
         })
     })
 }
-

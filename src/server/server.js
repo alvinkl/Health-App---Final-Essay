@@ -6,8 +6,13 @@ import path from 'path'
 import helmet from 'helmet'
 
 import routes from './routes'
-import { cookieKey } from './config/keys'
+import { cookieKey, mongoURI } from './config/keys'
 
+// Database
+import mongoose from 'mongoose'
+mongoose.connect(mongoURI)
+
+// Polyfilling
 require('es6-promise').polyfill()
 import 'isomorphic-fetch'
 

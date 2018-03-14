@@ -9,6 +9,7 @@ const serverAliases = {
     '@functions': path.resolve(__dirname, './src/server/functions'),
     '@validation': path.resolve(__dirname, './src/server/validation'),
     '@types': path.resolve(__dirname, './src/server/types'),
+    '@model': path.resolve(__dirname, './src/server/model'),
 }
 
 const clientAliases = {

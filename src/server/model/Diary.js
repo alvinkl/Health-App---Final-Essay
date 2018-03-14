@@ -66,6 +66,11 @@ const diarySchema = m.Schema({
         default: Date.now,
     },
 
+    meal_type: {
+        type: Number,
+        required: true,
+    },
+
     status: {
         type: Number,
         default: 1,

@@ -2,8 +2,9 @@ import { responseError, responseJSON } from '@handler/response'
 import {
     validateSanitizeGetFood,
     validateSanitizeAddFoodToDiary,
+    validateGetDiaryFood,
 } from '@validation/food'
-import { getFoodData, addFoodToDiary } from '@functions/food'
+import { getFoodData, addFoodToDiary, getDiaryFood } from '@functions/food'
 
 import Diary from '@model/Diary'
 
@@ -24,7 +25,13 @@ export const handleGetFood = async (req, res) => {
 export const handleGetDiaryFood = async (req, res) => {
     const { googleID } = req.user
 
-    return responseJSON(res, req.query)
+    const [paramErr, date] = validateGetDiaryFood(req.query)
+    if (paramErr) return responseError(res, 400, paramErr)
+
+    const [err, diary] = await to(getDiaryFood(googleID, date))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, diary)
 }
 
 export const handleAddFoodToDiary = async (req, res) => {

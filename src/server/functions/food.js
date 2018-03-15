@@ -39,6 +39,23 @@ export const getFoodData = async query => {
     return Promise.resolve(food)
 }
 
+export const getDiaryFood = async (googleID, date) => {
+    const isoDate = date.toISOString()
+    // set end of date
+    date.setHours(23, 59, 59, 999)
+    const isoEndOfDate = date.toISOString()
+
+    const [err, data] = await to(
+        Diary.find({
+            user_id: googleID,
+            created_time: { $gte: isoDate, $lt: isoEndOfDate },
+        })
+    )
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve(data)
+}
+
 export const addFoodToDiary = async (googleID, data) => {
     const newDiary = new Diary({
         user_id: googleID,

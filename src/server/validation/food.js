@@ -1,3 +1,4 @@
+import moment from 'moment'
 import eq from '@helper/checkObjectStructure'
 import { MEAL_TYPE } from '@types/food'
 
@@ -87,4 +88,15 @@ export const validateSanitizeAddFoodToDiary = param => {
             meal_type,
         },
     ]
+}
+
+export const validateGetDiaryFood = param => {
+    const { date } = param
+
+    const date_format = 'YYYY-MM-DD'
+    const mDate = moment(date, date_format, true)
+
+    if (!mDate.isValid()) return ['Date format is invalid, must be YYYY-MM-DD']
+
+    return [false, new Date(date)]
 }

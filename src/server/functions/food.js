@@ -3,6 +3,7 @@ import { foodNutritionixAPI } from '@config/urls'
 
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
+import Diary from '@model/Diary'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -36,4 +37,17 @@ export const getFoodData = async query => {
     const food = generateFood(data.foods)
 
     return Promise.resolve(food)
+}
+
+export const addFoodToDiary = async (googleID, data) => {
+    const newDiary = new Diary({
+        user_id: googleID,
+        ...data,
+    })
+
+    const [err] = await to(newDiary.save())
+    if (err)
+        return Promise.reject({ code: 500, message: 'Fail to insert data!' })
+
+    return Promise.resolve(newDiary)
 }

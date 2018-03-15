@@ -1,11 +1,15 @@
 import { responseError, responseJSON } from '@handler/response'
-import { validateSanitizeGetFood } from '@validation/food'
-import { getFoodData } from '@functions/food'
+import {
+    validateSanitizeGetFood,
+    validateSanitizeAddFoodToDiary,
+} from '@validation/food'
+import { getFoodData, addFoodToDiary } from '@functions/food'
 
 import Diary from '@model/Diary'
 
 import to from '@helper/asyncAwait'
 
+// Food API
 export const handleGetFood = async (req, res) => {
     const [paramErr, param] = validateSanitizeGetFood(req.body)
     if (paramErr) return responseError(res, 400, paramErr)
@@ -16,22 +20,21 @@ export const handleGetFood = async (req, res) => {
     return responseJSON(res, data)
 }
 
+// Food Diary
+export const handleGetDiaryFood = async (req, res) => {
+    const { googleID } = req.user
+
+    return responseJSON(res, req.query)
+}
+
 export const handleAddFoodToDiary = async (req, res) => {
     const { googleID } = req.user
-    const { food_name, quantity, total_weight, nutrients } = req.body
 
-    const nt = JSON.parse(nutrients)
+    const [err, param] = validateSanitizeAddFoodToDiary(req.body)
+    if (err) return responseError(res, 400, err)
 
-    const newDiary = new Diary({
-        user_id: googleID,
-        food_name,
-        quantity,
-        total_weight,
-        nutrients: nt,
-    })
-
-    const [err] = await to(newDiary.save())
-    if (err) return responseError(res, 500, err)
+    const [errInsert, newDiary] = await to(addFoodToDiary(googleID, param))
+    if (errInsert) return responseError(res, errInsert.code, errInsert.message)
 
     return responseJSON(res, newDiary)
 }

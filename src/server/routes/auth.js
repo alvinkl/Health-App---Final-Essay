@@ -26,5 +26,6 @@ export default function(r) {
 
     r.get('/auth/current_user', mustAuthenticate, handleGetCurrentUser)
 
-    r.get('/api*', mustAuthenticate, handleNotFoundRoute)
+    r.get('/auth*', mustAuthenticate, handleNotFoundRoute)
+    r.post('/auth*', mustAuthenticate, handleNotFoundRoute)
 }

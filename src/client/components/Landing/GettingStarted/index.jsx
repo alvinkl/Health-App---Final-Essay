@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 
+import styles from './gettingStarted.css'
+
 export class GettingStarted extends Component {
     render() {
-        return <h1>Getting Started</h1>
+        return <div className={styles.gettingStarted} />
     }
 }
 

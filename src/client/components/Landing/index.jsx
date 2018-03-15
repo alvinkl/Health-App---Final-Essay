@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 import { Link } from 'react-router-dom'
-import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
 import RaisedButton from 'material-ui/RaisedButton'
 
@@ -13,8 +12,7 @@ export class Landing extends Component {
     }
 
     handleClickGettingStarted = () => {
-        console.log('clicked')
-        return this.context.router.history.push('/landing/getting-started')
+        return this.context.router.history.push('/getting-started')
     }
 
     render() {

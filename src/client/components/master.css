@@ -1,6 +1,5 @@
 .main {
     justify-content: space-around;
-    height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }

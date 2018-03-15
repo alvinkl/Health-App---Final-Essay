@@ -38,7 +38,7 @@ const route = [
             },
             {
                 name: 'getting-started',
-                path: '/landing/getting-started',
+                path: '/getting-started',
                 exact: true,
                 component: GettingStarted,
             },

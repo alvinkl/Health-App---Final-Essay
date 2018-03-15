@@ -1,8 +1,11 @@
 .switchWrapper {
     position: relative;
+    height: 100vh;
+    width: 100vw;
 }
 
 .switchWrapper > div {
     position: absolute;
+    height: 100%;
     width: 100%;
 }

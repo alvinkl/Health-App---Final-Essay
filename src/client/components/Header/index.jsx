@@ -2,25 +2,15 @@ import React from 'react'
 import T from 'prop-types'
 
 import { AppBar } from 'material-ui'
+import styles from './header.css'
 
 const handleClick = () => console.log('hey hey')
-
-const style = {
-    appbar: {
-        boxShadow:
-            '0 10px 30px rgba(0, 0, 0, 0.19), 0 6px 10px rgba(0, 0, 0, 0.23)',
-    },
-    noShadow: {
-        boxShadow: 'none !important',
-    },
-    textAlign: 'center',
-}
 
 export const Header = ({ openSidebar, header }) =>
     header && (
         <AppBar
             title="Health App"
-            style={style.noShadow}
+            className={styles.noShadow}
             onLeftIconButtonClick={openSidebar}
             onTitleClick={handleClick}
             iconClassNameRight="muidocs-icon-navigation-expand-more"

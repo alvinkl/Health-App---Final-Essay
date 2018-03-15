@@ -34,7 +34,7 @@ const ContentHeader = ({
         user_name,
         profile_img,
 
-        dietary_plan: {
+        diet_plan: {
             target_calories,
             current_calories,
             target_weight,

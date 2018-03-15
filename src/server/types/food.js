@@ -1,3 +1,10 @@
+export const MEAL_TYPE = {
+    BREAKFAST: 1,
+    LUNCH: 2,
+    DINNER: 3,
+    SNACK: 4,
+}
+
 export const foodType = {
     name: '',
     quantity: 0,
@@ -70,9 +77,11 @@ export default function generateFood(data) {
 
         let measure = []
         measure = alt_measures.map(({ measure, serving_weight, qty }) => {
-            let ms = measureType
-            ;(ms.measure = measure), (ms.serving_weight = serving_weight)
+            let ms = Object.assign({}, measureType)
+            ms.measure = measure
+            ms.serving_weight = serving_weight
             ms.quantity = qty
+            return ms
         })
 
         let photo = photoType

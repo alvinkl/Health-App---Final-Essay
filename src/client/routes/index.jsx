@@ -3,6 +3,7 @@ import Master from '@components/Master'
 import Contents from '@components/Contents'
 import Diary from '@components/Diary'
 import Report from '@components/Report'
+import Login from '@components/Login'
 
 const route = [
     {

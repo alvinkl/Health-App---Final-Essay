@@ -11,6 +11,8 @@ import Header from '@components/Header'
 import Navbar from '@components/Navbar'
 import Sidebar from '@components/Sidebar'
 
+import getRouteIndex from '@helper/getRouteIndex'
+
 const style = {
     root: {
         display: 'flex',
@@ -21,7 +23,13 @@ const style = {
     },
 }
 
-const Master = ({ route, isSSR, userAgent }) => {
+const Master = (
+    { route, isSSR, userAgent, showHeader, hideHeader },
+    { router }
+) => {
+    !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
+    console.log(getRouteIndex(router) > 3)
+
     let muiT = {
         avatar: {
             borderColor: null,
@@ -145,13 +153,26 @@ Master.propTypes = {
     route: T.object.isRequired,
     isSSR: T.bool.isRequired,
     userAgent: T.string.isRequired,
+
+    showHeader: T.func.isRequired,
+    hideHeader: T.func.isRequired,
+}
+
+Master.contextTypes = {
+    router: T.object,
 }
 
 import { connect } from 'react-redux'
+import { showHeader, hideHeader } from '@actions/common'
 
 const mapStateToProps = ({ common: { isSSR, userAgent } }) => ({
     isSSR,
     userAgent,
 })
 
-export default connect(mapStateToProps)(Master)
+const mapDispatchToProps = dispatch => ({
+    showHeader: () => dispatch(showHeader()),
+    hideHeader: () => dispatch(hideHeader()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Master)

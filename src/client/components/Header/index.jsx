@@ -16,25 +16,31 @@ const style = {
     textAlign: 'center',
 }
 
-export const Header = ({ openSidebar }) => (
-    <AppBar
-        title="Health App"
-        style={style.noShadow}
-        onLeftIconButtonClick={openSidebar}
-        onTitleClick={handleClick}
-        iconClassNameRight="muidocs-icon-navigation-expand-more"
-    />
-)
+export const Header = ({ openSidebar, header }) =>
+    header && (
+        <AppBar
+            title="Health App"
+            style={style.noShadow}
+            onLeftIconButtonClick={openSidebar}
+            onTitleClick={handleClick}
+            iconClassNameRight="muidocs-icon-navigation-expand-more"
+        />
+    )
 
 Header.propTypes = {
+    header: T.bool.isRequired,
     openSidebar: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
 import { openSidebar } from '@actions/common'
 
+const mapStateToProps = ({ common: { header } }) => ({
+    header,
+})
+
 const mapDispatchToProps = dispatch => ({
     openSidebar: event => dispatch(openSidebar(event)),
 })
 
-export default connect(null, mapDispatchToProps)(Header)
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

@@ -1,6 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 
+// Clean before build
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+
 // Node Server Config
 const nodeExternals = require('webpack-node-externals')
 const NodemonPlugin = require('nodemon-webpack-plugin')
@@ -94,6 +97,11 @@ const serverConfig = {
     externals: [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })],
 
     plugins: [
+        new CleanWebpackPlugin([__dirname + '/build/*'], {
+            root: __dirname,
+            verbose: true,
+            watch: true,
+        }),
         new NodemonPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
@@ -163,6 +171,11 @@ const clientConfig = {
     resolve,
 
     plugins: [
+        new CleanWebpackPlugin(['public/build/*'], {
+            root: __dirname,
+            verbose: true,
+            watch: true,
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({

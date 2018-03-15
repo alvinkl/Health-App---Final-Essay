@@ -28,7 +28,6 @@ const Master = (
     { router }
 ) => {
     !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
-    console.log(getRouteIndex(router) > 3)
 
     let muiT = {
         avatar: {

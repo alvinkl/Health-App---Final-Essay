@@ -1,5 +1,6 @@
 import { NutritionXAppID, NutritionXAppKeys } from '@config/keys'
 import { foodNutritionixAPI } from '@config/urls'
+import { MEAL_TYPE } from '@types/food'
 
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
@@ -40,10 +41,14 @@ export const getFoodData = async query => {
 }
 
 export const getDiaryFood = async (googleID, date) => {
-    const isoDate = date.toISOString()
-    // set end of date
-    date.setHours(23, 59, 59, 999)
-    const isoEndOfDate = date.toISOString()
+    const { startDate, endDate } = date
+
+    const isoDate = startDate.toISOString()
+
+    // set end of the date
+    const endOfDate = endDate || startDate
+    endOfDate.setHours(23, 59, 59, 999)
+    const isoEndOfDate = endOfDate.toISOString()
 
     const [err, data] = await to(
         Diary.find({
@@ -53,7 +58,37 @@ export const getDiaryFood = async (googleID, date) => {
     )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    return Promise.resolve(data)
+    const dt = data.reduce(
+        (prev, curr) => {
+            switch (curr.meal_type) {
+                case MEAL_TYPE.BREAKFAST:
+                    return {
+                        ...prev,
+                        breakfast: [...prev.breakfast, curr],
+                    }
+                case MEAL_TYPE.LUNCH:
+                    return {
+                        ...prev,
+                        lunch: [...prev.breakfast, curr],
+                    }
+                case MEAL_TYPE.DINNER:
+                    return {
+                        ...prev,
+                        dinner: [...prev.breakfast, curr],
+                    }
+                case MEAL_TYPE.SNACK:
+                    return {
+                        ...prev,
+                        snack: [...prev.breakfast, curr],
+                    }
+                default:
+                    return prev
+            }
+        },
+        { breakfast: [], lunch: [], dinner: [], snack: [] }
+    )
+
+    return Promise.resolve(dt)
 }
 
 export const addFoodToDiary = async (googleID, data) => {

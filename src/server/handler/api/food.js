@@ -6,8 +6,6 @@ import {
 } from '@validation/food'
 import { getFoodData, addFoodToDiary, getDiaryFood } from '@functions/food'
 
-import Diary from '@model/Diary'
-
 import to from '@helper/asyncAwait'
 
 // Food API

@@ -91,12 +91,26 @@ export const validateSanitizeAddFoodToDiary = param => {
 }
 
 export const validateGetDiaryFood = param => {
-    const { date } = param
+    let sanitized = {
+        startDate: null,
+        endDate: null,
+    }
+    const { startDate, endDate } = param
 
     const date_format = 'YYYY-MM-DD'
-    const mDate = moment(date, date_format, true)
+    const mDate = moment(startDate, date_format, true)
+    if (!mDate.isValid())
+        return ['Start date format is invalid, must be YYYY-MM-DD']
 
-    if (!mDate.isValid()) return ['Date format is invalid, must be YYYY-MM-DD']
+    sanitized.startDate = new Date(startDate)
 
-    return [false, new Date(date)]
+    if (endDate) {
+        const endmDate = moment(endDate, date_format, true)
+        if (!endmDate.isValid())
+            return ['End date format is invalid, must be YYYY-MM-DD']
+
+        sanitized.endDate = new Date(endDate)
+    }
+
+    return [false, sanitized]
 }

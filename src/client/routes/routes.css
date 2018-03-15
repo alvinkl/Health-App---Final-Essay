@@ -1,0 +1,8 @@
+.switchWrapper {
+    position: relative;
+}
+
+.switchWrapper > div {
+    position: absolute;
+    width: 100%;
+}

@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 // React Router
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
-import { renderRoutes, matchRoutes } from 'react-router-config'
+import { matchRoutes } from 'react-router-config'
+import renderRoutes from '@client/routes/renderRoutes'
 import routes from '@client/routes'
 
 // Redux

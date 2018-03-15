@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
 import T from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { renderRoutes } from 'react-router-config'
+// import { renderRoutes } from 'react-router-config'
+import renderRoutes from '@client/routes/renderRoutes'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -13,15 +14,7 @@ import Sidebar from '@components/Sidebar'
 
 import getRouteIndex from '@helper/getRouteIndex'
 
-const style = {
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        height: '100vh',
-        overflowY: 'scroll',
-    },
-}
+import styles from './master.css'
 
 const Master = (
     { route, isSSR, userAgent, showHeader, hideHeader },
@@ -139,7 +132,9 @@ const Master = (
             </Helmet>
             <MuiThemeProvider muiTheme={muiTheme}>
                 <Header />
-                <main style={style.root}>{renderRoutes(route.routes)}</main>
+                <main className={styles.main}>
+                    {renderRoutes(route.routes)}
+                </main>
                 <Navbar />
 
                 <Sidebar />

@@ -4,6 +4,7 @@ import T from 'prop-types'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 
+import styles from './sidebar.css'
 import SidebarHeader from './SidebarHeader'
 
 const style = {
@@ -22,7 +23,7 @@ class Sidebar extends Component {
         closeSidebar: T.func.isRequired,
     }
 
-    handleRequestChange = (open: false, reason: '') => {
+    handleRequestChange = (open = false, reason = '') => {
         const { openSidebar, closeSidebar } = this.props
 
         open ? openSidebar() : closeSidebar()
@@ -34,9 +35,9 @@ class Sidebar extends Component {
         return (
             enableSidebar && (
                 <Drawer
+                    className={styles.drawer}
                     docked={false}
                     open={sidebar}
-                    style={style.drawer}
                     onRequestChange={this.handleRequestChange}
                 >
                     <SidebarHeader />

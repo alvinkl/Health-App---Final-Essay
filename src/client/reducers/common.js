@@ -3,8 +3,6 @@ import {
     CLOSE_SIDEBAR,
     SHOW_HEADER,
     HIDE_HEADER,
-    SHOW_SIDEBAR,
-    HIDE_SIDEBAR,
 } from '../actions/common'
 
 export const initial_state = {

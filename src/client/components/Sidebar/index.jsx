@@ -7,12 +7,6 @@ import MenuItem from 'material-ui/MenuItem'
 import styles from './sidebar.css'
 import SidebarHeader from './SidebarHeader'
 
-const style = {
-    drawer: {
-        width: '80vw !important',
-    },
-}
-
 class Sidebar extends Component {
     static propTypes = {
         // from redux
@@ -23,7 +17,7 @@ class Sidebar extends Component {
         closeSidebar: T.func.isRequired,
     }
 
-    handleRequestChange = (open = false, reason = '') => {
+    handleRequestChange = (open = false) => {
         const { openSidebar, closeSidebar } = this.props
 
         open ? openSidebar() : closeSidebar()

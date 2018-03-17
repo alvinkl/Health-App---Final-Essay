@@ -34,3 +34,22 @@
     background-color: #80DEEA;
     opacity: .5 !important;
 }
+
+.nextButton {
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    color: white !important;
+}
+
+.prevButton {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    color: white !important;
+}
+
+.inputWeight, .inputHeight {
+    width: 40vw !important;
+    font-size: 20px !important;
+}

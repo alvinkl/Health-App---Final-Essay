@@ -168,7 +168,7 @@ export class GettingStarted extends Component {
                         onChange={this.handleChangeWeight}
                     >
                         <InputMask
-                            mask="999.99 \KG"
+                            mask="999.99 \kg"
                             maskChar=" "
                             alwaysShowMask
                         />

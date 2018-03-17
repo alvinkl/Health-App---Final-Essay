@@ -102,6 +102,12 @@ const serverConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
+        // Add sourcemap support for debugging
+        new webpack.BannerPlugin({
+            banner: 'require("source-map-support").install();',
+            raw: true,
+            entryOnly: false,
+        }),
         new NodemonPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
@@ -110,6 +116,8 @@ const serverConfig = {
     node: {
         __dirname: true,
     },
+
+    devtool: 'sourcemap',
 
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -192,6 +200,8 @@ const clientConfig = {
         https: true,
         inline: true,
     },
+
+    devtool: 'source-map',
 
     output: {
         path: path.resolve(__dirname, 'public/build'),

@@ -15,20 +15,24 @@ const route = [
                 name: 'home',
                 path: '/',
                 exact: true,
+                protected: true,
                 component: Contents,
             },
             {
                 name: 'diary',
                 path: '/diary',
                 exact: true,
+                protected: true,
                 component: Diary,
             },
             {
                 name: 'report',
                 path: '/report',
                 exact: true,
+                protected: true,
                 component: Report,
             },
+
             // Landing page
             {
                 name: 'landing',

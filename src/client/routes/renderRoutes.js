@@ -21,15 +21,37 @@ const renderRoutes = (routes, extraProps = {}, switchProps = {}) =>
                     exact={route.exact}
                     strict={route.strict}
                     render={props => (
-                        <route.component
-                            {...props}
-                            {...extraProps}
+                        <ProtectedRoute
                             route={route}
+                            protect={!!route.protected}
+                            p={{ ...props, ...extraProps, route }}
                         />
                     )}
                 />
             ))}
         </AnimatedSwitch>
     ) : null
+
+import { isEmpty } from 'lodash'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import T from 'prop-types'
+
+let ProtectedRoute = ({ protect, route, p, user }) =>
+    protect && isEmpty(user) ? (
+        <Redirect to={{ pathname: '/landing', state: p.location }} />
+    ) : (
+        <route.component {...p} />
+    )
+
+ProtectedRoute.propTypes = {
+    protect: T.bool.isRequired,
+    route: T.object.isRequired,
+    p: T.object.isRequired,
+    user: T.object.isRequired,
+}
+
+const mapStateToProps = ({ user }) => ({ user })
+ProtectedRoute = connect(mapStateToProps)(ProtectedRoute)
 
 export default renderRoutes

@@ -53,3 +53,8 @@
     width: 40vw !important;
     font-size: 20px !important;
 }
+
+.datePicker > div {
+    color: white !important;
+    text-align: center;
+}

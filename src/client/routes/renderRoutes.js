@@ -39,7 +39,7 @@ import T from 'prop-types'
 
 let ProtectedRoute = ({ protect, route, p, user }) =>
     protect && isEmpty(user) ? (
-        <Redirect to={{ pathname: '/landing', state: p.location }} />
+        <Redirect to="/landing" push />
     ) : (
         <route.component {...p} />
     )
@@ -48,10 +48,10 @@ ProtectedRoute.propTypes = {
     protect: T.bool.isRequired,
     route: T.object.isRequired,
     p: T.object.isRequired,
-    user: T.object.isRequired,
+    user: T.object,
 }
 
-const mapStateToProps = ({ user }) => ({ user })
+const mapStateToProps = ({ user }) => ({ user: user.user })
 ProtectedRoute = connect(mapStateToProps)(ProtectedRoute)
 
 export default renderRoutes

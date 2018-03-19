@@ -17,18 +17,7 @@ export const fetchUserData = () => async (dispatch, getState) => {
 
     const data = await res.json()
 
-    const dummyData = {
-        user_id: 145145,
-        user_name: 'Sally The Fatty',
-        profile_img: '',
-
-        diet_plan: {
-            target_calories: '2000 cal',
-            current_calories: '835 cal',
-            target_weight: '75 kg',
-            current_weight: '83 kg',
-        },
-    }
+    const dummyData = {}
 
     dispatch({ type: FETCH_USER_DATA, user: dummyData })
 }

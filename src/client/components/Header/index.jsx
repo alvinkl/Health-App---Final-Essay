@@ -2,39 +2,35 @@ import React from 'react'
 import T from 'prop-types'
 
 import { AppBar } from 'material-ui'
+import styles from './header.css'
 
 const handleClick = () => console.log('hey hey')
 
-const style = {
-    appbar: {
-        boxShadow:
-            '0 10px 30px rgba(0, 0, 0, 0.19), 0 6px 10px rgba(0, 0, 0, 0.23)',
-    },
-    noShadow: {
-        boxShadow: 'none !important',
-    },
-    textAlign: 'center',
-}
-
-export const Header = ({ openSidebar }) => (
-    <AppBar
-        title="Health App"
-        style={style.noShadow}
-        onLeftIconButtonClick={openSidebar}
-        onTitleClick={handleClick}
-        iconClassNameRight="muidocs-icon-navigation-expand-more"
-    />
-)
+export const Header = ({ openSidebar, header }) =>
+    header && (
+        <AppBar
+            title="Health App"
+            className={styles.noShadow}
+            onLeftIconButtonClick={openSidebar}
+            onTitleClick={handleClick}
+            iconClassNameRight="muidocs-icon-navigation-expand-more"
+        />
+    )
 
 Header.propTypes = {
+    header: T.bool.isRequired,
     openSidebar: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
 import { openSidebar } from '@actions/common'
 
+const mapStateToProps = ({ common: { header } }) => ({
+    header,
+})
+
 const mapDispatchToProps = dispatch => ({
     openSidebar: event => dispatch(openSidebar(event)),
 })
 
-export default connect(null, mapDispatchToProps)(Header)
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

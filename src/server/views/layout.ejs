@@ -7,6 +7,22 @@
     <%- helmet.meta.toString() %>
     <%- helmet.link.toString() %>
 
+    <style>
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #FF0000
+        }
+    </style>
+
 </head>
 
 <body>
@@ -25,7 +41,8 @@
         window.__INITIAL_STATE__ = <%- preloadedState %>;
     </script>
 
-    <script src="static/build/client.build.js"></script>
+    <script src="/static/build/client.build.js"></script>
+    <script src="/static/build/client.build.js.map"></script>
     
 </body>
 

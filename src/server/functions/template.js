@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 // React Router
 import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router'
-import { renderRoutes, matchRoutes } from 'react-router-config'
+import { matchRoutes } from 'react-router-config'
+import renderRoutes from '@client/routes/renderRoutes'
 import routes from '@client/routes'
 
 // Redux
@@ -17,7 +18,6 @@ import { initial_state as common_state } from '@client/reducers/common'
 export const renderTemplateHome = req => {
     const { googleID, name, profile_img, email, gender } = req.user
 
-    /* REDUX init state */
     const user = {
         googleID,
         name,
@@ -33,17 +33,38 @@ export const renderTemplateHome = req => {
         },
     }
 
+    const render = setupTemplate(
+        { userAgent: req.headers['user-agent'], url: req.url },
+        { user }
+    )
+
+    return render
+}
+
+export const renderTemplateLanding = req => {
+    const user = {}
+
+    const render = setupTemplate(
+        { userAgent: req.headers['user-agent'], url: req.url },
+        { user }
+    )
+
+    return render
+}
+
+const setupTemplate = ({ userAgent, url }, initial_state, static_contex) => {
     const common = {
         ...common_state,
         isSSR: true,
-        userAgent: req.headers['user-agent'],
+        userAgent,
     }
 
-    const store = configureStore(appReducer, { user, common })
+    /* REDUX init state */
+    const store = configureStore(appReducer, { ...initial_state, common })
     /* END OF REDUX init state */
 
     /* Start of Setting up React Router and initial actions */
-    const client_routes = matchRoutes(routes, req.url)
+    const client_routes = matchRoutes(routes, url)
     const initial_actions = client_routes.map(({ route }) => {
         let { initialAction } = route.component
         return initialAction instanceof Function
@@ -54,11 +75,11 @@ export const renderTemplateHome = req => {
     /* End of Setting up React Router and initial actions */
 
     return Promise.all(initial_actions).then(() => {
-        const staticContext = {}
+        const static_context = {}
 
         const markup = renderToString(
             <Provider store={store}>
-                <StaticRouter location={req.url} context={staticContext}>
+                <StaticRouter location={url} context={static_context}>
                     {renderRoutes(routes)}
                 </StaticRouter>
             </Provider>

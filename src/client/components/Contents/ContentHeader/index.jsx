@@ -41,7 +41,7 @@ const ContentHeader = ({
             current_weight,
         },
     },
-    user
+    user,
 }) => {
     let $avatar = ''
     if (profile_img)

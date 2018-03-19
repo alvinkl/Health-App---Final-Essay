@@ -4,18 +4,19 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js",
+        "start":
+            "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js",
         "start-nodemon": "nodemon src/server/index.js --exec babel-node",
-        "lint": "eslint ./src/*"
+        "lint": "eslint ./src/*",
+        "generate-debug": "donejs add vscode",
+        "debug":
+            "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/alvinkl/Health-App---Final-Essay.git"
     },
-    "keywords": [
-        "Final",
-        "Essay"
-    ],
+    "keywords": ["Final", "Essay"],
     "author": "Alvin Kristanto",
     "license": "ISC",
     "bugs": {
@@ -46,12 +47,13 @@
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "react-helmet": "^5.2.0",
+        "react-input-mask": "^1.2.2",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-config": "^1.0.0-beta.4",
         "react-router-dom": "^4.2.2",
         "react-router-redux": "^4.0.8",
-        "react-transition-group": "^2.2.1",
+        "react-router-transition": "^1.2.1",
         "recharts": "^1.0.0-beta.10",
         "redux": "^3.7.2",
         "redux-thunk": "^2.2.0",
@@ -72,7 +74,9 @@
         "babel-preset-env": "^1.6.1",
         "babel-preset-react": "^6.24.1",
         "better-npm-run": "^0.1.0",
+        "clean-webpack-plugin": "^0.1.19",
         "copy-webpack-plugin": "^4.4.1",
+        "donejs-vscode": "^1.0.5",
         "eslint": "^4.17.0",
         "eslint-config-airbnb": "^16.1.0",
         "eslint-config-prettier": "^2.9.0",
@@ -86,6 +90,7 @@
         "offline-plugin": "^4.9.0",
         "prettier": "^1.10.2",
         "react-hot-loader": "^4.0.0-rc.0",
+        "source-map-support": "^0.5.4",
         "sugarss": "^1.0.1",
         "tern-node-express": "^0.4.0",
         "tern-node-mongoose": "^0.2.0",

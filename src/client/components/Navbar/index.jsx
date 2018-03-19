@@ -7,6 +7,8 @@ import {
 } from 'material-ui/BottomNavigation'
 import Paper from 'material-ui/Paper'
 
+import getRouteIndex from '@helper/getRouteIndex'
+
 const homeIcon = <FontIcon className="material-icons">home</FontIcon>
 const diaryIcon = <FontIcon className="material-icons">book</FontIcon>
 const reportIcon = <FontIcon className="material-icons">timeline</FontIcon>
@@ -17,21 +19,13 @@ const paperStyle = {
     position: 'fixed',
 }
 
-const getRouteIndex = router => {
-    const { route: { location: { pathname } } } = router
-    switch (pathname) {
-        case '/':
-            return 0
-        case '/diary':
-            return 1
-        case '/report':
-            return 2
-    }
-}
-
 class Navbar extends Component {
     static contextTypes = {
         router: T.object,
+    }
+
+    static propTypes = {
+        navbar: T.bool.isRequired,
     }
 
     state = {
@@ -50,28 +44,38 @@ class Navbar extends Component {
     }
 
     render() {
+        const { navbar } = this.props
+
         return (
-            <Paper zDepth={1} style={paperStyle}>
-                <BottomNavigation selectedIndex={this.state.selectedIndex}>
-                    <BottomNavigationItem
-                        label="Home"
-                        icon={homeIcon}
-                        onClick={() => this.select(0)}
-                    />
-                    <BottomNavigationItem
-                        label="Diary"
-                        icon={diaryIcon}
-                        onClick={() => this.select(1)}
-                    />
-                    <BottomNavigationItem
-                        label="Report"
-                        icon={reportIcon}
-                        onClick={() => this.select(2)}
-                    />
-                </BottomNavigation>
-            </Paper>
+            navbar && (
+                <Paper zDepth={1} style={paperStyle}>
+                    <BottomNavigation selectedIndex={this.state.selectedIndex}>
+                        <BottomNavigationItem
+                            label="Home"
+                            icon={homeIcon}
+                            onClick={() => this.select(0)}
+                        />
+                        <BottomNavigationItem
+                            label="Diary"
+                            icon={diaryIcon}
+                            onClick={() => this.select(1)}
+                        />
+                        <BottomNavigationItem
+                            label="Report"
+                            icon={reportIcon}
+                            onClick={() => this.select(2)}
+                        />
+                    </BottomNavigation>
+                </Paper>
+            )
         )
     }
 }
 
-export default Navbar
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ common: { navbar } }) => ({
+    navbar,
+})
+
+export default connect(mapStateToProps)(Navbar)

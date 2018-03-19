@@ -1,6 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
 
+// Clean before build
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+
 // Node Server Config
 const nodeExternals = require('webpack-node-externals')
 const NodemonPlugin = require('nodemon-webpack-plugin')
@@ -94,6 +97,17 @@ const serverConfig = {
     externals: [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })],
 
     plugins: [
+        // new CleanWebpackPlugin([__dirname + '/build/*'], {
+        //     root: __dirname,
+        //     verbose: true,
+        //     watch: true,
+        // }),
+        // Add sourcemap support for debugging
+        new webpack.BannerPlugin({
+            banner: 'require("source-map-support").install();',
+            raw: true,
+            entryOnly: false,
+        }),
         new NodemonPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
@@ -102,6 +116,8 @@ const serverConfig = {
     node: {
         __dirname: true,
     },
+
+    devtool: 'sourcemap',
 
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -163,6 +179,11 @@ const clientConfig = {
     resolve,
 
     plugins: [
+        // new CleanWebpackPlugin(['public/build/*'], {
+        //     root: __dirname,
+        //     verbose: true,
+        //     watch: true,
+        // }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({
@@ -179,6 +200,8 @@ const clientConfig = {
         https: true,
         inline: true,
     },
+
+    devtool: 'source-map',
 
     output: {
         path: path.resolve(__dirname, 'public/build'),

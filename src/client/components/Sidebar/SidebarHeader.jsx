@@ -1,5 +1,6 @@
 import React from 'react'
 import T from 'prop-types'
+import { isEmpty } from 'lodash'
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
@@ -8,22 +9,26 @@ const style = {
     fontSize: '14px',
 }
 
-const SidebarHeader = ({ user: { user_id, user_name, profile_img } }) => {
+const SidebarHeader = ({ user }) => {
     let $avatar = ''
-    if (profile_img)
-        $avatar = (
-            <React.Fragment>
-                <Avatar size={35} src={profile_img} />
-                &nbsp;&nbsp;{user_name}
-            </React.Fragment>
-        )
-    else
-        $avatar = (
-            <React.Fragment>
-                <Avatar size={35}>{user_name[0]}</Avatar>
-                &nbsp;&nbsp;{user_name}
-            </React.Fragment>
-        )
+
+    if (!isEmpty(user)) {
+        const { user_id, user_name, profile_img } = user
+        if (profile_img)
+            $avatar = (
+                <React.Fragment>
+                    <Avatar size={35} src={profile_img} />
+                    &nbsp;&nbsp;{user_name}
+                </React.Fragment>
+            )
+        else
+            $avatar = (
+                <React.Fragment>
+                    <Avatar size={35}>{user_name[0]}</Avatar>
+                    &nbsp;&nbsp;{user_name}
+                </React.Fragment>
+            )
+    }
 
     return (
         <AppBar title={$avatar} titleStyle={style} showMenuIconButton={false} />

@@ -4,12 +4,14 @@ import {
     handleAuthCallback,
     handleGetCurrentUser,
     handleNotFoundRoute,
+    handleLogout,
 } from '@server/handler/auth'
 import { mustAuthenticate } from './middleware'
+import * as url from '@urls'
 
 export default function(r) {
     r.get(
-        '/auth/google',
+        url.authGoogle,
         passport.authenticate('google', { scope: ['profile', 'email'] })
     )
 
@@ -19,12 +21,9 @@ export default function(r) {
         handleAuthCallback
     )
 
-    r.get('/auth/logout', (req, res) => {
-        req.logout()
-        res.redirect('/')
-    })
+    r.get(url.authLogout, mustAuthenticate, handleLogout)
 
-    r.get('/auth/current_user', mustAuthenticate, handleGetCurrentUser)
+    r.get(url.getUser, mustAuthenticate, handleGetCurrentUser)
 
     r.get('/auth*', mustAuthenticate, handleNotFoundRoute)
     r.post('/auth*', mustAuthenticate, handleNotFoundRoute)

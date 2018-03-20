@@ -1,23 +1,29 @@
+import { getUser } from '@urls'
 import to from '@helper/asyncAwait'
 
 export const FETCH_USER_DATA = 'FETCH_USER_DATA'
 export const ERROR_FETCH_USER_DATA = 'ERROR_FETCH_USER_DATA'
+export const UPDATE_NEW_USER_STATUS = 'UPDATE_NEW_USER_STATUS'
 
-export const fetchUserData = () => async (dispatch, getState) => {
-    console.log('FETCH USER DATA CALLED')
+export const fetchUserData = () => async dispatch => {
     const [err, res] = await to(
-        fetch('https://jsonplaceholder.typicode.com/users/1')
+        fetch(getUser, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
     )
-
     if (err) {
-        console.log('[ERROR_FETCH USER DATA]: ', err)
-        dispatch({ type: ERROR_FETCH_USER_DATA })
-        return
+        return dispatch({ type: ERROR_FETCH_USER_DATA })
     }
 
     const data = await res.json()
 
-    const dummyData = {}
-
-    dispatch({ type: FETCH_USER_DATA, user: dummyData })
+    dispatch({ type: FETCH_USER_DATA, user: data })
 }
+
+export const updateNewUserStatus = () => ({
+    type: UPDATE_NEW_USER_STATUS,
+})

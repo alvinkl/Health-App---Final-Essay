@@ -16,7 +16,7 @@ import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
 
 export const renderTemplateHome = req => {
-    const { googleID, name, profile_img, email, gender } = req.user
+    const { googleID, name, profile_img, email, gender, new: n } = req.user
 
     const user = {
         googleID,
@@ -24,6 +24,7 @@ export const renderTemplateHome = req => {
         profile_img,
         gender,
         email,
+        new: !!n,
 
         diet_plan: {
             target_calories: 2500,
@@ -42,17 +43,19 @@ export const renderTemplateHome = req => {
 }
 
 export const renderTemplateLanding = req => {
-    const user = {}
-
     const render = setupTemplate(
         { userAgent: req.headers['user-agent'], url: req.url },
-        { user }
+        { user: {} }
     )
 
     return render
 }
 
-const setupTemplate = ({ userAgent, url }, initial_state, static_contex) => {
+const setupTemplate = (
+    { userAgent, url },
+    initial_state,
+    static_context = {}
+) => {
     const common = {
         ...common_state,
         isSSR: true,
@@ -75,8 +78,6 @@ const setupTemplate = ({ userAgent, url }, initial_state, static_contex) => {
     /* End of Setting up React Router and initial actions */
 
     return Promise.all(initial_actions).then(() => {
-        const static_context = {}
-
         const markup = renderToString(
             <Provider store={store}>
                 <StaticRouter location={url} context={static_context}>

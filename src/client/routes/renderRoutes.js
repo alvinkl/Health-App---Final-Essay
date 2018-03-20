@@ -37,12 +37,17 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import T from 'prop-types'
 
-let ProtectedRoute = ({ protect, route, p, user }) =>
-    protect && isEmpty(user) ? (
-        <Redirect to="/landing" push />
-    ) : (
-        <route.component {...p} />
-    )
+let ProtectedRoute = ({ protect, route, p, user }) => {
+    if (protect && isEmpty(user)) return <Redirect to="/landing" push />
+
+    if (user.new && !!route.name && route.name !== 'getting-started')
+        return <Redirect to="/getting-started" />
+
+    if (!user.new && !!route.name && route.name === 'getting-started')
+        return <Redirect to="/home" />
+
+    return <route.component {...p} />
+}
 
 ProtectedRoute.propTypes = {
     protect: T.bool.isRequired,
@@ -51,7 +56,7 @@ ProtectedRoute.propTypes = {
     user: T.object,
 }
 
-const mapStateToProps = ({ user }) => ({ user: user.user })
+const mapStateToProps = ({ user }) => ({ user })
 ProtectedRoute = connect(mapStateToProps)(ProtectedRoute)
 
 export default renderRoutes

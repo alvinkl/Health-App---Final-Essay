@@ -15,23 +15,19 @@ class Contents extends Component {
     }
 
     static initialAction = store => {
-        console.log('INITIAL ACTION CALLED')
         return store.dispatch(fetchUserData())
     }
 
     componentDidMount() {
         const { user, fetchUserData } = this.props
 
-        console.log('CONTENTS', user)
         if (isEmpty(user)) fetchUserData()
     }
 
     render() {
-        const { user } = this.props
-
         return (
             <Fragment>
-                <ContentHeader user={user} />
+                <ContentHeader />
             </Fragment>
         )
     }

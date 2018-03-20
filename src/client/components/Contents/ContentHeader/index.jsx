@@ -1,5 +1,6 @@
 import React from 'react'
 import T from 'prop-types'
+import { isEmpty } from 'lodash'
 
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
@@ -28,8 +29,8 @@ const style = {
     },
 }
 
-const ContentHeader = ({
-    user: {
+const ContentHeader = ({ user }) => {
+    const {
         user_id,
         user_name,
         profile_img,
@@ -40,9 +41,7 @@ const ContentHeader = ({
             target_weight,
             current_weight,
         },
-    },
-    user,
-}) => {
+    } = user
     let $avatar = ''
     if (profile_img)
         $avatar = (
@@ -105,10 +104,18 @@ const ContentHeader = ({
     )
 }
 
+ContentHeader.propTypes = {
+    user: T.object,
+}
+
+ContentHeader.defaultProps = {
+    user: {},
+}
+
 import { connect } from 'react-redux'
 
 const mapStateToProps = state => ({
     user: state.user,
 })
 
-export default ContentHeader
+export default connect(mapStateToProps)(ContentHeader)

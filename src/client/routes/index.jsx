@@ -1,3 +1,6 @@
+import React from 'react'
+import { Redirect } from 'react-router-dom'
+
 import Master from '@components/Master'
 
 import Contents from '@components/Contents'
@@ -5,6 +8,8 @@ import Diary from '@components/Diary'
 import Report from '@components/Report'
 import Landing from '@components/Landing'
 import GettingStarted from '@components/Landing/GettingStarted'
+
+const RedirectToHome = () => <Redirect to="/" />
 
 const route = [
     {
@@ -17,6 +22,12 @@ const route = [
                 exact: true,
                 protected: true,
                 component: Contents,
+            },
+            {
+                name: 'redirect-home',
+                path: '/home',
+                exact: true,
+                component: RedirectToHome,
             },
             {
                 name: 'diary',

@@ -5,12 +5,13 @@ import {
 } from '@server/handler/api/food'
 
 import { mustAuthenticate } from '../middleware'
+import * as url from '@urls'
 
 export default function(r) {
     // Food API
-    r.post('/api/food', mustAuthenticate, handleGetFood)
+    r.post(url.getFood, mustAuthenticate, handleGetFood)
 
     // Food Diary
-    r.get('/api/getFoodDiary', mustAuthenticate, handleGetDiaryFood)
-    r.post('/api/addFoodToDiary', mustAuthenticate, handleAddFoodToDiary)
+    r.get(url.getFoodDiary, mustAuthenticate, handleGetDiaryFood)
+    r.post(url.addFoodToDiary, mustAuthenticate, handleAddFoodToDiary)
 }

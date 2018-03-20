@@ -20,6 +20,8 @@ const clientAliases = {
 
 const sharedAliases = {
     '@helper': path.resolve(__dirname, './src/helper'),
+    '@constant': path.resolve(__dirname, './src/constant'),
+    '@urls': path.resolve(__dirname, './src/urls'),
 }
 
 module.exports = Object.assign({}, serverAliases, clientAliases, sharedAliases)

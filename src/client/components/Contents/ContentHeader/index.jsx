@@ -31,17 +31,19 @@ const style = {
 
 const ContentHeader = ({ user }) => {
     const {
-        user_id,
-        user_name,
+        googleID,
+        name,
         profile_img,
 
         diet_plan: {
             target_calories,
-            current_calories,
-            target_weight,
-            current_weight,
+            target_weight: { value: target_weight },
+            current_weight: { value: current_weight },
         },
     } = user
+
+    const current_calories = 800
+
     let $avatar = ''
     if (profile_img)
         $avatar = (
@@ -50,12 +52,12 @@ const ContentHeader = ({ user }) => {
     else
         $avatar = (
             <Avatar size={55} className={styles.avatarUser}>
-                {user_name[0]}
+                {name[0]}
             </Avatar>
         )
 
     return (
-        <Paper className={styles.userBar} zDepth={3} id={user_id}>
+        <Paper className={styles.userBar} zDepth={3} id={googleID}>
             <GridList cols={3} className={styles.gridList}>
                 <GridTile cols={0.7}>{$avatar}</GridTile>
                 <GridTile cols={2.3}>
@@ -114,8 +116,8 @@ ContentHeader.defaultProps = {
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = state => ({
-    user: state.user,
+const mapStateToProps = ({ user }) => ({
+    user,
 })
 
 export default connect(mapStateToProps)(ContentHeader)

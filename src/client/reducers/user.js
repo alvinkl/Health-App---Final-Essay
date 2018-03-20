@@ -1,7 +1,12 @@
-import { FETCH_USER_DATA, UPDATE_NEW_USER_STATUS } from '@actions/user'
+import {
+    FETCH_USER_DATA,
+    UPDATE_NEW_USER_STATUS,
+    SUBMIT_DIET_PLAN,
+    FAIL_SUBMIT_DIET_PLAN,
+} from '@actions/user'
 
 export const initialState = {
-    googleID: 0,
+    googleID: '',
     name: '',
     profile_img: '',
     gender: '',
@@ -9,10 +14,20 @@ export const initialState = {
     new: false,
 
     diet_plan: {
-        target_calories: '',
-        current_calories: '',
-        target_weight: '',
-        current_weight: '',
+        goal: 0,
+        gender: 0,
+        current_weight: {
+            value: 0,
+            tp: 1,
+        },
+        current_height: {
+            value: 0,
+            tp: 1,
+        },
+        activity: 0,
+        dateBirth: null,
+
+        success: false,
     },
 }
 
@@ -27,6 +42,23 @@ export default function user(state = initialState, action) {
             return {
                 ...state,
                 new: false,
+            }
+        case SUBMIT_DIET_PLAN:
+            return {
+                ...state,
+                diet_plan: {
+                    ...state.diet_plan,
+                    ...action.diet_plan,
+                    success: true,
+                },
+            }
+        case FAIL_SUBMIT_DIET_PLAN:
+            return {
+                ...state,
+                diet_plan: {
+                    ...state.diet_plan,
+                    success: false,
+                },
             }
         default:
             return state

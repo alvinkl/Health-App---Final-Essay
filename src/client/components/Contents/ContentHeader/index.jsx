@@ -89,7 +89,7 @@ const ContentHeader = ({ user }) => {
                             >
                                 accessibility
                             </FontIcon>
-                            &nbsp;{current_weight}
+                            &nbsp;{current_weight} / {target_weight} kg
                         </Chip>
                         <Chip style={style.chip}>
                             <FontIcon

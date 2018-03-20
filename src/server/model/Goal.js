@@ -22,6 +22,17 @@ const heightSchema = new m.Schema({
     },
 })
 
+const targetWeightSchema = new m.Schema({
+    value: {
+        type: Number,
+        required: true,
+    },
+    tp: {
+        type: Number,
+        required: true,
+    },
+})
+
 const goalSchema = new m.Schema({
     googleID: {
         type: String,
@@ -52,6 +63,14 @@ const goalSchema = new m.Schema({
         type: Date,
         index: true,
     },
+
+    target_calories: {
+        type: Number,
+        required: true,
+        default: 2000,
+    },
+
+    target_weight: targetWeightSchema,
 
     create_time: {
         type: Date,

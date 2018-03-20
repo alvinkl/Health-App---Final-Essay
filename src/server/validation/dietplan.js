@@ -33,6 +33,11 @@ const insertUpdateGoalParamType = {
         value: 0,
         tp: 0,
     },
+    target_weight: {
+        value: 0,
+        tp: 0,
+    },
+    target_calories: 0,
     current_height: {
         value: 0,
         tp: 0,
@@ -52,18 +57,23 @@ export const validateSanitizeInsertUpdateGoal = param => {
         goal,
         gender,
         current_weight,
+        target_weight,
         current_height,
+        target_calories,
         activity,
         birth_date,
     } = param
 
     const { value: cw_val, tp: cw_tp } = current_weight
+    const { value: ct_val, tp: ct_tp } = target_weight
     const { value: ch_val, tp: ch_tp } = current_height
 
     const gl = parseInt(goal)
     const gd = parseInt(gender)
     const cwv = parseInt(cw_val)
     const cwt = parseInt(cw_tp)
+    const ctv = parseInt(ct_val)
+    const ctt = parseInt(ct_tp)
     const chv = parseInt(ch_val)
     const cht = parseInt(ch_tp)
     const ac = parseInt(activity)
@@ -76,12 +86,18 @@ export const validateSanitizeInsertUpdateGoal = param => {
         return ['Current weight value has to be integer']
     if (!(typeof cwt === 'number') && cwt <= 0)
         return ['Current weight tp has to be integer']
+    if (!(typeof ctv === 'number') && ct_val <= 0)
+        return ['Target weight value has to be integer']
+    if (!(typeof ctt === 'number') && ctt <= 0)
+        return ['Target weight tp has to be integer']
     if (!(typeof chv === 'number') && chv <= 0)
         return ['Current height value has to be integer']
     if (!(typeof cht === 'number') && cht <= 0)
         return ['Current height tp has to be integer']
     if (!(typeof ac === 'number') && ac <= 0)
         return ['Activity  has to be integer']
+    if (!(typeof target_calories === 'number') && target_calories <= 0)
+        return ['Target calories has to be integer']
 
     return [
         false,
@@ -92,6 +108,11 @@ export const validateSanitizeInsertUpdateGoal = param => {
                 value: cwv,
                 tp: cwt,
             },
+            target_weight: {
+                value: ctv,
+                tp: ctt,
+            },
+            target_calories,
             current_height: {
                 value: chv,
                 tp: cht,

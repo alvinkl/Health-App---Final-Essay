@@ -1,17 +1,5 @@
 import m from 'mongoose'
 
-const dietPlanSchema = new m.Schema({
-    target_calories: {
-        type: Number,
-        required: true,
-        default: 2000,
-    },
-    target_weight: {
-        type: Number,
-        required: true,
-    },
-})
-
 const userSchema = new m.Schema({
     googleID: {
         type: String,
@@ -33,8 +21,6 @@ const userSchema = new m.Schema({
         required: true,
         default: false,
     },
-
-    diet_plan: dietPlanSchema,
 
     create_time: {
         type: Date,

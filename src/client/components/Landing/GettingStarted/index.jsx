@@ -5,7 +5,6 @@ import moment from 'moment'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 
 import TextField from 'material-ui/TextField'
-import InputMask from 'react-input-mask'
 
 import DatePicker from 'material-ui/DatePicker'
 
@@ -65,6 +64,11 @@ export class GettingStarted extends Component {
             value: 0,
             tp: WEIGHT_TYPE.KG,
         },
+        target_weight: {
+            value: 0,
+            tp: WEIGHT_TYPE.KG,
+        },
+        target_calories: 2000,
         current_height: {
             value: 0,
             tp: HEIGHT_TYPE.CM,
@@ -78,11 +82,15 @@ export class GettingStarted extends Component {
     }
 
     static propTypes = {
-        success: T.bool.isRequired,
-        submitGoal: T.func.isRequired,
+        success: T.bool,
+        submitDietPlan: T.func.isRequired,
         showLoader: T.func.isRequired,
         hideLoader: T.func.isRequired,
         updateNewUserStatus: T.func.isRequired,
+    }
+
+    static defaultPropTypes = {
+        success: false,
     }
 
     componentWillReceiveProps(nextProps) {
@@ -91,7 +99,7 @@ export class GettingStarted extends Component {
         if (prevSuccess !== success && success) {
             updateNewUserStatus()
             hideLoader()
-            this.setState({ step_index: 6, finished: true })
+            this.setState({ step_index: 7, finished: true })
         }
     }
 
@@ -100,17 +108,21 @@ export class GettingStarted extends Component {
             goal,
             gender,
             current_weight,
+            target_weight,
             current_height,
+            target_calories,
             activity,
             birth_date,
         } = this.state
-        const { submitGoal, showLoader } = this.props
+        const { submitDietPlan, showLoader } = this.props
 
         showLoader()
-        submitGoal({
+        submitDietPlan({
             goal,
             gender,
             current_weight,
+            target_weight,
+            target_calories,
             current_height,
             activity,
             birth_date: birth_date.toISOString(),
@@ -121,7 +133,7 @@ export class GettingStarted extends Component {
         this.setState({ step_index: current_index - 1, finished: false })
 
     handleNextClick = (current_index = 0) => {
-        if (current_index === 5) {
+        if (current_index === 6) {
             this.handleFinishGoal()
         } else {
             this.setState({
@@ -140,6 +152,14 @@ export class GettingStarted extends Component {
     handleChangeWeight = e =>
         this.setState({
             current_weight: {
+                value: parseFloat(e.target.value) || 0,
+                tp: WEIGHT_TYPE.KG,
+            },
+        })
+
+    handleChangeTargetWeight = e =>
+        this.setState({
+            target_weight: {
                 value: parseFloat(e.target.value) || 0,
                 tp: WEIGHT_TYPE.KG,
             },
@@ -251,6 +271,17 @@ export class GettingStarted extends Component {
             case 3:
                 return (
                     <TextField
+                        name="target-weight"
+                        className={styles.inputWeight}
+                        type="number"
+                        value={this.state.target_weight.value}
+                        inputStyle={{ textAlign: 'center', color: 'white' }}
+                        onChange={this.handleChangeTargetWeight}
+                    />
+                )
+            case 4:
+                return (
+                    <TextField
                         name="height"
                         className={styles.inputHeight}
                         type="number"
@@ -259,7 +290,7 @@ export class GettingStarted extends Component {
                         onChange={this.handleChangeHeight}
                     />
                 )
-            case 4:
+            case 5:
                 return (
                     <RadioButtonGroup
                         name="activity"
@@ -298,7 +329,7 @@ export class GettingStarted extends Component {
                         />
                     </RadioButtonGroup>
                 )
-            case 5:
+            case 6:
                 return (
                     <DatePicker
                         hintText="Date of Birth"
@@ -311,7 +342,7 @@ export class GettingStarted extends Component {
                         onChange={this.handleChangeDateBirth}
                     />
                 )
-            case 6:
+            case 7:
                 return (
                     <Fragment>
                         <img src="/static/images/icons/icon-96x96.png" alt="" />
@@ -378,16 +409,15 @@ export class GettingStarted extends Component {
 }
 
 import { connect } from 'react-redux'
-import { submitGoal } from '@actions/goal'
 import { showLoader, hideLoader } from '@actions/common'
-import { updateNewUserStatus } from '@actions/user'
+import { updateNewUserStatus, submitDietPlan } from '@actions/user'
 
-const mapStateToProps = ({ goal }) => ({
-    success: goal.success,
+const mapStateToProps = ({ user: { diet_plan } }) => ({
+    success: diet_plan.success,
 })
 
 const mapDispatchToProps = dispatch => ({
-    submitGoal: event => dispatch(submitGoal(event)),
+    submitDietPlan: event => dispatch(submitDietPlan(event)),
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),
     updateNewUserStatus: () => dispatch(updateNewUserStatus()),

@@ -21,7 +21,7 @@ class Contents extends Component {
     componentDidMount() {
         const { user, fetchUserData } = this.props
 
-        if (isEmpty(user)) fetchUserData()
+        if (!user.googleID) fetchUserData()
     }
 
     render() {

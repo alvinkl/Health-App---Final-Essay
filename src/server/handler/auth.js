@@ -1,7 +1,8 @@
 import { responseError } from './response'
 
 export const handleAuthCallback = (req, res, next) => {
-    res.redirect('/')
+    if (req.user.new) return res.redirect('/getting-started')
+    return res.redirect('/')
 }
 
 export const handleGetCurrentUser = (req, res, next) => {

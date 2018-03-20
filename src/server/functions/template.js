@@ -16,7 +16,7 @@ import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
 
 export const renderTemplateHome = req => {
-    const { googleID, name, profile_img, email, gender } = req.user
+    const { googleID, name, profile_img, email, gender, new: n } = req.user
 
     const user = {
         googleID,
@@ -24,6 +24,7 @@ export const renderTemplateHome = req => {
         profile_img,
         gender,
         email,
+        new: !!n,
 
         diet_plan: {
             target_calories: 2500,
@@ -42,11 +43,9 @@ export const renderTemplateHome = req => {
 }
 
 export const renderTemplateLanding = req => {
-    const user = {}
-
     const render = setupTemplate(
         { userAgent: req.headers['user-agent'], url: req.url },
-        { user }
+        { user: {} }
     )
 
     return render

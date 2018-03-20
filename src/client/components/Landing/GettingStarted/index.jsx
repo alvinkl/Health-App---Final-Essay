@@ -11,8 +11,6 @@ import DatePicker from 'material-ui/DatePicker'
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import FlatButton from 'material-ui/FlatButton'
 
-import Login from '../Login'
-
 import styles from './gettingStarted.css'
 
 const style = {
@@ -239,8 +237,7 @@ export class GettingStarted extends Component {
                         onChange={this.handleChangeDateBirth}
                     />
                 )
-            case 6:
-                return <Login />
+
             default:
                 return
         }
@@ -251,9 +248,6 @@ export class GettingStarted extends Component {
         return (
             <div className={styles.gettingStarted}>
                 <Stepper activeStep={step_index}>
-                    <Step>
-                        <StepLabel />
-                    </Step>
                     <Step>
                         <StepLabel />
                     </Step>

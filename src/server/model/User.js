@@ -28,6 +28,12 @@ const userSchema = new m.Schema({
     profile_img: String,
     gender: String,
 
+    new: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+
     diet_plan: dietPlanSchema,
 
     create_time: {

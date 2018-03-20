@@ -35,6 +35,14 @@ const style = {
     },
 }
 
+const maxDate = (() => {
+    const now = new Date()
+    now.setFullYear(now.getFullYear() - 1)
+    now.setHours(0, 0, 0, 0)
+
+    return now
+})()
+
 const checkedIcon = <div className={styles.selectedRadio} />
 const uncheckedIcon = <div />
 
@@ -233,6 +241,7 @@ export class GettingStarted extends Component {
                         openToYearSelection
                         autoOk
                         formatDate={formatDate}
+                        maxDate={maxDate}
                         textFieldStyle={style.dateBirthFieldStyle}
                         onChange={this.handleChangeDateBirth}
                     />

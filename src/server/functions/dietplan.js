@@ -33,7 +33,14 @@ export const insertUpdateGoal = async (googleID, goalData) => {
     )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const { goal, activity, current_height, current_weight, gender } = data
+    const {
+        goal,
+        activity,
+        current_height,
+        current_weight,
+        gender,
+        birth_date,
+    } = data
 
     return Promise.resolve({
         goal,
@@ -41,5 +48,6 @@ export const insertUpdateGoal = async (googleID, goalData) => {
         current_height,
         current_weight,
         gender,
+        birth_date,
     })
 }

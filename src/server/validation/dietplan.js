@@ -47,7 +47,14 @@ export const validateSanitizeInsertUpdateGoal = param => {
                 JSON.stringify(insertUpdateGoalParamType),
         ]
 
-    const { goal, gender, current_weight, current_height, activity } = param
+    const {
+        goal,
+        gender,
+        current_weight,
+        current_height,
+        activity,
+        birth_date,
+    } = param
 
     const { value: cw_val, tp: cw_tp } = JSON.parse(current_weight)
     const { value: ch_val, tp: ch_tp } = JSON.parse(current_height)
@@ -89,6 +96,7 @@ export const validateSanitizeInsertUpdateGoal = param => {
                 tp: cht,
             },
             activity: ac,
+            birth_date,
         },
     ]
 }

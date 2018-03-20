@@ -48,6 +48,11 @@ const goalSchema = new m.Schema({
         required: true,
     },
 
+    birth_date: {
+        type: Date,
+        index: true,
+    },
+
     create_time: {
         type: Date,
         index: true,

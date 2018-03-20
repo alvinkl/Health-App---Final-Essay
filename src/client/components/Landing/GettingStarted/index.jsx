@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import T from 'prop-types'
 import moment from 'moment'
 
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
@@ -12,6 +13,8 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import FlatButton from 'material-ui/FlatButton'
 
 import styles from './gettingStarted.css'
+
+import { GOAL, GENDER, WEIGHT_TYPE, HEIGHT_TYPE, ACTIVITY } from '@constant'
 
 const style = {
     colorWhite: {
@@ -54,34 +57,68 @@ export class GettingStarted extends Component {
         finished: false,
 
         // form
-        goal: '',
-        gender: '',
-        weight: 0,
-        height: 0,
-        activity: '',
-        dateBirth: '',
+        goal: 0,
+        gender: 0,
+        weight: {
+            value: 0,
+            tp: WEIGHT_TYPE.KG,
+        },
+        height: {
+            value: 0,
+            tp: HEIGHT_TYPE.CM,
+        },
+        activity: 0,
+        dateBirth: null,
+    }
+
+    static propTypes = {
+        submitGoal: T.func.isRequired,
+    }
+
+    handleFinishGoal = () => {
+        const { goal, gender, weight, height, activity, dateBirth } = this.state
+        const { submitGoal } = this.props
+
+        submitGoal({ goal, gender, weight, height, activity, dateBirth })
     }
 
     handlePrevClick = (current_index = 0) =>
         this.setState({ step_index: current_index - 1, finished: false })
 
-    handleNextClick = (current_index = 0) =>
-        this.setState({
-            step_index: current_index + 1,
-            finished: current_index + 1 === 4,
-        })
+    handleNextClick = (current_index = 0) => {
+        if (current_index === 5) {
+            this.handleFinishGoal()
+        } else {
+            this.setState({
+                step_index: current_index + 1,
+                finished: current_index + 1 === 5,
+            })
+        }
+    }
 
-    handleChangeGoal = e => this.setState({ goal: e.target.value })
+    handleChangeGoal = e => this.setState({ goal: parseInt(e.target.value) })
 
-    handleChangeGender = e => this.setState({ gender: e.target.value })
+    handleChangeGender = e =>
+        this.setState({ gender: parseInt(e.target.value) })
 
     handleChangeWeight = e =>
-        this.setState({ weight: parseFloat(e.target.value) || 0 })
+        this.setState({
+            weight: {
+                value: parseFloat(e.target.value) || 0,
+                tp: WEIGHT_TYPE.KG,
+            },
+        })
 
     handleChangeHeight = e =>
-        this.setState({ height: parseInt(e.target.value) || 0 })
+        this.setState({
+            height: {
+                value: parseInt(e.target.value) || 0,
+                tp: HEIGHT_TYPE.CM,
+            },
+        })
 
-    handleChangeActivity = e => this.setState({ activity: e.target.value })
+    handleChangeActivity = e =>
+        this.setState({ activity: parseInt(e.target.value) })
 
     handleChangeDateBirth = (e, value) =>
         this.setState({ dateBirth: value.toISOString() })
@@ -106,7 +143,7 @@ export class GettingStarted extends Component {
                     >
                         <RadioButton
                             className={styles.radio}
-                            value="weight-loss"
+                            value={GOAL.WEIGHT_LOSS}
                             label="Weight Loss"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -116,7 +153,7 @@ export class GettingStarted extends Component {
                         />
                         <RadioButton
                             className={styles.radio}
-                            value="maintain-weight"
+                            value={GOAL.MAINTAIN_WEIGHT}
                             label="Maintain My Current Weight"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -126,7 +163,7 @@ export class GettingStarted extends Component {
                         />
                         <RadioButton
                             className={styles.radio}
-                            value="weight-gain"
+                            value={GOAL.WEIGHT_GAIN}
                             label="Weight Gain"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -145,7 +182,7 @@ export class GettingStarted extends Component {
                     >
                         <RadioButton
                             className={styles.radio}
-                            value="male"
+                            value={GENDER.MALE}
                             label="Male"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -155,7 +192,7 @@ export class GettingStarted extends Component {
                         />
                         <RadioButton
                             className={styles.radio}
-                            value="female"
+                            value={GENDER.FEMALE}
                             label="Female"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -204,7 +241,7 @@ export class GettingStarted extends Component {
                     >
                         <RadioButton
                             className={styles.radio}
-                            value="low-active"
+                            value={ACTIVITY.LOW_ACTIVE}
                             label="Low Active"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -214,7 +251,7 @@ export class GettingStarted extends Component {
                         />
                         <RadioButton
                             className={styles.radio}
-                            value="active"
+                            value={ACTIVITY.ACTIVE}
                             label="Active"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -224,7 +261,7 @@ export class GettingStarted extends Component {
                         />
                         <RadioButton
                             className={styles.radio}
-                            value="very-active"
+                            value={ACTIVITY.VERY_ACTIVE}
                             label="Very Active"
                             checkedIcon={checkedIcon}
                             uncheckedIcon={uncheckedIcon}
@@ -272,6 +309,9 @@ export class GettingStarted extends Component {
                     <Step>
                         <StepLabel />
                     </Step>
+                    <Step>
+                        <StepLabel />
+                    </Step>
                 </Stepper>
                 <form className={styles.form}>
                     {this.renderFormContent(step_index)}
@@ -295,4 +335,11 @@ export class GettingStarted extends Component {
     }
 }
 
-export default GettingStarted
+import { connect } from 'react-redux'
+import { submitGoal } from '@actions/goal'
+
+const mapDispatchToProps = dispatch => ({
+    submitGoal: event => dispatch(submitGoal(event)),
+})
+
+export default connect(null, mapDispatchToProps)(GettingStarted)

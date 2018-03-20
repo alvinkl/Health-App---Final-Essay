@@ -16,22 +16,6 @@ import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
 
 export const renderTemplateHome = async (user, userAgent, url) => {
-    // const user = {
-    //     googleID,
-    //     name,
-    //     profile_img,
-    //     gender,
-    //     email,
-    //     new: !!n,
-
-    //     diet_plan: {
-    //         target_calories: 2500,
-    //         current_calories: '835 cal',
-    //         target_weight: 70,
-    //         current_weight: '83 kg',
-    //     },
-    // }
-
     const render = setupTemplate({ userAgent, url }, { user })
 
     return render

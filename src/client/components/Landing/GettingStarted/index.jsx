@@ -82,11 +82,15 @@ export class GettingStarted extends Component {
     }
 
     static propTypes = {
-        success: T.bool.isRequired,
+        success: T.bool,
         submitDietPlan: T.func.isRequired,
         showLoader: T.func.isRequired,
         hideLoader: T.func.isRequired,
         updateNewUserStatus: T.func.isRequired,
+    }
+
+    static defaultPropTypes = {
+        success: false,
     }
 
     componentWillReceiveProps(nextProps) {

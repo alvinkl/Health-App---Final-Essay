@@ -21,6 +21,9 @@ export const handleUpdateDietPlan = async (req, res) => {
 }
 
 export const handleInsertUpdateGoal = async (req, res) => {
+    // update user status
+    if (req.session.passport.user.new) req.session.passport.user.new = false
+
     const { googleID } = req.user
 
     const [errParam, param] = validateSanitizeInsertUpdateGoal(req.body)

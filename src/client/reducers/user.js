@@ -1,9 +1,12 @@
-import { FETCH_USER_DATA } from '@actions/user'
+import { FETCH_USER_DATA, UPDATE_NEW_USER_STATUS } from '@actions/user'
 
 export const initialState = {
-    user_id: 0,
-    user_name: '',
+    googleID: 0,
+    name: '',
     profile_img: '',
+    gender: '',
+    email: '',
+    new: false,
 
     diet_plan: {
         target_calories: '',
@@ -19,6 +22,11 @@ export default function user(state = initialState, action) {
             return {
                 ...state,
                 ...action.user,
+            }
+        case UPDATE_NEW_USER_STATUS:
+            return {
+                ...state,
+                new: false,
             }
         default:
             return state

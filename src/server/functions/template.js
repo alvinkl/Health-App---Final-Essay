@@ -51,7 +51,11 @@ export const renderTemplateLanding = req => {
     return render
 }
 
-const setupTemplate = ({ userAgent, url }, initial_state, static_contex) => {
+const setupTemplate = (
+    { userAgent, url },
+    initial_state,
+    static_context = {}
+) => {
     const common = {
         ...common_state,
         isSSR: true,
@@ -74,8 +78,6 @@ const setupTemplate = ({ userAgent, url }, initial_state, static_contex) => {
     /* End of Setting up React Router and initial actions */
 
     return Promise.all(initial_actions).then(() => {
-        const static_context = {}
-
         const markup = renderToString(
             <Provider store={store}>
                 <StaticRouter location={url} context={static_context}>

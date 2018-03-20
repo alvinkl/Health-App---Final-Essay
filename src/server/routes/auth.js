@@ -4,6 +4,7 @@ import {
     handleAuthCallback,
     handleGetCurrentUser,
     handleNotFoundRoute,
+    handleLogout,
 } from '@server/handler/auth'
 import { mustAuthenticate } from './middleware'
 import * as url from '@urls'
@@ -20,10 +21,7 @@ export default function(r) {
         handleAuthCallback
     )
 
-    r.get(url.authLogout, (req, res) => {
-        req.logout()
-        res.redirect('/')
-    })
+    r.get(url.authLogout, mustAuthenticate, handleLogout)
 
     r.get(url.getUser, mustAuthenticate, handleGetCurrentUser)
 

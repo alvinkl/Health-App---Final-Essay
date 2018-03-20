@@ -39,7 +39,6 @@ passport.use(
                 profile_img: photo,
                 email,
                 gender,
-                new: true,
             })
 
             const [err2] = await to(newUser.save())

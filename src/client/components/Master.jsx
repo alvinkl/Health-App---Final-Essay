@@ -7,6 +7,7 @@ import renderRoutes from '@client/routes/renderRoutes'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
+import CircularProgress from 'material-ui/CircularProgress'
 
 import Header from '@components/Header'
 import Navbar from '@components/Navbar'
@@ -16,8 +17,14 @@ import getRouteIndex from '@helper/getRouteIndex'
 
 import styles from './master.css'
 
+const Loader = (
+    <div className={styles.loader}>
+        <CircularProgress />
+    </div>
+)
+
 const Master = (
-    { route, isSSR, userAgent, showHeader, hideHeader },
+    { route, isSSR, userAgent, showHeader, hideHeader, loading },
     { router }
 ) => {
     !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
@@ -138,6 +145,8 @@ const Master = (
                 <Navbar />
 
                 <Sidebar />
+
+                {loading && Loader}
             </MuiThemeProvider>
         </Fragment>
     )
@@ -147,6 +156,7 @@ Master.propTypes = {
     route: T.object.isRequired,
     isSSR: T.bool.isRequired,
     userAgent: T.string.isRequired,
+    loading: T.bool.isRequired,
 
     showHeader: T.func.isRequired,
     hideHeader: T.func.isRequired,
@@ -159,9 +169,10 @@ Master.contextTypes = {
 import { connect } from 'react-redux'
 import { showHeader, hideHeader } from '@actions/common'
 
-const mapStateToProps = ({ common: { isSSR, userAgent } }) => ({
+const mapStateToProps = ({ common: { isSSR, userAgent, loading } }) => ({
     isSSR,
     userAgent,
+    loading,
 })
 
 const mapDispatchToProps = dispatch => ({

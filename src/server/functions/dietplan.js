@@ -28,6 +28,8 @@ export const insertUpdateGoal = async (googleID, goalData) => {
         update_time: new Date(),
     }
 
+    await User.findOneAndUpdate({ googleID }, { new: false })
+
     const [err, data] = await to(
         Goal.findOneAndUpdate({ googleID }, query, { upsert: true, new: true })
     )

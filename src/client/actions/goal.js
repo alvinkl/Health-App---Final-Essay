@@ -1,11 +1,28 @@
-export const SUBMIT_GOAL = 'SUBMIT_GOAL'
+import { insertUpdateGoal } from '@urls'
+import to from '@helper/asyncAwait'
 
-export const submitGoal = goal => dispatch => {
+export const SUBMIT_GOAL = 'SUBMIT_GOAL'
+export const FAIL_SUBMIT_GOAL = 'FAIL_SUBMIT_GOAL'
+
+export const submitGoal = goal => async dispatch => {
     console.log(goal)
 
-    fetch()
+    const [err] = await to(
+        fetch(insertUpdateGoal, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(goal),
+        })
+    )
 
-    dispatch({
+    if (err) {
+        return dispatch({ type: FAIL_SUBMIT_GOAL })
+    }
+
+    return dispatch({
         type: SUBMIT_GOAL,
         goal,
     })

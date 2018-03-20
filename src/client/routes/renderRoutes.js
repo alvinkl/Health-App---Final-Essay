@@ -43,6 +43,9 @@ let ProtectedRoute = ({ protect, route, p, user }) => {
     if (user.new && !!route.name && route.name !== 'getting-started')
         return <Redirect to="/getting-started" />
 
+    if (!user.new && !!route.name && route.name === 'getting-started')
+        return <Redirect to="/home" />
+
     return <route.component {...p} />
 }
 

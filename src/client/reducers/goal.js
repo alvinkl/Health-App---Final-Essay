@@ -1,4 +1,4 @@
-import { SUBMIT_GOAL } from '@actions/goal'
+import { SUBMIT_GOAL, FAIL_SUBMIT_GOAL } from '@actions/goal'
 
 export const initial_state = {
     goal: 0,
@@ -13,6 +13,8 @@ export const initial_state = {
     },
     activity: 0,
     dateBirth: null,
+
+    success: false,
 }
 
 export default (state = initial_state, action) => {
@@ -21,6 +23,12 @@ export default (state = initial_state, action) => {
             return {
                 ...state,
                 ...action.goal,
+                success: true,
+            }
+        case FAIL_SUBMIT_GOAL:
+            return {
+                ...state,
+                success: false,
             }
         default:
             return state

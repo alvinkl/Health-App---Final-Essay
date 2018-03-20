@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 import moment from 'moment'
 
@@ -11,6 +11,8 @@ import DatePicker from 'material-ui/DatePicker'
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import FlatButton from 'material-ui/FlatButton'
+
+import RaisedButton from 'material-ui/RaisedButton'
 
 import styles from './gettingStarted.css'
 
@@ -59,11 +61,11 @@ export class GettingStarted extends Component {
         // form
         goal: 0,
         gender: 0,
-        weight: {
+        current_weight: {
             value: 0,
             tp: WEIGHT_TYPE.KG,
         },
-        height: {
+        current_height: {
             value: 0,
             tp: HEIGHT_TYPE.CM,
         },
@@ -71,22 +73,48 @@ export class GettingStarted extends Component {
         birth_date: null,
     }
 
+    static contextTypes = {
+        router: T.object.isRequired,
+    }
+
     static propTypes = {
+        success: T.bool.isRequired,
         submitGoal: T.func.isRequired,
+        showLoader: T.func.isRequired,
+        hideLoader: T.func.isRequired,
+        updateNewUserStatus: T.func.isRequired,
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { success, hideLoader, updateNewUserStatus } = nextProps
+        const { success: prevSuccess } = this.props
+        if (prevSuccess !== success && success) {
+            updateNewUserStatus()
+            hideLoader()
+            this.setState({ step_index: 6, finished: true })
+        }
     }
 
     handleFinishGoal = () => {
         const {
             goal,
             gender,
-            weight,
-            height,
+            current_weight,
+            current_height,
             activity,
             birth_date,
         } = this.state
-        const { submitGoal } = this.props
+        const { submitGoal, showLoader } = this.props
 
-        submitGoal({ goal, gender, weight, height, activity, birth_date })
+        showLoader()
+        submitGoal({
+            goal,
+            gender,
+            current_weight,
+            current_height,
+            activity,
+            birth_date: birth_date.toISOString(),
+        })
     }
 
     handlePrevClick = (current_index = 0) =>
@@ -98,10 +126,11 @@ export class GettingStarted extends Component {
         } else {
             this.setState({
                 step_index: current_index + 1,
-                finished: current_index + 1 === 5,
             })
         }
     }
+
+    handleContinue = () => this.context.router.history.push('/home')
 
     handleChangeGoal = e => this.setState({ goal: parseInt(e.target.value) })
 
@@ -110,7 +139,7 @@ export class GettingStarted extends Component {
 
     handleChangeWeight = e =>
         this.setState({
-            weight: {
+            current_weight: {
                 value: parseFloat(e.target.value) || 0,
                 tp: WEIGHT_TYPE.KG,
             },
@@ -118,7 +147,7 @@ export class GettingStarted extends Component {
 
     handleChangeHeight = e =>
         this.setState({
-            height: {
+            current_height: {
                 value: parseInt(e.target.value) || 0,
                 tp: HEIGHT_TYPE.CM,
             },
@@ -127,8 +156,7 @@ export class GettingStarted extends Component {
     handleChangeActivity = e =>
         this.setState({ activity: parseInt(e.target.value) })
 
-    handleChangeDateBirth = (e, value) =>
-        this.setState({ birth_date: value.toISOString() })
+    handleChangeDateBirth = (e, value) => this.setState({ birth_date: value })
 
     renderFormContent = index => {
         /* Quiestions would be
@@ -214,30 +242,22 @@ export class GettingStarted extends Component {
                     <TextField
                         name="weight"
                         className={styles.inputWeight}
-                        type="text"
-                        value={this.state.weight}
+                        type="number"
+                        value={this.state.current_weight.value}
                         inputStyle={{ textAlign: 'center', color: 'white' }}
                         onChange={this.handleChangeWeight}
-                    >
-                        <InputMask
-                            mask="999.99 \kg"
-                            maskChar=" "
-                            alwaysShowMask
-                        />
-                    </TextField>
+                    />
                 )
             case 3:
                 return (
                     <TextField
                         name="height"
                         className={styles.inputHeight}
-                        type="text"
-                        value={this.state.height}
+                        type="number"
+                        value={this.state.current_height.value}
                         inputStyle={{ textAlign: 'center', color: 'white' }}
                         onChange={this.handleChangeHeight}
-                    >
-                        <InputMask mask="999 \cm" maskChar=" " alwaysShowMask />
-                    </TextField>
+                    />
                 )
             case 4:
                 return (
@@ -286,40 +306,53 @@ export class GettingStarted extends Component {
                         autoOk
                         formatDate={formatDate}
                         maxDate={maxDate}
+                        value={this.state.birth_date}
                         textFieldStyle={style.dateBirthFieldStyle}
                         onChange={this.handleChangeDateBirth}
                     />
                 )
-
+            case 6:
+                return (
+                    <Fragment>
+                        <img src="/static/images/icons/icon-96x96.png" alt="" />
+                        <h2>All Set Up</h2>
+                        <RaisedButton
+                            label={'Continue'}
+                            onClick={this.handleContinue}
+                        />
+                    </Fragment>
+                )
             default:
                 return
         }
     }
 
     render() {
-        const { step_index } = this.state
+        const { step_index, finished } = this.state
         return (
             <div className={styles.gettingStarted}>
-                <Stepper activeStep={step_index}>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                    <Step>
-                        <StepLabel />
-                    </Step>
-                </Stepper>
+                {!finished && (
+                    <Stepper activeStep={step_index}>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                        <Step>
+                            <StepLabel />
+                        </Step>
+                    </Stepper>
+                )}
                 <form className={styles.form}>
                     {this.renderFormContent(step_index)}
                 </form>
@@ -332,11 +365,13 @@ export class GettingStarted extends Component {
                     />
                 )}
 
-                <FlatButton
-                    className={styles.nextButton}
-                    label="Next"
-                    onClick={this.handleNextClick.bind(null, step_index)}
-                />
+                {!finished && (
+                    <FlatButton
+                        className={styles.nextButton}
+                        label="Next"
+                        onClick={this.handleNextClick.bind(null, step_index)}
+                    />
+                )}
             </div>
         )
     }
@@ -344,9 +379,18 @@ export class GettingStarted extends Component {
 
 import { connect } from 'react-redux'
 import { submitGoal } from '@actions/goal'
+import { showLoader, hideLoader } from '@actions/common'
+import { updateNewUserStatus } from '@actions/user'
+
+const mapStateToProps = ({ goal }) => ({
+    success: goal.success,
+})
 
 const mapDispatchToProps = dispatch => ({
     submitGoal: event => dispatch(submitGoal(event)),
+    showLoader: () => dispatch(showLoader()),
+    hideLoader: () => dispatch(hideLoader()),
+    updateNewUserStatus: () => dispatch(updateNewUserStatus()),
 })
 
-export default connect(null, mapDispatchToProps)(GettingStarted)
+export default connect(mapStateToProps, mapDispatchToProps)(GettingStarted)

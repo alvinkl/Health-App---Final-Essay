@@ -68,7 +68,7 @@ export class GettingStarted extends Component {
             tp: HEIGHT_TYPE.CM,
         },
         activity: 0,
-        dateBirth: null,
+        birth_date: null,
     }
 
     static propTypes = {
@@ -76,10 +76,17 @@ export class GettingStarted extends Component {
     }
 
     handleFinishGoal = () => {
-        const { goal, gender, weight, height, activity, dateBirth } = this.state
+        const {
+            goal,
+            gender,
+            weight,
+            height,
+            activity,
+            birth_date,
+        } = this.state
         const { submitGoal } = this.props
 
-        submitGoal({ goal, gender, weight, height, activity, dateBirth })
+        submitGoal({ goal, gender, weight, height, activity, birth_date })
     }
 
     handlePrevClick = (current_index = 0) =>
@@ -121,7 +128,7 @@ export class GettingStarted extends Component {
         this.setState({ activity: parseInt(e.target.value) })
 
     handleChangeDateBirth = (e, value) =>
-        this.setState({ dateBirth: value.toISOString() })
+        this.setState({ birth_date: value.toISOString() })
 
     renderFormContent = index => {
         /* Quiestions would be

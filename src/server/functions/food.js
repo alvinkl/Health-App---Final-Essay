@@ -1,10 +1,14 @@
-import { NutritionXAppID, NutritionXAppKeys } from '@config/keys'
-import { foodNutritionixAPI } from '@config/urls'
+import { NutritionXAppID, NutritionXAppKeys, GoogleAPIKey } from '@config/keys'
+import { foodNutritionixAPI, googleMaps } from '@config/urls'
 import { MEAL_TYPE } from '@types/food'
+
+import { restaurantNearby } from './dummy/googlemap'
 
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
 import Diary from '@model/Diary'
+
+import qs from '@helper/queryString'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -102,4 +106,38 @@ export const addFoodToDiary = async (googleID, data) => {
         return Promise.reject({ code: 500, message: 'Fail to insert data!' })
 
     return Promise.resolve(newDiary)
+}
+
+export const getRestaurantsNearLocation = async (cuisine_type = []) => {
+    const url = googleMaps.getNearbyPlaces
+    const query = qs({
+        key: GoogleAPIKey,
+        keyword: ['restaurant', ...cuisine_type].join(','),
+        radius: 500,
+        location: '-6.201917,106.781358',
+    })
+
+    const [err, res] = await to(
+        fetch(url + query, {
+            headers: {
+                'content-type': 'application/json',
+            },
+        })
+    )
+    if (err) return Promise.reject({ code: 503, message: err })
+
+    const { results } = await res.json()
+
+    const restaurants = results.map(r => ({
+        restaurant_id: r.id,
+        name: r.name,
+        open_now: r.opening_hours ? r.opening_hours.open_now : false,
+        place_id: r.place_id,
+        rating: r.rating,
+        types: r.types,
+        icon: r.icon,
+        address: r.vicimity,
+    }))
+
+    return Promise.resolve(restaurantNearby)
 }

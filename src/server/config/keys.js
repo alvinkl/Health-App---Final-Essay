@@ -9,3 +9,6 @@ export const GoogleClientSecret = 'c2vPSelfPQTjbF3DRUfmqJIJ'
 // FOOD API
 export const NutritionXAppID = '559e441c'
 export const NutritionXAppKeys = 'b5372722af0247ff5cda75e3fdf36c2c'
+
+// Google API
+export const GoogleAPIKey = 'AIzaSyAqc0Dmk-FuQDD4irHprMg7koo8TBpfZcg'

@@ -3,8 +3,14 @@ import {
     validateSanitizeGetFood,
     validateSanitizeAddFoodToDiary,
     validateGetDiaryFood,
+    validateSanitizeQueryType,
 } from '@validation/food'
-import { getFoodData, addFoodToDiary, getDiaryFood } from '@functions/food'
+import {
+    getFoodData,
+    addFoodToDiary,
+    getDiaryFood,
+    getRestaurantsNearLocation,
+} from '@functions/food'
 
 import to from '@helper/asyncAwait'
 
@@ -42,6 +48,16 @@ export const handleAddFoodToDiary = async (req, res) => {
     if (errInsert) return responseError(res, errInsert.code, errInsert.message)
 
     return responseJSON(res, newDiary)
+}
+
+export const handleSuggestFood = async (req, res) => {
+    const [err, keywords] = validateSanitizeQueryType(req.query.type)
+    if (err) return responseError(res, 400, err)
+
+    const [errRes, data] = await to(getRestaurantsNearLocation(keywords))
+    if (errRes) return responseError(res, errRes.code, errRes.message)
+
+    return responseJSON(res, data)
 }
 
 export const handleNotFoundRoute = (req, res) => {

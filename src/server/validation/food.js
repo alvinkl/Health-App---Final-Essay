@@ -114,3 +114,12 @@ export const validateGetDiaryFood = param => {
 
     return [false, sanitized]
 }
+
+export const validateSanitizeQueryType = (type = '') => {
+    let keywords = []
+    if (!type.length) return [false, keywords]
+
+    keywords = type.split(',')
+
+    return [false, keywords]
+}

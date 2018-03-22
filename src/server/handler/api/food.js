@@ -14,6 +14,7 @@ import {
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
+import { getNearbyRestaurantCuisine } from '../../functions/food'
 
 // Food API
 export const handleGetFood = async (req, res) => {
@@ -55,9 +56,7 @@ export const handleSuggestFood = async (req, res) => {
     const [err, param] = validateSanitizeQueryType(req.query)
     if (err) return responseError(res, 400, err)
 
-    const [errRes, data] = await to(
-        getRestaurantsNearLocationKW(param.cuisine, param.keywords)
-    )
+    const [errRes, data] = await to(getNearbyRestaurantCuisine(param.cuisine))
     if (errRes) return responseError(res, errRes.code, errRes.message)
 
     return responseJSON(res, data)

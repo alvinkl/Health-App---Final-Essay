@@ -7,7 +7,7 @@ import {
 import { foodNutritionixAPI, googleMaps, zomatoAPI } from '@config/urls'
 import { MEAL_TYPE } from '@types/food'
 
-import { restaurantNearby } from './dummy/googlemap'
+import { restaurantNearby, zomato } from './dummy/googlemap'
 
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
@@ -153,6 +153,33 @@ export const getRestaurantsNearLocation = async (cuisine_type = []) => {
     return Promise.resolve(restaurants)
 }
 
+// location mock
+const cp = {
+    lat: -6.1765936299,
+    lon: 106.7897127941,
+    entity_id: 4055,
+    entity_type: 'group',
+}
+const binus = {
+    lat: -6.2018556,
+    lon: 106.7807473,
+    entity_id: 5305,
+    entity_type: 'group',
+}
+
+/*
+    Flow
+    1. User Request to fetch what to eat
+    2. Server fetch data to zomato API to see nearby restaurant's match with 3 categories
+        (Chinese, Indonesian, Western)
+        for general categories
+    3. Query to database to get matched general keywords
+        like chinese, indonesian, western
+    4. User select the food they want to eat on the list that contains
+        more specific keywords
+    5. Server responded with matching specific keywords to re fetch from zomato
+*/
+
 export const getRestaurantsNearLocationKW = async (
     cuisines = '',
     food = []
@@ -160,11 +187,8 @@ export const getRestaurantsNearLocationKW = async (
     const url = zomatoAPI.getNearbyRestaurant
     // location using central park, location received from location endpoint
     const query = qs({
-        entity_id: 4055,
-        entity_type: 'group',
+        ...binus,
         q: food.join(', '),
-        lat: -6.1765936299,
-        lon: 106.7897127941,
         radius: 500,
         cuisines,
     })
@@ -196,4 +220,51 @@ export const getRestaurantsNearLocationKW = async (
     }
 
     return Promise.resolve(finalRes)
+}
+
+export const getNearbyRestaurantCuisine = async (cuisines = '') => {
+    const url = zomatoAPI.getNearbyRestaurant
+
+    // for now cuisines will be hardcoded
+    const query = qs({
+        ...binus,
+        radius: 500,
+        cuisines: ['chinese', 'indonesian', 'western'],
+    })
+
+    // const [err, res] = await to(
+    //     fetch(url + query, {
+    //         'user-key': ZomatoAPIKey,
+    //         Accept: 'application/json',
+    //     })
+    // )
+    // if (err) return Promise.reject({ code: 503, message: err })
+
+    // const data = await res.json()
+
+    const data = zomato
+
+    const keywords = extractKeywords(data.restaurants)
+
+    return Promise.resolve(keywords)
+}
+
+const extractKeywords = (restaurants = [], type = 0) => {
+    // Transform the object into array of cuisines
+    const rs = restaurants.reduce(
+        (prev, curr) => [...prev, curr.restaurant.cuisines],
+        []
+    )
+
+    const cuisines = rs.reduce((prev, curr) => {
+        let n = prev[curr] || 0
+        return {
+            ...prev,
+            [curr]: ++n,
+        }
+    }, {})
+
+    if (type === 0) return Object.keys(cuisines)
+
+    return cuisines
 }

@@ -100,3 +100,10 @@ export default function generateFood(data) {
         return food
     })
 }
+
+// Suggestion
+export const CUISINE_TYPE = {
+    INDONESIAN: 1,
+    CHINESE: 2,
+    WESTERN: 3,
+}

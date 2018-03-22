@@ -10,6 +10,7 @@ import {
     addFoodToDiary,
     getDiaryFood,
     getRestaurantsNearLocation,
+    getRestaurantsNearLocationKW,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
@@ -51,10 +52,12 @@ export const handleAddFoodToDiary = async (req, res) => {
 }
 
 export const handleSuggestFood = async (req, res) => {
-    const [err, keywords] = validateSanitizeQueryType(req.query.type)
+    const [err, param] = validateSanitizeQueryType(req.query)
     if (err) return responseError(res, 400, err)
 
-    const [errRes, data] = await to(getRestaurantsNearLocation(keywords))
+    const [errRes, data] = await to(
+        getRestaurantsNearLocationKW(param.cuisine, param.keywords)
+    )
     if (errRes) return responseError(res, errRes.code, errRes.message)
 
     return responseJSON(res, data)

@@ -1,5 +1,10 @@
-import { NutritionXAppID, NutritionXAppKeys, GoogleAPIKey } from '@config/keys'
-import { foodNutritionixAPI, googleMaps } from '@config/urls'
+import {
+    NutritionXAppID,
+    NutritionXAppKeys,
+    GoogleAPIKey,
+    ZomatoAPIKey,
+} from '@config/keys'
+import { foodNutritionixAPI, googleMaps, zomatoAPI } from '@config/urls'
 import { MEAL_TYPE } from '@types/food'
 
 import { restaurantNearby } from './dummy/googlemap'
@@ -108,36 +113,87 @@ export const addFoodToDiary = async (googleID, data) => {
     return Promise.resolve(newDiary)
 }
 
+// Google Maps
 export const getRestaurantsNearLocation = async (cuisine_type = []) => {
     const url = googleMaps.getNearbyPlaces
     const query = qs({
         key: GoogleAPIKey,
-        keyword: ['restaurant', ...cuisine_type].join(','),
+        keyword: ['restaurant', 'food', ...cuisine_type].join(','),
         radius: 500,
         location: '-6.201917,106.781358',
     })
 
-    const [err, res] = await to(
-        fetch(url + query, {
-            headers: {
-                'content-type': 'application/json',
-            },
-        })
-    )
-    if (err) return Promise.reject({ code: 503, message: err })
+    // const [err, res] = await to(
+    //     fetch(url + query, {
+    //         headers: {
+    //             'content-type': 'application/json',
+    //         },
+    //     })
+    // )
+    // if (err) return Promise.reject({ code: 503, message: err })
 
-    const { results } = await res.json()
+    // const { results } = await res.json()
 
-    const restaurants = results.map(r => ({
-        restaurant_id: r.id,
-        name: r.name,
-        open_now: r.opening_hours ? r.opening_hours.open_now : false,
-        place_id: r.place_id,
-        rating: r.rating,
-        types: r.types,
-        icon: r.icon,
-        address: r.vicimity,
+    // const restaurants = results.map(r => ({
+    //     restaurant_id: r.id,
+    //     name: r.name,
+    //     open_now: r.opening_hours ? r.opening_hours.open_now : false,
+    //     place_id: r.place_id,
+    //     rating: r.rating,
+    //     types: r.types.join(','),
+    //     icon: r.icon,
+    //     address: r.vicimity,
+    // }))
+
+    const restaurants = restaurantNearby.map(r => ({
+        ...r,
+        types: r.types.join(','),
     }))
 
-    return Promise.resolve(restaurantNearby)
+    return Promise.resolve(restaurants)
+}
+
+export const getRestaurantsNearLocationKW = async (
+    cuisines = '',
+    food = []
+) => {
+    const url = zomatoAPI.getNearbyRestaurant
+    // location using central park, location received from location endpoint
+    const query = qs({
+        entity_id: 4055,
+        entity_type: 'group',
+        q: food.join(', '),
+        lat: -6.1765936299,
+        lon: 106.7897127941,
+        radius: 500,
+        cuisines,
+    })
+
+    const headers = {
+        'user-key': ZomatoAPIKey,
+        Accept: 'application/json',
+    }
+
+    const [err, res] = await to(fetch(url + query, { headers, method: 'GET' }))
+    if (err) return Promise.reject({ code: 503, message: err })
+
+    const data = await res.json()
+
+    const { results_found, restaurants } = data
+
+    const finalRes = {
+        count: results_found,
+        restaurants: restaurants.map(({ restaurant }) => ({
+            id: restaurant.id,
+            name: restaurant.name,
+            url: restaurant.url,
+            location: restaurant.location,
+            cuisines: restaurant.cuisines,
+            rating: restaurant.user_rating.aggregate_rating,
+            votes: restaurant.user_rating.votes,
+            photo: restaurant.photos_url,
+        })),
+    }
+
+    return Promise.resolve(finalRes)
 }

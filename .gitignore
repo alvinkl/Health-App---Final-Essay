@@ -4,3 +4,4 @@ node_modules
 *build*
 .tern*
 jsconfig.json
+seed

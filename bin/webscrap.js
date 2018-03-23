@@ -5,7 +5,24 @@ const path = require('path')
 
 const seed_dir = path.resolve(__dirname, '..', 'seed')
 
+const rimraf = dir_path => {
+    if (fs.existsSync(dir_path)) {
+        fs.readdirSync(dir_path).forEach(function(entry) {
+            var entry_path = path.join(dir_path, entry)
+            if (fs.lstatSync(entry_path).isDirectory()) {
+                rimraf(entry_path)
+            } else {
+                fs.unlinkSync(entry_path)
+            }
+        })
+        return fs.rmdirSync(dir_path)
+    }
+}
+
 if (!fs.existsSync(seed_dir)) {
+    fs.mkdirSync(seed_dir)
+} else {
+    rimraf(seed_dir)
     fs.mkdirSync(seed_dir)
 }
 
@@ -60,7 +77,9 @@ const scrapeData = (cuisine, count = 1) => {
                             {},
                             result[names[i]] || {},
                             {
-                                [res[1].replace(':', '')]: res[2],
+                                [res[1].replace(':', '')]: /\d*/.exec(
+                                    res[2]
+                                )[0],
                             }
                         )
                     })

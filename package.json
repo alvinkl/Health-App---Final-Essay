@@ -87,6 +87,7 @@
         "eslint-plugin-prettier": "^2.6.0",
         "eslint-plugin-react": "^7.4.0",
         "isomorphic-style-loader": "^4.0.0",
+        "minimist": "^1.2.0",
         "nodemon": "^1.14.12",
         "nodemon-webpack-plugin": "^0.1.6",
         "offline-plugin": "^4.9.0",

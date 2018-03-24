@@ -58,6 +58,12 @@ const foodSuggestSchema = m.Schema({
         index: true,
     },
 
+    cuisine: {
+        type: String,
+        required: true,
+        index: true,
+    },
+
     food_name: {
         type: String,
         required: true,
@@ -86,7 +92,8 @@ fs.readdirSync(seed).forEach(file => {
 
     const names = Object.keys(dt)
     const readyInsert = names.map(name => ({
-        keywords: [cuisine, ...name.split(' ').map(t => t.toLowerCase())],
+        keywords: name.split(' ').map(t => t.toLowerCase()),
+        cuisine,
         food_name: name,
         nutrition: {
             calories: parseInt(dt[name].Calories),

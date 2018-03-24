@@ -12,6 +12,7 @@ import { restaurantNearby, zomato } from './dummy/googlemap'
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
 import Diary from '@model/Diary'
+import FoodSuggest from '@model/FoodSuggest'
 
 import qs from '@helper/queryString'
 
@@ -247,6 +248,17 @@ export const getNearbyRestaurantCuisine = async (cuisines = '') => {
     const keywords = extractKeywords(data.restaurants)
 
     return Promise.resolve(keywords)
+}
+
+export const getFoodsByKeywords = async (keywords = []) => {
+    const query = {
+        keywords: { $all: keywords },
+    }
+
+    const [err, data] = await to(FoodSuggest.find(query))
+    if (err) Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve(data)
 }
 
 const extractKeywords = (restaurants = [], type = 0) => {

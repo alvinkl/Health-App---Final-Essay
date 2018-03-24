@@ -44,9 +44,16 @@ const nutritionSchema = m.Schema({
 })
 
 const foodSuggestSchema = m.Schema({
-    keywords: Array,
+    keywords: {
+        type: Array,
+        required: true,
+        index: true,
+    },
 
-    food_name: String,
+    food_name: {
+        type: String,
+        required: true,
+    },
     nutrition: nutritionSchema,
 
     create_time: {
@@ -56,4 +63,4 @@ const foodSuggestSchema = m.Schema({
     },
 })
 
-export default m.model(foodSuggestSchema)
+export default m.model('foodsuggest', foodSuggestSchema)

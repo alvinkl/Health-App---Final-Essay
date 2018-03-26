@@ -9,6 +9,7 @@ export const addFoodToDiary = '/api/addFoodToDiary'
 
 // Suggest Food
 export const getSuggestion = '/api/food/suggest'
+// export const getFoodByKeywords = '/api/food/getFood'
 
 // auth
 export const authGoogle = '/auth/google'

@@ -50,6 +50,12 @@ const foodSuggestSchema = m.Schema({
         index: true,
     },
 
+    cuisine: {
+        type: String,
+        required: true,
+        index: true,
+    },
+
     food_name: {
         type: String,
         required: true,

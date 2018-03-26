@@ -11,6 +11,7 @@ import {
     getDiaryFood,
     getRestaurantsNearLocation,
     getRestaurantsNearLocationKW,
+    getFoodsByKeywords,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
@@ -56,11 +57,23 @@ export const handleSuggestFood = async (req, res) => {
     const [err, param] = validateSanitizeQueryType(req.query)
     if (err) return responseError(res, 400, err)
 
-    const [errRes, data] = await to(getNearbyRestaurantCuisine(param.cuisine))
+    const [errRes, keywords] = await to(
+        getNearbyRestaurantCuisine(param.cuisine)
+    )
     if (errRes) return responseError(res, errRes.code, errRes.message)
 
-    return responseJSON(res, data)
+    /*
+        for now just display 3 cuisine not based on location
+        then iterate to find the food menu base on location
+    */
+
+    const [errFood, foods] = await to(getFoodsByKeywords(keywords))
+    if (errFood) return responseError(res, errFood.code, errFood.message)
+
+    return responseJSON(res, foods)
 }
+
+export const handleSuggestRestaurant = async (req, res) => {}
 
 export const handleNotFoundRoute = (req, res) => {
     responseError(res, 404, 'Invalid Route')

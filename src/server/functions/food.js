@@ -243,32 +243,15 @@ export const getNearbyRestaurantCuisine = async (cuisines = '') => {
 
     // const data = await res.json()
 
-    const data = zomato
+    const { restaurants } = zomato
 
-    const keywords = extractKeywords(data.restaurants)
-
-    return Promise.resolve(keywords)
-}
-
-export const getFoodsByKeywords = async (keywords = []) => {
-    const query = {
-        keywords: { $all: keywords },
-    }
-
-    const [err, data] = await to(FoodSuggest.find(query))
-    if (err) Promise.reject({ code: 500, message: err })
-
-    return Promise.resolve(data)
-}
-
-const extractKeywords = (restaurants = [], type = 0) => {
     // Transform the object into array of cuisines
     const rs = restaurants.reduce(
         (prev, curr) => [...prev, curr.restaurant.cuisines],
         []
     )
 
-    const cuisines = rs.reduce((prev, curr) => {
+    const cs = rs.reduce((prev, curr) => {
         let n = prev[curr] || 0
         return {
             ...prev,
@@ -276,7 +259,48 @@ const extractKeywords = (restaurants = [], type = 0) => {
         }
     }, {})
 
-    if (type === 0) return Object.keys(cuisines)
+    const keywords = Object.keys(cs).map(r => r.toLowerCase())
 
-    return cuisines
+    return Promise.resolve(keywords)
+}
+
+export const getFoodsByKeywords = async (keywords = []) => {
+    keywords = [...keywords, 'chinese']
+
+    const query = [
+        { $match: { keywords: { $in: keywords } } },
+        {
+            $group: {
+                _id: '$cuisine',
+                foods: {
+                    $push: {
+                        food_name: '$food_name',
+                        keywords: '$keywords',
+                        nutrition: '$nutrition',
+                    },
+                },
+            },
+        },
+        { $project: { foods: { $slice: ['$foods', 5] } } },
+    ]
+    const [err, data] = await to(FoodSuggest.aggregate(query))
+
+    if (err) Promise.reject({ code: 500, message: err })
+
+    const result_by_cuisine = data.reduce(
+        (prev, curr) => {
+            let { _id: cuisine } = curr
+            return {
+                ...prev,
+                [cuisine]: [...prev[cuisine], ...curr.foods],
+            }
+        },
+        {
+            indonesian: [],
+            chinese: [],
+            western: [],
+        }
+    )
+
+    return Promise.resolve(result_by_cuisine)
 }

@@ -23,11 +23,11 @@
     background-color: #0097a7 !important;
     height: auto;
     padding: 5%;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .suggestFood .buttonSuggest {
-    width: 80vw;
+    width: 85vw;
 }
 
 .avatarUser {

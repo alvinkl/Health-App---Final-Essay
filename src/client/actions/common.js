@@ -4,6 +4,8 @@ export const SHOW_HEADER = 'SHOW_HEADER'
 export const HIDE_HEADER = 'HIDE_HEADER'
 export const SHOW_LOADER = 'SHOW_LOADER'
 export const HIDE_LOADER = 'HIDE_LOADER'
+export const SHOW_SNACKBAR = 'SHOW_SNACKBAR'
+export const HIDE_SNACKBAR = 'HIDE_SNACKBAR'
 
 export const openSidebar = () => ({
     type: OPEN_SIDEBAR,
@@ -27,4 +29,13 @@ export const showLoader = () => ({
 
 export const hideLoader = () => ({
     type: HIDE_LOADER,
+})
+
+export const showSnackbar = (message = '') => ({
+    type: SHOW_SNACKBAR,
+    message,
+})
+
+export const hideSnackbar = () => ({
+    type: HIDE_SNACKBAR,
 })

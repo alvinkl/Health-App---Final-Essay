@@ -5,6 +5,8 @@ import {
     HIDE_HEADER,
     SHOW_LOADER,
     HIDE_LOADER,
+    SHOW_SNACKBAR,
+    HIDE_SNACKBAR,
 } from '../actions/common'
 
 export const initial_state = {
@@ -14,6 +16,11 @@ export const initial_state = {
     sidebar: false,
 
     loading: false,
+
+    snackbar: {
+        show: false,
+        message: '',
+    },
 
     isSSR: false,
     userAgent: '',
@@ -54,6 +61,22 @@ export default function common(state = initial_state, action) {
             return {
                 ...state,
                 loading: false,
+            }
+        case SHOW_SNACKBAR:
+            return {
+                ...state,
+                snackbar: {
+                    show: true,
+                    message: action.message,
+                },
+            }
+        case HIDE_SNACKBAR:
+            return {
+                ...state,
+                snackbar: {
+                    show: false,
+                    message: '',
+                },
             }
         default:
             return state

@@ -48,6 +48,8 @@ export class SuggestFood extends Component {
         }).isRequired,
         fetchSuggestFood: T.func.isRequired,
         fetchSuggestRestaurant: T.func.isRequired,
+        addToDiary: T.func.isRequired,
+        showSnackbar: T.func.isRequired,
     }
 
     state = {
@@ -77,14 +79,12 @@ export class SuggestFood extends Component {
     handleSelectedFood = e => {
         this.setState(
             {
-                food: e.target.value,
+                food: JSON.parse(e.target.value),
                 step: this.state.step + 1,
             },
             () => {
                 const { fetchSuggestRestaurant } = this.props
-                const { cuisine, food } = this.state
-
-                const { keywords } = JSON.parse(food)
+                const { cuisine, food: { keywords } } = this.state
 
                 const cs = CUISINE_TYPE[cuisine.toUpperCase()]
                 const kw = keywords.join(',')
@@ -99,6 +99,23 @@ export class SuggestFood extends Component {
             restaurant: JSON.parse(e.target.value),
             step: this.state.step + 1,
         })
+    }
+
+    handleAddToDiary = () => {
+        const { food: { food_name, nutrition } } = this.state
+        const { addToDiary, showSnackbar } = this.props
+
+        const data = {
+            food_name,
+            nutrition,
+            total_weight: 1,
+            quantity: 1,
+            meal_type: 1,
+        }
+
+        showSnackbar('Added to diary')
+
+        addToDiary(data)
     }
 
     renderStep = step => {
@@ -150,10 +167,7 @@ export class SuggestFood extends Component {
                             <RadioButton
                                 key={i}
                                 className={styles.radio}
-                                value={JSON.stringify({
-                                    name: key.food_name,
-                                    keywords: key.keywords,
-                                })}
+                                value={JSON.stringify(key)}
                                 label={key.food_name}
                                 checkedIcon={checkedIcon}
                                 uncheckedIcon={uncheckedIcon}
@@ -190,6 +204,7 @@ export class SuggestFood extends Component {
             case 4:
                 return (
                     <DisplayRestaurantLocation
+                        handleAddToDiary={this.handleAddToDiary}
                         restaurant={this.state.restaurant}
                     />
                 )
@@ -214,6 +229,8 @@ export class SuggestFood extends Component {
 
 import { connect } from 'react-redux'
 import { fetchSuggestFood, fetchSuggestRestaurant } from '@actions/suggestFood'
+import { addToDiary } from '@actions/diary'
+import { showSnackbar } from '@actions/common'
 
 const mapStateToProps = ({ suggestFood }) => ({
     suggestFood,
@@ -222,6 +239,8 @@ const mapStateToProps = ({ suggestFood }) => ({
 const mapDispatchToProps = dispatch => ({
     fetchSuggestFood: event => dispatch(fetchSuggestFood(event)),
     fetchSuggestRestaurant: event => dispatch(fetchSuggestRestaurant(event)),
+    addToDiary: event => dispatch(addToDiary(event)),
+    showSnackbar: event => dispatch(showSnackbar(event)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SuggestFood)

@@ -223,14 +223,20 @@ export const getRestaurantsNearLocationKW = async (
     return Promise.resolve(finalRes)
 }
 
-export const getNearbyRestaurantCuisine = async (cuisines = '') => {
+export const getNearbyRestaurantCuisine = async ({
+    cuisines = '',
+    keywords = '',
+    lat = 0,
+    lon = 0,
+}) => {
     const url = zomatoAPI.getNearbyRestaurant
 
     // for now cuisines will be hardcoded
     const query = qs({
         ...binus,
         radius: 500,
-        cuisines: ['chinese', 'indonesian', 'western'],
+        cuisines: cuisines || ['chinese', 'indonesian', 'western'],
+        q: keywords,
     })
 
     // const [err, res] = await to(
@@ -245,23 +251,21 @@ export const getNearbyRestaurantCuisine = async (cuisines = '') => {
 
     const { restaurants } = zomato
 
+    const restaurants_data = restaurants.map(({ restaurant: r }) => ({
+        id: r.id,
+        name: r.name,
+        cuisines: r.cuisines,
+        rating: r.user_rating.aggregate_rating,
+        price_range: r.price_range,
+        url: r.url,
+        thumbnail: r.thumb,
+        menu_url: r.menu_url,
+        location: r.location,
+    }))
+
     // Transform the object into array of cuisines
-    const rs = restaurants.reduce(
-        (prev, curr) => [...prev, curr.restaurant.cuisines],
-        []
-    )
 
-    const cs = rs.reduce((prev, curr) => {
-        let n = prev[curr] || 0
-        return {
-            ...prev,
-            [curr]: ++n,
-        }
-    }, {})
-
-    const keywords = Object.keys(cs).map(r => r.toLowerCase())
-
-    return Promise.resolve(keywords)
+    return Promise.resolve(restaurants_data)
 }
 
 export const getFoodsByKeywords = async (keywords = []) => {
@@ -303,4 +307,20 @@ export const getFoodsByKeywords = async (keywords = []) => {
     )
 
     return Promise.resolve(result_by_cuisine)
+}
+
+export const extractKeywords = (restaurants = []) => {
+    const rs = restaurants.reduce((prev, curr) => [...prev, curr.cuisines], [])
+
+    const cs = rs.reduce((prev, curr) => {
+        let n = prev[curr] || 0
+        return {
+            ...prev,
+            [curr]: ++n,
+        }
+    }, {})
+
+    const keywords = Object.keys(cs).map(r => r.toLowerCase())
+
+    return keywords
 }

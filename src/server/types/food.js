@@ -1,10 +1,3 @@
-export const MEAL_TYPE = {
-    BREAKFAST: 1,
-    LUNCH: 2,
-    DINNER: 3,
-    SNACK: 4,
-}
-
 export const foodType = {
     name: '',
     quantity: 0,
@@ -99,11 +92,4 @@ export default function generateFood(data) {
 
         return food
     })
-}
-
-// Suggestion
-export const CUISINE_TYPE = {
-    INDONESIAN: 1,
-    CHINESE: 2,
-    WESTERN: 3,
 }

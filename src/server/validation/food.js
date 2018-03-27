@@ -1,6 +1,6 @@
 import moment from 'moment'
 import eq from '@helper/checkObjectStructure'
-import { MEAL_TYPE, CUISINE_TYPE } from '@types/food'
+import { MEAL_TYPE, CUISINE_TYPE } from '@constant'
 
 const getFoodType = {
     query: '',
@@ -138,4 +138,25 @@ export const validateSanitizeQueryType = query => {
     const kw = keywords.split(',')
 
     return [false, { cuisine: c, keywords: kw }]
+}
+
+const locationQueryType = {
+    lon: 0,
+    lat: 0,
+}
+
+export const validateSanitizeSuggestFood = location => {
+    if (!eq(location, locationQueryType)) return ['Query is invalid']
+
+    const { long, lat } = location
+
+    return [
+        false,
+        {
+            location: {
+                long,
+                lat,
+            },
+        },
+    ]
 }

@@ -3,6 +3,7 @@ import T from 'prop-types'
 import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
+import SuggestFood from './SuggestFood'
 
 import { fetchUserData } from '@actions/user'
 // import styles from './contents.css'
@@ -28,6 +29,7 @@ class Contents extends Component {
         return (
             <Fragment>
                 <ContentHeader />
+                <SuggestFood />
             </Fragment>
         )
     }

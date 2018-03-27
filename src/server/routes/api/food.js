@@ -3,6 +3,7 @@ import {
     handleAddFoodToDiary,
     handleGetDiaryFood,
     handleSuggestFood,
+    handleSuggestRestaurant,
 } from '@server/handler/api/food'
 
 import { mustAuthenticate } from '../middleware'
@@ -14,6 +15,11 @@ export default function(r) {
 
     // Suggest Food
     r.get(url.getSuggestion, mustAuthenticate, handleSuggestFood)
+    r.get(
+        url.getRestaurantSuggestion,
+        mustAuthenticate,
+        handleSuggestRestaurant
+    )
     // r.get(url.getFoodByKeywords, mustAuthenticate, handleSuggestFood)
 
     // Food Diary

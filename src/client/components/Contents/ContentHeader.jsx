@@ -8,7 +8,7 @@ import { GridList, GridTile } from 'material-ui/GridList'
 import Chip from 'material-ui/Chip'
 import FontIcon from 'material-ui/FontIcon'
 
-import styles from '../contents.css'
+import styles from './contents.css'
 
 const style = {
     chip: {

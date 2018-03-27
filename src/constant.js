@@ -29,3 +29,18 @@ export const ACTIVITY = {
     ACTIVE: 2,
     VERY_ACTIVE: 3,
 }
+
+// Meal
+export const MEAL_TYPE = {
+    BREAKFAST: 1,
+    LUNCH: 2,
+    DINNER: 3,
+    SNACK: 4,
+}
+
+// Cuisine
+export const CUISINE_TYPE = {
+    INDONESIAN: 1,
+    CHINESE: 2,
+    WESTERN: 3,
+}

@@ -16,7 +16,7 @@ class Diary extends Component {
     }
 
     static initialAction = store => {
-        store.dispatch(fetchTodayDiary())
+        // store.dispatch(fetchTodayDiary())
     }
 
     static propTypes = {
@@ -25,9 +25,10 @@ class Diary extends Component {
     }
 
     componentDidMount() {
-        const { diary } = this.state
         const { fetchTodayDiary } = this.props
-        if (isEmpty(diary)) fetchTodayDiary()
+        const { loading } = this.state
+
+        if (!loading) fetchTodayDiary()
     }
 
     componentWillReceiveProps(nextProps) {

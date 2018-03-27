@@ -8,11 +8,21 @@ export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
 export const SUCCESS_ADD_DIARY = 'SUCCESS_ADD_DIARY'
 export const FAILED_ADD_DIARY = 'FAILED_ADD_DIARY'
 
+const parseDate = (date = Date) => {
+    const year = date.getFullYear()
+    let month = date.getMonth() + 1
+    month = month < 10 ? '0' + month : month
+    const dt = date.getDate()
+
+    return year + '-' + month + '-' + dt
+}
+
 export const fetchTodayDiary = (startDate, endDate) => async dispatch => {
     const today = new Date()
 
     const query = qs({
-        startDate: parseDate(today),
+        startDate: startDate || parseDate(today),
+        endDate: endDate || parseDate(today),
     })
 
     const [err, data] = await to(
@@ -62,13 +72,4 @@ export const addToDiary = ({
     if (err) return dispatch({ type: FAILED_ADD_DIARY })
 
     return dispatch({ type: SUCCESS_ADD_DIARY })
-}
-
-const parseDate = date => {
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? '0' + month : month
-    const dt = date.getDate()
-
-    return year + '-' + month + '-' + dt
 }

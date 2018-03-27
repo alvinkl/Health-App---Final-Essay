@@ -5,7 +5,7 @@ import {
     ZomatoAPIKey,
 } from '@config/keys'
 import { foodNutritionixAPI, googleMaps, zomatoAPI } from '@config/urls'
-import { MEAL_TYPE } from '@types/food'
+import { MEAL_TYPE } from '@constant'
 
 import { restaurantNearby, zomato } from './dummy/googlemap'
 

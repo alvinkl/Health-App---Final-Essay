@@ -8,48 +8,51 @@ m
     .then(() => console.log('Succeed to connect to db'))
     .catch(err => console.log('Failed to connect to db - ', err))
 
-const nutritionSchema = m.Schema({
-    calories: {
-        type: Number,
-        default: 0,
+const nutritionSchema = m.Schema(
+    {
+        calories: {
+            type: Number,
+            default: 0,
+        },
+        satureated_fat: {
+            type: Number,
+            default: 0,
+        },
+        total_fat: {
+            type: Number,
+            default: 0,
+        },
+        cholesterol: {
+            type: Number,
+            default: 0,
+        },
+        sodium: {
+            type: Number,
+            default: 0,
+        },
+        carbohydrate: {
+            type: Number,
+            default: 0,
+        },
+        dietary_fiber: {
+            type: Number,
+            default: 0,
+        },
+        sugar: {
+            type: Number,
+            default: 0,
+        },
+        protein: {
+            type: Number,
+            default: 0,
+        },
+        potassium: {
+            type: Number,
+            default: 0,
+        },
     },
-    satureated_fat: {
-        type: Number,
-        default: 0,
-    },
-    total_fat: {
-        type: Number,
-        default: 0,
-    },
-    cholesterol: {
-        type: Number,
-        default: 0,
-    },
-    sodium: {
-        type: Number,
-        default: 0,
-    },
-    carbohydrate: {
-        type: Number,
-        default: 0,
-    },
-    dietary_fiber: {
-        type: Number,
-        default: 0,
-    },
-    sugar: {
-        type: Number,
-        default: 0,
-    },
-    protein: {
-        type: Number,
-        default: 0,
-    },
-    potassium: {
-        type: Number,
-        default: 0,
-    },
-})
+    { _id: false }
+)
 
 const foodSuggestSchema = m.Schema({
     keywords: {

@@ -9,6 +9,7 @@ export const initial_state = {
     },
 
     report: {},
+    today_total_calories: '0',
 }
 
 export default (state = initial_state, action) => {
@@ -23,6 +24,7 @@ export default (state = initial_state, action) => {
             return {
                 ...state,
                 report: action.report,
+                today_total_calories: action.today_total_calories,
             }
 
         default:

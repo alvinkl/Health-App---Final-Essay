@@ -88,9 +88,14 @@ export const fetchDiaryReport = today => async dispatch => {
 
     const report = await data.json()
 
+    const today_total_calories = Object.keys(report[0])
+        .reduce((p, c) => p + report[0][c], 0)
+        .toFixed(2)
+
     return Promise.resolve(
         dispatch({
             report,
+            today_total_calories,
             type: FETCHED_DIARY_REPORT,
         })
     )

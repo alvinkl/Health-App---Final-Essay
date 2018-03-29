@@ -29,7 +29,7 @@ const style = {
     },
 }
 
-const ContentHeader = ({ user }) => {
+const ContentHeader = ({ user, today_total_calories }) => {
     const {
         googleID,
         name,
@@ -41,8 +41,6 @@ const ContentHeader = ({ user }) => {
             current_weight: { value: current_weight },
         },
     } = user
-
-    const current_calories = 800
 
     let $avatar = ''
     if (profile_img)
@@ -69,7 +67,7 @@ const ContentHeader = ({ user }) => {
                             >
                                 &#xE56C;
                             </FontIcon>
-                            &nbsp;{current_calories} / {target_calories}
+                            &nbsp;{today_total_calories} / {target_calories}
                         </Chip>
                         <Chip style={style.smallChip}>
                             <FontIcon
@@ -108,6 +106,7 @@ const ContentHeader = ({ user }) => {
 
 ContentHeader.propTypes = {
     user: T.object,
+    today_total_calories: T.string.isRequired,
 }
 
 ContentHeader.defaultProps = {
@@ -116,8 +115,9 @@ ContentHeader.defaultProps = {
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, diary }) => ({
     user,
+    today_total_calories: diary.today_total_calories,
 })
 
 export default connect(mapStateToProps)(ContentHeader)

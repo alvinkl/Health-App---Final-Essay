@@ -1,10 +1,3 @@
-export const MEAL_TYPE = {
-    BREAKFAST: 1,
-    LUNCH: 2,
-    DINNER: 3,
-    SNACK: 4,
-}
-
 export const foodType = {
     name: '',
     quantity: 0,
@@ -63,39 +56,39 @@ export default function generateFood(data) {
             photo: p,
         } = dt
 
-        let nutrient = nutrientType
-        nutrient.calories = nf_calories
-        nutrient.satureated_fat = nf_saturated_fat
-        nutrient.total_fat = nf_total_fat
-        nutrient.cholesterol = nf_cholesterol
-        nutrient.sodium = nf_sodium
-        nutrient.carbohydrate = nf_total_carbohydrate
-        nutrient.dietary_fiber = nf_dietary_fiber
-        nutrient.sugar = nf_sugars
-        nutrient.protein = nf_protein
-        nutrient.potassium = nf_potassium
+        let nutrient = {
+            calories: nf_calories,
+            satureated_fat: nf_saturated_fat,
+            total_fat: nf_total_fat,
+            cholesterol: nf_cholesterol,
+            sodium: nf_sodium,
+            carbohydrate: nf_total_carbohydrate,
+            dietary_fiber: nf_dietary_fiber,
+            sugar: nf_sugars,
+            protein: nf_protein,
+            potassium: nf_potassium,
+        }
 
-        let measure = []
-        measure = alt_measures.map(({ measure, serving_weight, qty }) => {
-            let ms = Object.assign({}, measureType)
-            ms.measure = measure
-            ms.serving_weight = serving_weight
-            ms.quantity = qty
-            return ms
-        })
+        let measure = alt_measures.map(({ measure, serving_weight, qty }) => ({
+            measure,
+            serving_weight,
+            quantity: qty,
+        }))
 
-        let photo = photoType
-        photo.thumbnail = p.thumb
-        photo.highres = p.highres
+        let photo = {
+            thumbnail: p.thumb,
+            highres: p.highres,
+        }
 
-        let food = foodType
-        food.name = food_name
-        food.quantity = serving_qty
-        food.unit = serving_unit
-        food.total_weight = serving_weight_grams
-        food.nutrients = nutrient
-        food.alternative_measure = measure
-        food.photo = photo
+        let food = {
+            name: food_name,
+            quantity: serving_qty,
+            unit: serving_unit,
+            total_weight: serving_weight_grams,
+            nutrients: nutrient,
+            alternative_measure: measure,
+            photo: photo,
+        }
 
         return food
     })

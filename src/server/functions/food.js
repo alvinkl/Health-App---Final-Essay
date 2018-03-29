@@ -1,10 +1,20 @@
-import { NutritionXAppID, NutritionXAppKeys } from '@config/keys'
-import { foodNutritionixAPI } from '@config/urls'
-import { MEAL_TYPE } from '@types/food'
+import {
+    NutritionXAppID,
+    NutritionXAppKeys,
+    GoogleAPIKey,
+    ZomatoAPIKey,
+} from '@config/keys'
+import { foodNutritionixAPI, googleMaps, zomatoAPI } from '@config/urls'
+import { MEAL_TYPE } from '@constant'
+
+import { restaurantNearby, zomato } from './dummy/googlemap'
 
 import to from '@helper/asyncAwait'
 import generateFood from '@types/food'
 import Diary from '@model/Diary'
+import FoodSuggest from '@model/FoodSuggest'
+
+import qs from '@helper/queryString'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -69,17 +79,17 @@ export const getDiaryFood = async (googleID, date) => {
                 case MEAL_TYPE.LUNCH:
                     return {
                         ...prev,
-                        lunch: [...prev.breakfast, curr],
+                        lunch: [...prev.lunch, curr],
                     }
                 case MEAL_TYPE.DINNER:
                     return {
                         ...prev,
-                        dinner: [...prev.breakfast, curr],
+                        dinner: [...prev.dinner, curr],
                     }
                 case MEAL_TYPE.SNACK:
                     return {
                         ...prev,
-                        snack: [...prev.breakfast, curr],
+                        snack: [...prev.snack, curr],
                     }
                 default:
                     return prev
@@ -102,4 +112,215 @@ export const addFoodToDiary = async (googleID, data) => {
         return Promise.reject({ code: 500, message: 'Fail to insert data!' })
 
     return Promise.resolve(newDiary)
+}
+
+// Google Maps
+export const getRestaurantsNearLocation = async (cuisine_type = []) => {
+    const url = googleMaps.getNearbyPlaces
+    const query = qs({
+        key: GoogleAPIKey,
+        keyword: ['restaurant', 'food', ...cuisine_type].join(','),
+        radius: 500,
+        location: '-6.201917,106.781358',
+    })
+
+    // const [err, res] = await to(
+    //     fetch(url + query, {
+    //         headers: {
+    //             'content-type': 'application/json',
+    //         },
+    //     })
+    // )
+    // if (err) return Promise.reject({ code: 503, message: err })
+
+    // const { results } = await res.json()
+
+    // const restaurants = results.map(r => ({
+    //     restaurant_id: r.id,
+    //     name: r.name,
+    //     open_now: r.opening_hours ? r.opening_hours.open_now : false,
+    //     place_id: r.place_id,
+    //     rating: r.rating,
+    //     types: r.types.join(','),
+    //     icon: r.icon,
+    //     address: r.vicimity,
+    // }))
+
+    const restaurants = restaurantNearby.map(r => ({
+        ...r,
+        types: r.types.join(','),
+    }))
+
+    return Promise.resolve(restaurants)
+}
+
+// location mock
+const cp = {
+    lat: -6.1765936299,
+    lon: 106.7897127941,
+    entity_id: 4055,
+    entity_type: 'group',
+}
+const binus = {
+    lat: -6.2018556,
+    lon: 106.7807473,
+    entity_id: 5305,
+    entity_type: 'group',
+}
+
+/*
+    Flow
+    1. User Request to fetch what to eat
+    2. Server fetch data to zomato API to see nearby restaurant's match with 3 categories
+        (Chinese, Indonesian, Western)
+        for general categories
+    3. Query to database to get matched general keywords
+        like chinese, indonesian, western
+    4. User select the food they want to eat on the list that contains
+        more specific keywords
+    5. Server responded with matching specific keywords to re fetch from zomato
+*/
+
+export const getRestaurantsNearLocationKW = async (
+    cuisines = '',
+    food = []
+) => {
+    const url = zomatoAPI.getNearbyRestaurant
+    // location using central park, location received from location endpoint
+    const query = qs({
+        ...binus,
+        q: food.join(', '),
+        radius: 500,
+        cuisines,
+    })
+
+    const headers = {
+        'user-key': ZomatoAPIKey,
+        Accept: 'application/json',
+    }
+
+    const [err, res] = await to(fetch(url + query, { headers, method: 'GET' }))
+    if (err) return Promise.reject({ code: 503, message: err })
+
+    const data = await res.json()
+
+    const { results_found, restaurants } = data
+
+    const finalRes = {
+        count: results_found,
+        restaurants: restaurants.map(({ restaurant }) => ({
+            id: restaurant.id,
+            name: restaurant.name,
+            url: restaurant.url,
+            location: restaurant.location,
+            cuisines: restaurant.cuisines,
+            rating: restaurant.user_rating.aggregate_rating,
+            votes: restaurant.user_rating.votes,
+            photo: restaurant.photos_url,
+        })),
+    }
+
+    return Promise.resolve(finalRes)
+}
+
+export const getNearbyRestaurantCuisine = async ({
+    cuisines = '',
+    keywords = '',
+    lat = 0,
+    lon = 0,
+}) => {
+    const url = zomatoAPI.getNearbyRestaurant
+
+    // for now cuisines will be hardcoded
+    const query = qs({
+        ...binus,
+        radius: 500,
+        cuisines: cuisines || ['chinese', 'indonesian', 'western'],
+        q: keywords,
+    })
+
+    // const [err, res] = await to(
+    //     fetch(url + query, {
+    //         'user-key': ZomatoAPIKey,
+    //         Accept: 'application/json',
+    //     })
+    // )
+    // if (err) return Promise.reject({ code: 503, message: err })
+
+    // const data = await res.json()
+
+    const { restaurants } = zomato
+
+    const restaurants_data = restaurants.map(({ restaurant: r }) => ({
+        id: r.id,
+        name: r.name,
+        cuisines: r.cuisines,
+        rating: r.user_rating.aggregate_rating,
+        price_range: r.price_range,
+        url: r.url,
+        thumbnail: r.thumb,
+        menu_url: r.menu_url,
+        location: r.location,
+    }))
+
+    // Transform the object into array of cuisines
+
+    return Promise.resolve(restaurants_data)
+}
+
+export const getFoodsByKeywords = async (keywords = []) => {
+    keywords = [...keywords, 'chinese']
+
+    const query = [
+        { $match: { keywords: { $in: keywords } } },
+        {
+            $group: {
+                _id: '$cuisine',
+                foods: {
+                    $push: {
+                        food_name: '$food_name',
+                        keywords: '$keywords',
+                        nutrition: '$nutrition',
+                    },
+                },
+            },
+        },
+        { $project: { foods: { $slice: ['$foods', 5] } } },
+    ]
+    const [err, data] = await to(FoodSuggest.aggregate(query))
+
+    if (err) Promise.reject({ code: 500, message: err })
+
+    const result_by_cuisine = data.reduce(
+        (prev, curr) => {
+            let { _id: cuisine } = curr
+            return {
+                ...prev,
+                [cuisine]: [...prev[cuisine], ...curr.foods],
+            }
+        },
+        {
+            indonesian: [],
+            chinese: [],
+            western: [],
+        }
+    )
+
+    return Promise.resolve(result_by_cuisine)
+}
+
+export const extractKeywords = (restaurants = []) => {
+    const rs = restaurants.reduce((prev, curr) => [...prev, curr.cuisines], [])
+
+    const cs = rs.reduce((prev, curr) => {
+        let n = prev[curr] || 0
+        return {
+            ...prev,
+            [curr]: ++n,
+        }
+    }, {})
+
+    const keywords = Object.keys(cs).map(r => r.toLowerCase())
+
+    return keywords
 }

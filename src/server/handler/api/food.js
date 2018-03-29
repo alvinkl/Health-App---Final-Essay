@@ -3,10 +3,21 @@ import {
     validateSanitizeGetFood,
     validateSanitizeAddFoodToDiary,
     validateGetDiaryFood,
+    validateSanitizeQueryType,
+    validateSanitizeSuggestFood,
 } from '@validation/food'
-import { getFoodData, addFoodToDiary, getDiaryFood } from '@functions/food'
+import {
+    getFoodData,
+    addFoodToDiary,
+    getDiaryFood,
+    getRestaurantsNearLocation,
+    getRestaurantsNearLocationKW,
+    getFoodsByKeywords,
+    extractKeywords,
+} from '@functions/food'
 
 import to from '@helper/asyncAwait'
+import { getNearbyRestaurantCuisine } from '../../functions/food'
 
 // Food API
 export const handleGetFood = async (req, res) => {
@@ -42,6 +53,38 @@ export const handleAddFoodToDiary = async (req, res) => {
     if (errInsert) return responseError(res, errInsert.code, errInsert.message)
 
     return responseJSON(res, newDiary)
+}
+
+export const handleSuggestFood = async (req, res) => {
+    const [err, location] = validateSanitizeSuggestFood(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errRes, restaurants] = await to(getNearbyRestaurantCuisine(location))
+    if (errRes) return responseError(res, errRes.code, errRes.message)
+
+    /*
+        for now just display 3 cuisine not based on location
+        then iterate to find the food menu base on location
+    */
+
+    const keywords = extractKeywords(restaurants)
+
+    const [errFood, foods] = await to(getFoodsByKeywords(keywords))
+    if (errFood) return responseError(res, errFood.code, errFood.message)
+
+    return responseJSON(res, foods)
+}
+
+export const handleSuggestRestaurant = async (req, res) => {
+    const [err, param] = validateSanitizeQueryType(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errRes, restaurants] = await to(
+        getNearbyRestaurantCuisine(param.cuisine, param.keywords)
+    )
+    if (errRes) return responseError(res, errRes.code, errRes.message)
+
+    return responseJSON(res, restaurants)
 }
 
 export const handleNotFoundRoute = (req, res) => {

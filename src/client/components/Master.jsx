@@ -12,6 +12,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Header from '@components/Header'
 import Navbar from '@components/Navbar'
 import Sidebar from '@components/Sidebar'
+import Snackbar from '@components/Snackbar'
 
 import getRouteIndex from '@helper/getRouteIndex'
 
@@ -145,6 +146,8 @@ const Master = (
                 <Navbar />
 
                 <Sidebar />
+
+                <Snackbar />
 
                 {loading && Loader}
             </MuiThemeProvider>

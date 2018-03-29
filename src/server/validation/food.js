@@ -1,6 +1,6 @@
 import moment from 'moment'
 import eq from '@helper/checkObjectStructure'
-import { MEAL_TYPE } from '@types/food'
+import { MEAL_TYPE, CUISINE_TYPE } from '@constant'
 
 const getFoodType = {
     query: '',
@@ -113,4 +113,50 @@ export const validateGetDiaryFood = param => {
     }
 
     return [false, sanitized]
+}
+
+const suggestQueryType = {
+    cuisine: '',
+    keywords: '',
+}
+
+export const validateSanitizeQueryType = query => {
+    if (!eq(query, suggestQueryType)) return ['Query is invalid']
+
+    const { cuisine, keywords } = query
+
+    let c = parseInt(cuisine) || 0
+
+    if (c <= 0) return ['Cuisine is invalid']
+    if (c === CUISINE_TYPE.INDONESIAN) c = 'indonesian'
+    else if (c === CUISINE_TYPE.CHINESE) c = 'chinese'
+    else if (c === CUISINE_TYPE.WESTERN) c = 'western'
+    else return ['Cuisine type is invalid']
+
+    if (!keywords.length) return ['Keywords is invalid']
+
+    const kw = keywords.split(',')
+
+    return [false, { cuisine: c, keywords: kw }]
+}
+
+const locationQueryType = {
+    lon: 0,
+    lat: 0,
+}
+
+export const validateSanitizeSuggestFood = location => {
+    if (!eq(location, locationQueryType)) return ['Query is invalid']
+
+    const { long, lat } = location
+
+    return [
+        false,
+        {
+            location: {
+                long,
+                lat,
+            },
+        },
+    ]
 }

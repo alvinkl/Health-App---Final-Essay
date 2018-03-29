@@ -3,7 +3,6 @@ import T from 'prop-types'
 import { isEmpty } from 'lodash'
 
 import { CUISINE_TYPE } from '@constant'
-import to from '@helper/asyncAwait'
 
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -12,7 +11,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 
 import DisplayRestaurantLocation from './DisplayRestaurantLocation'
 
-import styles from './contents.css'
+import styles from '../contents.css'
 
 const style = {
     colorWhite: {
@@ -40,15 +39,29 @@ const checkedIcon = <div className={styles.selectedRadio} />
 const uncheckedIcon = <div />
 
 export class SuggestFood extends Component {
+    static propTypes = {
+        suggestFood: T.shape({
+            food: T.object,
+            restaurant: T.array,
+            loading: T.bool,
+            error: T.bool,
+        }).isRequired,
+        fetchSuggestFood: T.func.isRequired,
+        fetchSuggestRestaurant: T.func.isRequired,
+        addToDiary: T.func.isRequired,
+        showSnackbar: T.func.isRequired,
+    }
+
     state = {
         step: 0,
         cuisine: '',
         food: {},
+        restaurant: '',
     }
 
     handleSuggestFoodClick = () => {
-        const { fetchRestaurantNearby } = this.props
-        fetchRestaurantNearby({
+        const { fetchSuggestFood } = this.props
+        fetchSuggestFood({
             lat: -6.2018556,
             lon: 106.7807473,
         })
@@ -56,59 +69,48 @@ export class SuggestFood extends Component {
         this.setState({ step: 1 })
     }
 
-    handleSelectedCuisine = async e => {
-        const {
-            suggestFood: { restaurant_nearby },
-            fetchMenuFromRestaurant,
-        } = this.props
-        const cuisine = e.target.value
-
-        const restaurant_ids = restaurant_nearby[cuisine].map(
-            r => r.restaurant_id
-        )
-
-        await fetchMenuFromRestaurant(restaurant_ids)
-
-        return this.setState({
-            cuisine,
+    handleSelectedCuisine = e => {
+        this.setState({
+            cuisine: e.target.value,
             step: this.state.step + 1,
         })
     }
 
     handleSelectedFood = e => {
-        const data = JSON.parse(e.target.value)
-
         this.setState(
             {
-                food: data,
+                food: JSON.parse(e.target.value),
                 step: this.state.step + 1,
             },
             () => {
-                // const { fetchSuggestRestaurant } = this.props
-                // const { cuisine, food: { keywords } } = this.state
-                // const cs = CUISINE_TYPE[cuisine.toUpperCase()]
-                // const kw = keywords.join(',')
-                // fetchSuggestRestaurant({ cuisine: cs, keywords: kw })
+                const { fetchSuggestRestaurant } = this.props
+                const { cuisine, food: { keywords } } = this.state
+
+                const cs = CUISINE_TYPE[cuisine.toUpperCase()]
+                const kw = keywords.join(',')
+
+                fetchSuggestRestaurant({ cuisine: cs, keywords: kw })
             }
         )
     }
 
-    handleAddToDiary = meal_type => {
-        const {
-            food: {
-                name: food_name,
-                nutritions: nutrition,
-                serving_size: quantity,
-            },
-        } = this.state
+    handleSelectedRestaurant = e => {
+        this.setState({
+            restaurant: JSON.parse(e.target.value),
+            step: this.state.step + 1,
+        })
+    }
+
+    handleAddToDiary = () => {
+        const { food: { food_name, nutrition } } = this.state
         const { addToDiary, showSnackbar } = this.props
 
         const data = {
             food_name,
             nutrition,
             total_weight: 1,
-            quantity,
-            meal_type,
+            quantity: 1,
+            meal_type: 1,
         }
 
         showSnackbar('Added to diary')
@@ -117,9 +119,8 @@ export class SuggestFood extends Component {
     }
 
     renderStep = step => {
-        const {
-            suggestFood: { cuisines, restaurant_nearby, menus },
-        } = this.props
+        const { suggestFood: { food, restaurant } } = this.props
+        const { cuisine } = this.state
 
         switch (step) {
             case 0:
@@ -132,12 +133,14 @@ export class SuggestFood extends Component {
                     </RaisedButton>
                 )
             case 1: {
+                const keys = Object.keys(food)
+
                 return (
                     <RadioButtonGroup
                         name="cuisine"
                         onChange={this.handleSelectedCuisine}
                     >
-                        {cuisines.map((key, i) => (
+                        {keys.map((key, i) => (
                             <RadioButton
                                 key={i}
                                 className={styles.radio}
@@ -154,22 +157,18 @@ export class SuggestFood extends Component {
                 )
             }
             case 2: {
-                // const dt = Object.keys(menus).reduce(
-                //     (prev, curr) => [...prev, ...menus[curr]],
-                //     []
-                // )
-
+                const dt = food[cuisine]
                 return (
                     <RadioButtonGroup
                         name="cuisine-food"
                         onChange={this.handleSelectedFood}
                     >
-                        {menus.map((key, i) => (
+                        {dt.map((key, i) => (
                             <RadioButton
                                 key={i}
                                 className={styles.radio}
                                 value={JSON.stringify(key)}
-                                label={key.name}
+                                label={key.food_name}
                                 checkedIcon={checkedIcon}
                                 uncheckedIcon={uncheckedIcon}
                                 iconStyle={style.iconStyle}
@@ -181,18 +180,34 @@ export class SuggestFood extends Component {
                 )
             }
             case 3: {
-                const { cuisine, food } = this.state
-                const restaurant = restaurant_nearby[cuisine].find(
-                    r => r.restaurant_id === food.restaurant_id
+                return (
+                    <RadioButtonGroup
+                        name="restaurant"
+                        onChange={this.handleSelectedRestaurant}
+                    >
+                        {restaurant.map((r, i) => (
+                            <RadioButton
+                                key={i}
+                                className={styles.radio}
+                                value={JSON.stringify(r)}
+                                label={r.name}
+                                checkedIcon={checkedIcon}
+                                uncheckedIcon={uncheckedIcon}
+                                iconStyle={style.iconStyle}
+                                inputStyle={style.colorWhite}
+                                labelStyle={style.labelStyle}
+                            />
+                        ))}
+                    </RadioButtonGroup>
                 )
-
+            }
+            case 4:
                 return (
                     <DisplayRestaurantLocation
                         handleAddToDiary={this.handleAddToDiary}
-                        restaurant={restaurant}
+                        restaurant={this.state.restaurant}
                     />
                 )
-            }
             default:
                 return
         }
@@ -205,34 +220,15 @@ export class SuggestFood extends Component {
 
         return (
             <Paper className={styles.suggestFood} zDepth={3} id="suggest-food">
-                {loading && (
-                    <CircularProgress className={styles.loader} size={30} />
-                )}
+                {loading && <CircularProgress size={30} />}
                 {!loading && this.renderStep(step)}
             </Paper>
         )
     }
 }
 
-SuggestFood.propTypes = {
-    suggestFood: T.shape({
-        cuisines: T.array,
-        restaurant_nearby: T.object,
-        menus: T.array,
-        loading: T.bool,
-        error: T.bool,
-    }).isRequired,
-    fetchRestaurantNearby: T.func.isRequired,
-    fetchMenuFromRestaurant: T.func.isRequired,
-    addToDiary: T.func.isRequired,
-    showSnackbar: T.func.isRequired,
-}
-
 import { connect } from 'react-redux'
-import {
-    fetchRestaurantNearby,
-    fetchMenuFromRestaurant,
-} from '@actions/suggestFood'
+import { fetchSuggestFood, fetchSuggestRestaurant } from '@actions/suggestFood'
 import { addToDiary } from '@actions/diary'
 import { showSnackbar } from '@actions/common'
 
@@ -241,8 +237,8 @@ const mapStateToProps = ({ suggestFood }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchRestaurantNearby: event => dispatch(fetchRestaurantNearby(event)),
-    fetchMenuFromRestaurant: event => dispatch(fetchMenuFromRestaurant(event)),
+    fetchSuggestFood: event => dispatch(fetchSuggestFood(event)),
+    fetchSuggestRestaurant: event => dispatch(fetchSuggestRestaurant(event)),
     addToDiary: event => dispatch(addToDiary(event)),
     showSnackbar: event => dispatch(showSnackbar(event)),
 })

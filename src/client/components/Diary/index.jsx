@@ -211,7 +211,7 @@ import { showLoader, hideLoader, showSnackbar } from '@actions/common'
 import { addToDiary } from '@actions/diary'
 
 const mapStateToProps = ({ diary }) => ({
-    diary,
+    diary: diary.today_diary,
 })
 
 const mapDispatchToProps = dispatch => ({

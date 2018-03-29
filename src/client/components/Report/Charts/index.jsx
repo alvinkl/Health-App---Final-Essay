@@ -1,4 +1,7 @@
 import React from 'react'
+import T from 'prop-types'
+import { isEmpty } from 'lodash'
+
 import {
     BarChart,
     Bar,
@@ -14,22 +17,29 @@ import Paper from 'material-ui/Paper'
 
 import style from './charts.css'
 
-const data = [
-    { name: 'Mo 7', breakfast: 800, lunch: 1000, dinner: 400, snacks: 200 },
-    { name: 'Mo 8', breakfast: 700, lunch: 1398, dinner: 210, snacks: 100 },
-    { name: 'Mo 9', breakfast: 900, lunch: 1300, dinner: 290, snacks: 100 },
-    { name: 'Mo 10', breakfast: 850, lunch: 1000, dinner: 200, snacks: 400 },
-    { name: 'Mo 11', breakfast: 750, lunch: 800, dinner: 181, snacks: 100 },
-    { name: 'Mo 12', breakfast: 600, lunch: 1200, dinner: 500, snacks: 100 },
-    { name: 'Mo 13', breakfast: 1000, lunch: 500, dinner: 100, snacks: 100 },
-]
+const Chart = ({ report }) => {
+    let today_total_calories = 0
+    const data = Object.keys(report)
+        .sort((a, b) => b - a)
+        .map(r => ({
+            name: r > 0 ? r + ' days ago' : 'today',
+            breakfast: report[r].breakfast,
+            lunch: report[r].lunch,
+            dinner: report[r].dinner,
+            snack: report[r].snack,
+        }))
 
-const Chart = props => {
+    if (!isEmpty(report))
+        today_total_calories = Object.keys(report[0]).reduce(
+            (p, c) => p + report[0][c],
+            0
+        )
+
     return (
         <Paper className={style.paper} zDepth={2}>
             <div className={style.alignLeft}>
                 <h3>Calories</h3>
-                <h2>15870</h2>
+                <h2>{today_total_calories.toFixed(2)}</h2>
                 <div>
                     <p>Daily Average: 2267</p>
                     <p>Goal: 2555kcal</p>
@@ -53,4 +63,14 @@ const Chart = props => {
     )
 }
 
-export default Chart
+Chart.propTypes = {
+    report: T.object.isRequired,
+}
+
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ diary }) => ({
+    report: diary.report,
+})
+
+export default connect(mapStateToProps)(Chart)

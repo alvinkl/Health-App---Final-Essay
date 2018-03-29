@@ -40,7 +40,6 @@ export default (state = initial_state, action) => {
                 restaurant: action.restaurant,
                 loading: false,
             }
-
         default:
             return state
     }

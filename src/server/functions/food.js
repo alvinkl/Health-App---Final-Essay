@@ -231,46 +231,98 @@ export const getDiaryReport = async googleID => {
     const [err, data] = await to(Diary.aggregate(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const final_data = data.map(d => {
-        let mt = d.foods.reduce(
-            (prev, curr) => {
-                switch (curr.meal_type) {
-                    case MEAL_TYPE.BREAKFAST:
-                        return {
-                            ...prev,
-                            breakfast: prev.breakfast + curr.calories,
-                        }
-                    case MEAL_TYPE.LUNCH:
-                        return {
-                            ...prev,
-                            lunch: prev.lunch + curr.calories,
-                        }
-                    case MEAL_TYPE.DINNER:
-                        return {
-                            ...prev,
-                            dinner: prev.dinner + curr.calories,
-                        }
-                    case MEAL_TYPE.SNACK:
-                        return {
-                            ...prev,
-                            snack: prev.snack + curr.calories,
-                        }
-                    default:
-                        return prev
+    const final_data = data.reduce(
+        (p, d) => {
+            let mt = d.foods.reduce(
+                (prev, curr) => {
+                    switch (curr.meal_type) {
+                        case MEAL_TYPE.BREAKFAST:
+                            return {
+                                ...prev,
+                                breakfast: prev.breakfast + curr.calories,
+                            }
+                        case MEAL_TYPE.LUNCH:
+                            return {
+                                ...prev,
+                                lunch: prev.lunch + curr.calories,
+                            }
+                        case MEAL_TYPE.DINNER:
+                            return {
+                                ...prev,
+                                dinner: prev.dinner + curr.calories,
+                            }
+                        case MEAL_TYPE.SNACK:
+                            return {
+                                ...prev,
+                                snack: prev.snack + curr.calories,
+                            }
+                        default:
+                            return prev
+                    }
+                },
+                {
+                    breakfast: 0,
+                    lunch: 0,
+                    dinner: 0,
+                    snack: 0,
                 }
-            },
-            {
+            )
+            return {
+                ...p,
+                [d.days_minus]: mt,
+            }
+        },
+        {
+            0: {
                 breakfast: 0,
                 lunch: 0,
                 dinner: 0,
                 snack: 0,
-            }
-        )
-        return {
-            days_minus: d.days_minus,
-            total_calories: mt,
+            },
+            1: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            2: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            3: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            4: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            5: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            6: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
+            7: {
+                breakfast: 0,
+                lunch: 0,
+                dinner: 0,
+                snack: 0,
+            },
         }
-    })
+    )
 
     return Promise.resolve(final_data)
 }

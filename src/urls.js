@@ -7,6 +7,9 @@ export const getFood = '/api/food'
 export const getFoodDiary = '/api/getFoodDiary'
 export const addFoodToDiary = '/api/addFoodToDiary'
 
+// Diary Report
+export const getDiaryReport = '/api/getDiaryReport'
+
 // Suggest Food
 export const getSuggestion = '/api/food/suggest'
 export const getRestaurantSuggestion = '/api/food/suggestRestaurant'

@@ -1,6 +1,7 @@
 import { getFoodDiary, addFoodToDiary } from '@urls'
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
+import parseDate from '@helper/parseDate'
 
 export const FETCH_DIARY = 'FETCH_DIARY'
 export const FAIL_FETCH_DIARY = 'FAIL_FETCH_DIARY'
@@ -8,16 +9,7 @@ export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
 export const SUCCESS_ADD_DIARY = 'SUCCESS_ADD_DIARY'
 export const FAILED_ADD_DIARY = 'FAILED_ADD_DIARY'
 
-const parseDate = (date = Date) => {
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? '0' + month : month
-    const dt = date.getDate()
-
-    return year + '-' + month + '-' + dt
-}
-
-export const fetchTodayDiary = (startDate, endDate) => async dispatch => {
+export const fetchDiary = (startDate, endDate) => async dispatch => {
     const today = new Date()
 
     const query = qs({

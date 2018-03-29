@@ -10,6 +10,7 @@ import {
     getFoodData,
     addFoodToDiary,
     getDiaryFood,
+    getDiaryReport,
     getRestaurantsNearLocation,
     getRestaurantsNearLocationKW,
     getFoodsByKeywords,
@@ -38,6 +39,15 @@ export const handleGetDiaryFood = async (req, res) => {
     if (paramErr) return responseError(res, 400, paramErr)
 
     const [err, diary] = await to(getDiaryFood(googleID, date))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, diary)
+}
+
+export const handleGetDiaryReport = async (req, res) => {
+    const { googleID } = req.user
+
+    const [err, diary] = await to(getDiaryReport(googleID))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, diary)

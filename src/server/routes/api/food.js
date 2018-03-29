@@ -4,6 +4,7 @@ import {
     handleGetDiaryFood,
     handleSuggestFood,
     handleSuggestRestaurant,
+    handleGetDiaryReport,
 } from '@server/handler/api/food'
 
 import { mustAuthenticate } from '../middleware'
@@ -25,4 +26,7 @@ export default function(r) {
     // Food Diary
     r.get(url.getFoodDiary, mustAuthenticate, handleGetDiaryFood)
     r.post(url.addFoodToDiary, mustAuthenticate, handleAddFoodToDiary)
+
+    // Food Report
+    r.get(url.getDiaryReport, mustAuthenticate, handleGetDiaryReport)
 }

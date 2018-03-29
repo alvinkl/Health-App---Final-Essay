@@ -15,7 +15,7 @@ import { Fade } from '@components/Transitions'
 
 import styles from './diary.css'
 
-import { fetchTodayDiary } from '@actions/diary'
+import { fetchDiary } from '@actions/diary'
 
 class Diary extends Component {
     constructor(props) {
@@ -35,14 +35,14 @@ class Diary extends Component {
     }
 
     static initialAction = store => {
-        // store.dispatch(fetchTodayDiary())
+        // store.dispatch(fetchDiary())
     }
 
     componentDidMount() {
-        const { fetchTodayDiary } = this.props
+        const { fetchDiary } = this.props
         const { loading } = this.state
 
-        if (!loading) fetchTodayDiary()
+        if (!loading) fetchDiary()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -102,7 +102,7 @@ class Diary extends Component {
         const show_add_to_diary = !isEmpty(food_nutrition)
         return this.setState({ food_nutrition, show_add_to_diary }, () => {
             showSnackbar('Food added to diary!')
-            if (!show_add_to_diary) this.props.fetchTodayDiary()
+            if (!show_add_to_diary) this.props.fetchDiary()
         })
     }
 
@@ -199,7 +199,7 @@ class Diary extends Component {
 Diary.propTypes = {
     diary: T.object.isRequired,
 
-    fetchTodayDiary: T.func.isRequired,
+    fetchDiary: T.func.isRequired,
     addToDiary: T.func.isRequired,
     showLoader: T.func.isRequired,
     hideLoader: T.func.isRequired,
@@ -215,7 +215,7 @@ const mapStateToProps = ({ diary }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchTodayDiary: () => dispatch(fetchTodayDiary()),
+    fetchDiary: () => dispatch(fetchDiary()),
     addToDiary: event => dispatch(addToDiary(event)),
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),

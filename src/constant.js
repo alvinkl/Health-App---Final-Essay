@@ -44,3 +44,5 @@ export const CUISINE_TYPE = {
     CHINESE: 2,
     WESTERN: 3,
 }
+
+export const ONEDAY = 1000 * 60 * 60 * 24

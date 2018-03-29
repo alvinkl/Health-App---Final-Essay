@@ -29,10 +29,6 @@ const ContentDiary = ({ title, content }) => {
                     </div>
                 </CardText>
             ))}
-            <CardText expandable={true} style={style.addContent}>
-                <div className={styles.floatLeft}>Add {title} Food</div>
-                <div className={styles.floatRight}>+</div>
-            </CardText>
         </Card>
     )
 }

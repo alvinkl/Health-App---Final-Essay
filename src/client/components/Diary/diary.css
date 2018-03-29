@@ -23,3 +23,11 @@
     float: right;
     line-height: 30%;
 }
+
+.addDiaryContainer {
+    padding: 5%;
+}
+
+.foodCard {
+    margin-bottom: 5%;
+}

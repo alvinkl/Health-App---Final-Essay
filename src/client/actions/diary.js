@@ -34,14 +34,16 @@ export const fetchTodayDiary = (startDate, endDate) => async dispatch => {
             credentials: 'same-origin',
         })
     )
-    if (err) return dispatch({ type: FAIL_FETCH_DIARY })
+    if (err) return Promise.reject(dispatch({ type: FAIL_FETCH_DIARY }))
 
     const diary = await data.json()
 
-    dispatch({
-        diary,
-        type: FETCH_DIARY,
-    })
+    return Promise.resolve(
+        dispatch({
+            diary,
+            type: FETCH_DIARY,
+        })
+    )
 }
 
 export const addToDiary = ({
@@ -69,7 +71,11 @@ export const addToDiary = ({
             body: JSON.stringify(post_data),
         })
     )
-    if (err) return dispatch({ type: FAILED_ADD_DIARY })
+    if (err) {
+        dispatch({ type: FAILED_ADD_DIARY })
+        return Promise.reject(err)
+    }
 
-    return dispatch({ type: SUCCESS_ADD_DIARY })
+    dispatch({ type: SUCCESS_ADD_DIARY })
+    return Promise.resolve(data)
 }

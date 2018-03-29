@@ -99,10 +99,11 @@ class Diary extends Component {
             return showSnackbar('Failed to add to diary! Please try again!')
 
         food_nutrition.splice(index, 1)
-        return this.setState(
-            { food_nutrition, show_add_to_diary: !isEmpty(food_nutrition) },
-            () => showSnackbar('Food added to diary!')
-        )
+        const show_add_to_diary = !isEmpty(food_nutrition)
+        return this.setState({ food_nutrition, show_add_to_diary }, () => {
+            showSnackbar('Food added to diary!')
+            if (!show_add_to_diary) this.props.fetchTodayDiary()
+        })
     }
 
     removeFoodFromList = index => {

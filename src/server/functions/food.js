@@ -79,17 +79,17 @@ export const getDiaryFood = async (googleID, date) => {
                 case MEAL_TYPE.LUNCH:
                     return {
                         ...prev,
-                        lunch: [...prev.breakfast, curr],
+                        lunch: [...prev.lunch, curr],
                     }
                 case MEAL_TYPE.DINNER:
                     return {
                         ...prev,
-                        dinner: [...prev.breakfast, curr],
+                        dinner: [...prev.dinner, curr],
                     }
                 case MEAL_TYPE.SNACK:
                     return {
                         ...prev,
-                        snack: [...prev.breakfast, curr],
+                        snack: [...prev.snack, curr],
                     }
                 default:
                     return prev

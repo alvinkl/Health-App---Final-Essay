@@ -160,3 +160,10 @@ export const validateSanitizeSuggestFood = location => {
         },
     ]
 }
+
+// Suggest food with menu
+export const validateSanitizeLatLong = location => {
+    if (!eq(location, locationQueryType)) return ['Location is invalid']
+
+    return [false, location]
+}

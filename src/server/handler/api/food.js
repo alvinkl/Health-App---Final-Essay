@@ -5,6 +5,7 @@ import {
     validateGetDiaryFood,
     validateSanitizeQueryType,
     validateSanitizeSuggestFood,
+    validateSanitizeLatLong,
 } from '@validation/food'
 import {
     getFoodData,
@@ -15,6 +16,7 @@ import {
     getRestaurantsNearLocationKW,
     getFoodsByKeywords,
     extractKeywords,
+    getRestaurantNearby,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
@@ -95,6 +97,22 @@ export const handleSuggestRestaurant = async (req, res) => {
     if (errRes) return responseError(res, errRes.code, errRes.message)
 
     return responseJSON(res, restaurants)
+}
+
+// Suggest Food with Menu
+export const handleGetNearbyRestaurant = async (req, res) => {
+    const [err, location] = validateSanitizeLatLong(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errGetRestaurant, data] = await to(getRestaurantNearby(location))
+    if (errGetRestaurant)
+        return responseError(
+            res,
+            errGetRestaurant.code,
+            errGetRestaurant.message
+        )
+
+    return responseJSON(res, data)
 }
 
 export const handleNotFoundRoute = (req, res) => {

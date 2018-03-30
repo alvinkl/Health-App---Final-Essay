@@ -14,6 +14,7 @@ import generateFood from '@types/food'
 import Diary from '@model/Diary'
 import FoodSuggest from '@model/FoodSuggest'
 import Restaurant from '@model/Restaurant'
+import Menu from '@model/Menu'
 
 import qs from '@helper/queryString'
 
@@ -576,9 +577,30 @@ export const getRestaurantNearby = async location => {
 
     const data = await res.json()
 
+    const restaurant_ids = data.restaurants.map(
+        ({ restaurant: { R } }) => R.res_id
+    )
+
+    const [errDB, menus] = await to(
+        Menu.find(
+            { restaurant_id: { $in: restaurant_ids } },
+            { restaurant_id: 1, menus: 1, _id: 0 }
+        )
+    )
+    if (errDB) return Promise.reject({ code: 500, message: errDB })
+
+    const menus_data = menus.reduce(
+        (p, c) => ({
+            ...p,
+            [c.restaurant_id]: c.menus,
+        }),
+        {}
+    )
+
     const restaurant_data = data.restaurants.map(({ restaurant }) => ({
         restaurant_id: restaurant.R.res_id,
         name: restaurant.name,
+        menus: menus_data[restaurant.R.res_id] || [],
         cuisines: restaurant.cuisines,
         lat: restaurant.location.latitude,
         lon: restaurant.location.longitude,

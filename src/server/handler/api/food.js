@@ -103,10 +103,12 @@ export const handleSuggestRestaurant = async (req, res) => {
 
 // Suggest Food with Menu
 export const handleGetNearbyRestaurant = async (req, res) => {
-    const [err, location] = validateSanitizeLatLong(req.query)
+    const [err, param] = validateSanitizeLatLong(req.query)
     if (err) return responseError(res, 400, err)
 
-    const [errGetRestaurant, data] = await to(getRestaurantNearby(location))
+    const [errGetRestaurant, data] = await to(
+        getRestaurantNearby(param.location)
+    )
     if (errGetRestaurant)
         return responseError(
             res,
@@ -114,7 +116,17 @@ export const handleGetNearbyRestaurant = async (req, res) => {
             errGetRestaurant.message
         )
 
-    return responseJSON(res, data)
+    if (!param.cuisine) return responseJSON(res, data)
+
+    const groupBycuisine = data.reduce(
+        (prev, curr) => ({
+            ...prev,
+            [curr.cuisines]: (prev[curr.cuisines] || []).concat(curr),
+        }),
+        {}
+    )
+
+    return responseJSON(res, groupBycuisine)
 }
 
 export const handleGetMenusFromRestaurant = async (req, res) => {

@@ -162,10 +162,25 @@ export const validateSanitizeSuggestFood = location => {
 }
 
 // Suggest food with menu
-export const validateSanitizeLatLong = location => {
-    if (!eq(location, locationQueryType)) return ['Location is invalid']
+const nearbyRestaurantType = {
+    lon: 0,
+    lat: 0,
+    cuisine: 0,
+}
 
-    return [false, location]
+export const validateSanitizeLatLong = query => {
+    if (!eq(query, nearbyRestaurantType)) return ['Location is invalid']
+
+    return [
+        false,
+        {
+            location: {
+                lon: query.lon,
+                lat: query.lat,
+            },
+            cuisine: query.cuisine,
+        },
+    ]
 }
 
 const restaurantIdsType = {

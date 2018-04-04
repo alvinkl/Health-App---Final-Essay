@@ -3,6 +3,8 @@ import {
     FETCHING_SUGGEST,
     FAILED_FETCH_SUGGEST,
     FETCHED_SUGGEST_RESTAURANT,
+    FETCHED_RESTAURANT_NEARBY,
+    FETCHED_MENUS,
 } from '@actions/suggestFood'
 
 export const initial_state = {
@@ -10,6 +12,11 @@ export const initial_state = {
     restaurant: [],
     loading: false,
     error: false,
+
+    // food suggest menus
+    restaurant_nearby: {},
+    cuisines: [],
+    menus: {},
 }
 
 export default (state = initial_state, action) => {
@@ -39,6 +46,21 @@ export default (state = initial_state, action) => {
                 ...state,
                 restaurant: action.restaurant,
                 loading: false,
+            }
+        case FETCHED_RESTAURANT_NEARBY:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                restaurant_nearby: action.restaurant_nearby,
+                cuisines: action.cuisines,
+            }
+        case FETCHED_MENUS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                menus: action.menus,
             }
         default:
             return state

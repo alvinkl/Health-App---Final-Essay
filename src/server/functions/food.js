@@ -572,35 +572,22 @@ export const getRestaurantNearby = async location => {
         Accept: 'application/json',
     }
 
+    console.log('[Fetch] Zomato for Nearby Restaurant')
     const [err, res] = await to(fetch(url + query, { headers, method: 'GET' }))
-    if (err) return Promise.reject({ code: 503, message: err })
+    if (err) {
+        console.error('[Failed] [Fetch] Zomato for Nearby Restaurant')
+        return Promise.reject({ code: 503, message: err })
+    }
 
     const data = await res.json()
 
-    const restaurant_ids = data.restaurants.map(
-        ({ restaurant: { R } }) => R.res_id
-    )
-
-    const [errDB, menus] = await to(
-        Menu.find(
-            { restaurant_id: { $in: restaurant_ids } },
-            { restaurant_id: 1, menus: 1, _id: 0 }
-        )
-    )
-    if (errDB) return Promise.reject({ code: 500, message: errDB })
-
-    const menus_data = menus.reduce(
-        (p, c) => ({
-            ...p,
-            [c.restaurant_id]: c.menus,
-        }),
-        {}
-    )
+    // const restaurant_ids = data.restaurants.map(
+    //     ({ restaurant: { R } }) => R.res_id
+    // )
 
     const restaurant_data = data.restaurants.map(({ restaurant }) => ({
         restaurant_id: restaurant.R.res_id,
         name: restaurant.name,
-        menus: menus_data[restaurant.R.res_id] || [],
         cuisines: restaurant.cuisines,
         lat: restaurant.location.latitude,
         lon: restaurant.location.longitude,
@@ -614,4 +601,50 @@ export const getRestaurantNearby = async location => {
     }))
 
     return Promise.resolve(restaurant_data)
+}
+
+export const getMenusFromRestaurant = async restaurant_ids => {
+    const query = [
+        {
+            $match: { restaurant_id: { $in: restaurant_ids } },
+        },
+        {
+            $unwind: '$menus',
+        },
+        {
+            $match: {
+                'menus.nutritions.calories': {
+                    $gte: 500,
+                },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                restaurant_id: 1,
+                name: '$menus.name',
+                serving_size: '$menus.serving_size',
+                unit: '$menus.unit',
+                nutritions: '$menus.nutritions',
+            },
+        },
+    ]
+
+    const [err, menus] = await to(Menu.aggregate(query))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    const map_menus = menus.reduce(
+        (prev, curr) => ({
+            ...prev,
+            [curr.restaurant_id]: (prev[curr.restaurant_id] || []).concat({
+                name: curr.name,
+                serving_size: curr.serving_size,
+                unit: curr.unit,
+                nutritions: curr.nutritions,
+            }),
+        }),
+        {}
+    )
+
+    return Promise.resolve(map_menus)
 }

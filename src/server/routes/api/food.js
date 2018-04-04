@@ -6,6 +6,7 @@ import {
     handleSuggestRestaurant,
     handleGetDiaryReport,
     handleGetNearbyRestaurant,
+    handleGetMenusFromRestaurant,
 } from '@server/handler/api/food'
 
 import { mustAuthenticate } from '../middleware'
@@ -25,6 +26,11 @@ export default function(r) {
 
     // Sugget Food with Menu
     r.get(url.getNearbyRestaurant, mustAuthenticate, handleGetNearbyRestaurant)
+    r.get(
+        url.getMenusFromRestaurant,
+        mustAuthenticate,
+        handleGetMenusFromRestaurant
+    )
 
     // r.get(url.getFoodByKeywords, mustAuthenticate, handleSuggestFood)
 

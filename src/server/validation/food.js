@@ -167,3 +167,24 @@ export const validateSanitizeLatLong = location => {
 
     return [false, location]
 }
+
+const restaurantIdsType = {
+    restaurant_ids: '',
+}
+
+export const validateSanitizeRestaurantIds = query => {
+    if (!eq(query, restaurantIdsType)) return ['restaurant_ids is required']
+
+    const { restaurant_ids } = query
+    if (!restaurant_ids.length) return ['restaurant_ids is invalid']
+
+    let r_ids = []
+
+    try {
+        r_ids = restaurant_ids.split(',').map(id => parseInt(id))
+    } catch (err) {
+        return ['restaurant_ids is invalid']
+    }
+
+    return [false, r_ids]
+}

@@ -6,6 +6,7 @@ import {
     validateSanitizeQueryType,
     validateSanitizeSuggestFood,
     validateSanitizeLatLong,
+    validateSanitizeRestaurantIds,
 } from '@validation/food'
 import {
     getFoodData,
@@ -17,6 +18,7 @@ import {
     getFoodsByKeywords,
     extractKeywords,
     getRestaurantNearby,
+    getMenusFromRestaurant,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
@@ -113,6 +115,19 @@ export const handleGetNearbyRestaurant = async (req, res) => {
         )
 
     return responseJSON(res, data)
+}
+
+export const handleGetMenusFromRestaurant = async (req, res) => {
+    const [err, restaurant_ids] = validateSanitizeRestaurantIds(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errGetMenus, menus] = await to(
+        getMenusFromRestaurant(restaurant_ids)
+    )
+    if (errGetMenus)
+        return responseError(res, errGetMenus.code, errGetMenus.message)
+
+    return responseJSON(res, menus)
 }
 
 export const handleNotFoundRoute = (req, res) => {

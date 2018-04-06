@@ -633,18 +633,18 @@ export const getMenusFromRestaurant = async restaurant_ids => {
     const [err, menus] = await to(Menu.aggregate(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const map_menus = menus.reduce(
-        (prev, curr) => ({
-            ...prev,
-            [curr.restaurant_id]: (prev[curr.restaurant_id] || []).concat({
-                name: curr.name,
-                serving_size: curr.serving_size,
-                unit: curr.unit,
-                nutritions: curr.nutritions,
-            }),
-        }),
-        {}
-    )
+    // const map_menus = menus.reduce(
+    //     (prev, curr) => ({
+    //         ...prev,
+    //         [curr.restaurant_id]: (prev[curr.restaurant_id] || []).concat({
+    //             name: curr.name,
+    //             serving_size: curr.serving_size,
+    //             unit: curr.unit,
+    //             nutritions: curr.nutritions,
+    //         }),
+    //     }),
+    //     {}
+    // )
 
-    return Promise.resolve(map_menus)
+    return Promise.resolve(menus)
 }

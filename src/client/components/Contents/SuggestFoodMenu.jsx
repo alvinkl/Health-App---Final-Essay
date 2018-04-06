@@ -44,7 +44,6 @@ export class SuggestFood extends Component {
         step: 0,
         cuisine: '',
         food: {},
-        restaurant: '',
     }
 
     handleSuggestFoodClick = () => {
@@ -71,14 +70,17 @@ export class SuggestFood extends Component {
         await fetchMenuFromRestaurant(restaurant_ids)
 
         return this.setState({
+            cuisine,
             step: this.state.step + 1,
         })
     }
 
     handleSelectedFood = e => {
+        const data = JSON.parse(e.target.value)
+
         this.setState(
             {
-                food: JSON.parse(e.target.value),
+                food: data,
                 step: this.state.step + 1,
             },
             () => {
@@ -91,23 +93,22 @@ export class SuggestFood extends Component {
         )
     }
 
-    handleSelectedRestaurant = e => {
-        this.setState({
-            restaurant: JSON.parse(e.target.value),
-            step: this.state.step + 1,
-        })
-    }
-
-    handleAddToDiary = () => {
-        const { food: { food_name, nutrition } } = this.state
+    handleAddToDiary = meal_type => {
+        const {
+            food: {
+                name: food_name,
+                nutritions: nutrition,
+                serving_size: quantity,
+            },
+        } = this.state
         const { addToDiary, showSnackbar } = this.props
 
         const data = {
             food_name,
             nutrition,
             total_weight: 1,
-            quantity: 1,
-            meal_type: 1,
+            quantity,
+            meal_type,
         }
 
         showSnackbar('Added to diary')
@@ -120,7 +121,6 @@ export class SuggestFood extends Component {
             suggestFood: { cuisines, restaurant_nearby, menus },
         } = this.props
 
-        console.log(menus)
         switch (step) {
             case 0:
                 return (
@@ -154,16 +154,17 @@ export class SuggestFood extends Component {
                 )
             }
             case 2: {
-                const dt = Object.keys(menus).reduce(
-                    (prev, curr) => [...prev, ...menus[curr]],
-                    []
-                )
+                // const dt = Object.keys(menus).reduce(
+                //     (prev, curr) => [...prev, ...menus[curr]],
+                //     []
+                // )
+
                 return (
                     <RadioButtonGroup
                         name="cuisine-food"
                         onChange={this.handleSelectedFood}
                     >
-                        {dt.map((key, i) => (
+                        {menus.map((key, i) => (
                             <RadioButton
                                 key={i}
                                 className={styles.radio}
@@ -179,35 +180,19 @@ export class SuggestFood extends Component {
                     </RadioButtonGroup>
                 )
             }
-            // case 3: {
-            //     return (
-            //         <RadioButtonGroup
-            //             name="restaurant"
-            //             onChange={this.handleSelectedRestaurant}
-            //         >
-            //             {restaurant.map((r, i) => (
-            //                 <RadioButton
-            //                     key={i}
-            //                     className={styles.radio}
-            //                     value={JSON.stringify(r)}
-            //                     label={r.name}
-            //                     checkedIcon={checkedIcon}
-            //                     uncheckedIcon={uncheckedIcon}
-            //                     iconStyle={style.iconStyle}
-            //                     inputStyle={style.colorWhite}
-            //                     labelStyle={style.labelStyle}
-            //                 />
-            //             ))}
-            //         </RadioButtonGroup>
-            //     )
-            // }
-            case 4:
+            case 3: {
+                const { cuisine, food } = this.state
+                const restaurant = restaurant_nearby[cuisine].find(
+                    r => r.restaurant_id === food.restaurant_id
+                )
+
                 return (
                     <DisplayRestaurantLocation
                         handleAddToDiary={this.handleAddToDiary}
-                        restaurant={this.state.restaurant}
+                        restaurant={restaurant}
                     />
                 )
+            }
             default:
                 return
         }
@@ -220,7 +205,9 @@ export class SuggestFood extends Component {
 
         return (
             <Paper className={styles.suggestFood} zDepth={3} id="suggest-food">
-                {loading && <CircularProgress size={30} />}
+                {loading && (
+                    <CircularProgress className={styles.loader} size={30} />
+                )}
                 {!loading && this.renderStep(step)}
             </Paper>
         )
@@ -231,6 +218,7 @@ SuggestFood.propTypes = {
     suggestFood: T.shape({
         cuisines: T.array,
         restaurant_nearby: T.object,
+        menus: T.array,
         loading: T.bool,
         error: T.bool,
     }).isRequired,

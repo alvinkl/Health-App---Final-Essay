@@ -16,7 +16,7 @@ export const initial_state = {
     // food suggest menus
     restaurant_nearby: {},
     cuisines: [],
-    menus: {},
+    menus: [],
 }
 
 export default (state = initial_state, action) => {

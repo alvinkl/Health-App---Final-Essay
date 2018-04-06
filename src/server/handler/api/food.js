@@ -5,6 +5,8 @@ import {
     validateGetDiaryFood,
     validateSanitizeQueryType,
     validateSanitizeSuggestFood,
+    validateSanitizeLatLong,
+    validateSanitizeRestaurantIds,
 } from '@validation/food'
 import {
     getFoodData,
@@ -15,6 +17,8 @@ import {
     getRestaurantsNearLocationKW,
     getFoodsByKeywords,
     extractKeywords,
+    getRestaurantNearby,
+    getMenusFromRestaurant,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
@@ -95,6 +99,47 @@ export const handleSuggestRestaurant = async (req, res) => {
     if (errRes) return responseError(res, errRes.code, errRes.message)
 
     return responseJSON(res, restaurants)
+}
+
+// Suggest Food with Menu
+export const handleGetNearbyRestaurant = async (req, res) => {
+    const [err, param] = validateSanitizeLatLong(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errGetRestaurant, data] = await to(
+        getRestaurantNearby(param.location)
+    )
+    if (errGetRestaurant)
+        return responseError(
+            res,
+            errGetRestaurant.code,
+            errGetRestaurant.message
+        )
+
+    if (!param.cuisine) return responseJSON(res, data)
+
+    const groupBycuisine = data.reduce(
+        (prev, curr) => ({
+            ...prev,
+            [curr.cuisines]: (prev[curr.cuisines] || []).concat(curr),
+        }),
+        {}
+    )
+
+    return responseJSON(res, groupBycuisine)
+}
+
+export const handleGetMenusFromRestaurant = async (req, res) => {
+    const [err, restaurant_ids] = validateSanitizeRestaurantIds(req.query)
+    if (err) return responseError(res, 400, err)
+
+    const [errGetMenus, menus] = await to(
+        getMenusFromRestaurant(restaurant_ids)
+    )
+    if (errGetMenus)
+        return responseError(res, errGetMenus.code, errGetMenus.message)
+
+    return responseJSON(res, menus)
 }
 
 export const handleNotFoundRoute = (req, res) => {

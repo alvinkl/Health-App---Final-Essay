@@ -160,3 +160,46 @@ export const validateSanitizeSuggestFood = location => {
         },
     ]
 }
+
+// Suggest food with menu
+const nearbyRestaurantType = {
+    lon: 0,
+    lat: 0,
+    cuisine: 0,
+}
+
+export const validateSanitizeLatLong = query => {
+    if (!eq(query, nearbyRestaurantType)) return ['Location is invalid']
+
+    return [
+        false,
+        {
+            location: {
+                lon: query.lon,
+                lat: query.lat,
+            },
+            cuisine: query.cuisine,
+        },
+    ]
+}
+
+const restaurantIdsType = {
+    restaurant_ids: '',
+}
+
+export const validateSanitizeRestaurantIds = query => {
+    if (!eq(query, restaurantIdsType)) return ['restaurant_ids is required']
+
+    const { restaurant_ids } = query
+    if (!restaurant_ids.length) return ['restaurant_ids is invalid']
+
+    let r_ids = []
+
+    try {
+        r_ids = restaurant_ids.split(',').map(id => parseInt(id))
+    } catch (err) {
+        return ['restaurant_ids is invalid']
+    }
+
+    return [false, r_ids]
+}

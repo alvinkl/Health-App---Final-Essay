@@ -26,6 +26,10 @@
     /* text-align: center; */
 }
 
+.suggestFood .loader {
+    left: 45%;
+}
+
 .suggestFood .buttonSuggest {
     width: 85vw;
 }

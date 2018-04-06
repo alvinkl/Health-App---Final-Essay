@@ -1,0 +1,115 @@
+{
+    "restaurant_id": 18312881,
+    "menus": [
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Biasa Polos",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 500,
+                "fat": 0,
+                "carbohydrate": 50,
+                "protein": 10
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Pangsit",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 550,
+                "fat": 5,
+                "carbohydrate": 60,
+                "protein": 15
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Bakso",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 550,
+                "fat": 9,
+                "carbohydrate": 49,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam + Pangsit + Bakso",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 650,
+                "fat": 14,
+                "carbohydrate": 70,
+                "protein": 20
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Jumbo Polos",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 700,
+                "fat": 2,
+                "carbohydrate": 65,
+                "protein": 13
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Jumbo Pangsit",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 750,
+                "fat": 8,
+                "carbohydrate": 70,
+                "protein": 17
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Jumbo Bakso",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 780,
+                "fat": 13,
+                "carbohydrate": 60,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Bakmi Keriting/Lebar Ayam Jumbo + Pangsit + Bakso",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 800,
+                "fat": 18,
+                "carbohydrate": 90,
+                "protein": 24
+            }
+        },
+        {
+            "name": "Bakso Kuah Isi 6",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 120,
+                "fat": 6,
+                "carbohydrate": 11,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Pangsit Rebus isi 6",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 140,
+                "fat": 10,
+                "carbohydrate": 17,
+                "protein": 8
+            }
+        }
+    ]
+}

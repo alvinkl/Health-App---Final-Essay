@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
 import SuggestFood from './SuggestFood/SuggestFoodMenu'
+import Feeds from './Feeds'
 
 import { fetchUserData } from '@actions/user'
 // import styles from './contents.css'
@@ -30,6 +31,7 @@ class Contents extends Component {
             <Fragment>
                 <ContentHeader />
                 <SuggestFood />
+                <Feeds />
             </Fragment>
         )
     }

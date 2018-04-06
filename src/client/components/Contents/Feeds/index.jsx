@@ -8,29 +8,12 @@ import {
     CardHeader,
     CardMedia,
     CardTitle,
-    CardText,
     CardActions,
 } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
 
-const dt = Array.apply(null, { length: 5 }).map((_, id) => ({
-    post_id: id,
-    title: 'Yummy Veggie',
-    subtitle: 'Easy to make Yummy Veggie',
-    image:
-        'https://drop.ndtv.com/albums/COOKS/corngallery/creolespicedcornthumb_640x480.jpg',
-    likes: 50,
-
-    user: {
-        username: 'alvinkl',
-        tags: ['healthy', 'veggie'],
-        avatar:
-            'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
-    },
-}))
-
-const Feeds = props => {
-    return dt.map((d, i) => (
+const Feeds = ({ loading, error, feeds }) => {
+    return feeds.map((d, i) => (
         <Card
             key={d.post_id}
             className={styles.feedCards}
@@ -39,7 +22,7 @@ const Feeds = props => {
         >
             <CardHeader
                 title={d.user.username}
-                subtitle={d.user.tags.join(', ')}
+                subtitle={d.create_time}
                 avatar={d.user.avatar}
                 showExpandableButton={false}
             />
@@ -56,6 +39,14 @@ const Feeds = props => {
     ))
 }
 
-Feeds.propTypes = {}
+Feeds.propTypes = {
+    loading: T.bool.isRequired,
+    error: T.bool.isRequired,
+    feeds: T.array.isRequired,
+}
 
-export default Feeds
+import { connect } from 'react-redux'
+
+const mapStateToProps = ({ feeds }) => ({ ...feeds })
+
+export default connect(mapStateToProps)(Feeds)

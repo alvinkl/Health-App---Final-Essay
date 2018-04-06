@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import to from '@helper/asyncAwait'
 
 import Feeds from '@model/Feeds'
@@ -37,6 +39,7 @@ export const getFeeds = async (page = 0) => {
         image: d.image,
         likes: d.likes,
         user: users.find(u => u._id === d.user_id),
+        create_time: moment(d.create_time).fromNow(),
     }))
 
     return Promise.resolve(feeds_data)

@@ -19,6 +19,10 @@ export const getRestaurantSuggestion = '/api/food/suggestRestaurant'
 export const getNearbyRestaurant = '/api/food/getNearbyRestaurant'
 export const getMenusFromRestaurant = '/api/food/getMenusFromRestaurant'
 
+// feeds
+export const getFeeds = '/api/feeds/get'
+export const addFeed = '/api/feeds/add'
+
 // auth
 export const authGoogle = '/auth/google'
 export const authLogout = '/auth/logout'

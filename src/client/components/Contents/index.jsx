@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash'
 import ContentHeader from './ContentHeader'
 import SuggestFood from './SuggestFood/SuggestFoodMenu'
 import Feeds from './Feeds'
+import CameraModule from './Feeds/CameraModule'
 
 import { fetchUserData } from '@actions/user'
 import { fetchFeed } from '@actions/feeds'
@@ -13,6 +14,7 @@ import { fetchFeed } from '@actions/feeds'
 class Contents extends Component {
     state = {
         page: 1,
+        capture_photo: false,
     }
 
     static initialAction = store => {
@@ -29,10 +31,12 @@ class Contents extends Component {
     }
 
     render() {
+        const { capture_photo } = this.state
         return (
             <Fragment>
                 <ContentHeader />
                 <SuggestFood />
+                {capture_photo && <CameraModule />}
                 <Feeds />
             </Fragment>
         )

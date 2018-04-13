@@ -1,5 +1,23 @@
 import m from 'mongoose'
 
+const locationSchema = m.Schema(
+    {
+        lat: {
+            type: Number,
+            required: true,
+        },
+        lon: {
+            type: Number,
+            required: true,
+        },
+        address: {
+            type: String,
+            required: true,
+        },
+    },
+    { _id: 0 }
+)
+
 const feedSchema = m.Schema({
     title: {
         type: String,
@@ -17,6 +35,8 @@ const feedSchema = m.Schema({
         required: true,
         default: 0,
     },
+
+    location: locationSchema,
 
     user_id: {
         type: String,

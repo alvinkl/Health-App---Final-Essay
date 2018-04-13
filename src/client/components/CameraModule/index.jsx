@@ -26,6 +26,9 @@ class CameraModule extends Component {
     state = {
         picture: null,
 
+        title: '',
+        subtitle: '',
+
         location: null,
         address: '',
 
@@ -46,6 +49,46 @@ class CameraModule extends Component {
             document.querySelector('body').style.overflowY = 'scroll'
             this.turnOffCamera()
         }
+    }
+
+    fetchLocationName = async (lat, lon) => {
+        const url = getLocationName
+        const query = qs({
+            lat,
+            lon,
+        })
+
+        const [, res] = await to(
+            fetch(url + query, {
+                method: 'GET',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                credentials: 'same-origin',
+            })
+        )
+
+        if (!res) return ''
+
+        const { address } = await res.json()
+
+        return address
+    }
+
+    handleSubmitData = () => {
+        const { addFeedData } = this.props
+        const { title, subtitle, location, address, picture } = this.state
+
+        addFeedData({
+            title,
+            subtitle,
+            location,
+            address,
+            image:
+                'https://drop.ndtv.com/albums/COOKS/corngallery/creolespicedcornthumb_640x480.jpg',
+        })
+
+        this.handleClose()
     }
 
     initializeMedia = async () => {
@@ -98,30 +141,6 @@ class CameraModule extends Component {
         this.setState({ picture })
     }
 
-    fetchLocationName = async (lat, lon) => {
-        const url = getLocationName
-        const query = qs({
-            lat,
-            lon,
-        })
-
-        const [, res] = await to(
-            fetch(url + query, {
-                method: 'GET',
-                headers: {
-                    'content-type': 'application/json',
-                },
-                credentials: 'same-origin',
-            })
-        )
-
-        if (!res) return ''
-
-        const { address } = await res.json()
-
-        return address
-    }
-
     getCurrentLocation = () => {
         if (!('geolocation' in window.navigator)) return
 
@@ -148,14 +167,31 @@ class CameraModule extends Component {
                     address,
                 })
             },
-            error => {
+            async error => {
+                // Mock Location for testing purpose
+                let location = {
+                    lon: 106.7807473,
+                    lat: -6.2018556,
+                }
+
+                const address = await this.fetchLocationName(
+                    location.lat,
+                    location.lon
+                )
+
                 this.setState({
                     loading_location: false,
-                    error_location: true,
-                    location: null,
+                    location,
+                    address,
                 })
+
+                // this.setState({
+                //     loading_location: false,
+                //     error_location: true,
+                //     location: null,
+                // })
             },
-            { timeout: 60000, enableHighAccuracy: true, maximumAge: Infinity }
+            { timeout: 5000, enableHighAccuracy: true, maximumAge: Infinity }
         )
     }
 
@@ -195,6 +231,9 @@ class CameraModule extends Component {
         this.setState({
             picture: null,
 
+            title: '',
+            subtitle: '',
+
             location: null,
             address: '',
 
@@ -204,6 +243,9 @@ class CameraModule extends Component {
             error: false,
         })
     }
+
+    handleTitleChange = e => this.setState({ title: e.target.value })
+    handleSubtitleChange = e => this.setState({ subtitle: e.target.value })
 
     render() {
         const {
@@ -244,8 +286,14 @@ class CameraModule extends Component {
                 </IconButton>
 
                 <div className={styles.cmTextFields}>
-                    <TextField floatingLabelText="Title" />
-                    <TextField floatingLabelText="Subtitle" />
+                    <TextField
+                        floatingLabelText="Title"
+                        onChange={this.handleTitleChange}
+                    />
+                    <TextField
+                        floatingLabelText="Subtitle"
+                        onChange={this.handleSubtitleChange}
+                    />
                 </div>
 
                 {!loading_location &&
@@ -281,7 +329,11 @@ class CameraModule extends Component {
                         label="Cancel"
                         onClick={this.handleClose}
                     />
-                    <FlatButton primary={true} label="Post" />
+                    <FlatButton
+                        primary={true}
+                        onClick={this.handleSubmitData}
+                        label="Post"
+                    />
                 </div>
             </div>
         )
@@ -292,11 +344,12 @@ CameraModule.propTypes = {
     camera_module: T.bool.isRequired,
 
     hideCameraModule: T.func.isRequired,
+    addFeedData: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
-
 import { hideCameraModule } from '@actions/common'
+import { addFeedData } from '@actions/feeds'
 
 const mapStateToProps = ({ common: { camera_module } }) => ({
     camera_module,
@@ -304,6 +357,7 @@ const mapStateToProps = ({ common: { camera_module } }) => ({
 
 const mapDispatchToProps = dispatch => ({
     hideCameraModule: () => dispatch(hideCameraModule()),
+    addFeedData: event => dispatch(addFeedData(event)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CameraModule)

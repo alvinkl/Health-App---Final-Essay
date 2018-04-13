@@ -58,7 +58,34 @@ export const insertNewFeed = async (googleID, data) => {
     const [err] = await to(newFeeds.save())
     if (err) return Promise.reject({ code: 500, message: err })
 
-    return Promise.resolve(newFeeds)
+    const [errUser, user] = await to(
+        User.findOne(
+            { googleID },
+            { _id: 0, name: 1, profile_img: 1, googleID: 1 }
+        )
+    )
+
+    let userData = {}
+
+    if (errUser) userData = null
+    else
+        userData = {
+            _id: user.googleID,
+            username: user.name,
+            avatar: user.profile_img,
+        }
+
+    const dt = {
+        post_id: newFeeds._id,
+        title: newFeeds.title,
+        subtitle: newFeeds.subtitle,
+        image: newFeeds.image,
+        user: userData,
+        create_time: moment(newFeeds.create_time).fromNow(),
+        like: newFeeds.like,
+    }
+
+    return Promise.resolve(dt)
 }
 
 export const getLocationName = async (lat, lon) => {

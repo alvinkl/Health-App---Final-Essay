@@ -1,0 +1,25 @@
+.cameraModule {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;    
+    background-color: white;
+}
+
+.cmVideo {
+    width: 100%;
+}
+
+.cmCanvas {
+    width: 100%;
+}
+
+.cmButtonCapture {
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.cmTextFields {
+    text-align: center;
+}

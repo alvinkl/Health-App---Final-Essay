@@ -22,6 +22,7 @@ export const getMenusFromRestaurant = '/api/food/getMenusFromRestaurant'
 // feeds
 export const getFeeds = '/api/feeds/get'
 export const addFeed = '/api/feeds/add'
+export const getLocationName = '/api/feeds/getLocationName'
 
 // auth
 export const authGoogle = '/auth/google'

@@ -1,6 +1,10 @@
 import moment from 'moment'
 
+import { googleMaps } from '@config/urls'
+import { GoogleGeocodingAPIKey } from '@config/keys'
+
 import to from '@helper/asyncAwait'
+import qs from '@helper/queryString'
 
 import Feeds from '@model/Feeds'
 import User from '@model/User'
@@ -55,4 +59,33 @@ export const insertNewFeed = async (googleID, data) => {
     if (err) return Promise.reject({ code: 500, message: err })
 
     return Promise.resolve(newFeeds)
+}
+
+export const getLocationName = async (lat, lon) => {
+    const url = googleMaps.getLocationName
+    const query = qs({
+        key: GoogleGeocodingAPIKey,
+        latlng: lat + ',' + lon,
+        result_type: [
+            // 'postal_code',
+            // 'neighborhood',
+            // 'country',
+            'street_address',
+        ].join('|'),
+    })
+
+    const [err, res] = await to(
+        fetch(url + query, {
+            headers: {
+                'content-type': 'application/json',
+            },
+        })
+    )
+    if (err) return Promise.reject({ code: 503, message: err })
+
+    const data = await res.json()
+
+    const address = data.results[0] ? data.results[0].formatted_address : ''
+
+    return Promise.resolve({ address })
 }

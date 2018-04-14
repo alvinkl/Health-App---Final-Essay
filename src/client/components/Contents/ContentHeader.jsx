@@ -68,7 +68,7 @@ const ContentHeader = ({ user, today_total_calories, showCameraModule }) => {
                                 &#xE56C;
                             </FontIcon>
                             &nbsp;{today_total_calories} / {target_calories}
-                            calories
+                            &nbsp;calories
                         </Chip>
                         <Chip style={style.smallChip}>
                             <FontIcon

@@ -46,3 +46,7 @@ export const CUISINE_TYPE = {
 }
 
 export const ONEDAY = 1000 * 60 * 60 * 24
+
+// Like status
+export const LIKE = 1
+export const UNLIKE = 0

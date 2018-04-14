@@ -5,7 +5,12 @@ import {
     ADD_FEED,
     FAILED_ADD_FEED,
     FEED_ADDED,
+    TOGGLE_LIKE_FEED,
+    FAILED_TOGGLE_LIKE_FEED,
+    FEED_LIKED,
+    FEED_UNLIKED,
 } from '@actions/feeds'
+import { LIKE, UNLIKE } from '@constant'
 
 export const initial_state = {
     loading: false,
@@ -64,7 +69,30 @@ export default (state = initial_state, action) => {
                 ...state,
                 feeds: [action.feed, ...state.feeds],
             }
+        case FEED_LIKED: {
+            const feeds = state.feeds
 
+            const fd = feeds.find(f => f.post_id === action.post_id)
+            fd.likes = action.total_likes
+            fd.status = LIKE
+
+            return {
+                ...state,
+                feeds,
+            }
+        }
+        case FEED_UNLIKED: {
+            const feeds = state.feeds
+
+            const fd = feeds.find(f => f.post_id === action.post_id)
+            fd.likes = action.total_likes
+            fd.status = UNLIKE
+
+            return {
+                ...state,
+                feeds,
+            }
+        }
         default:
             return state
     }

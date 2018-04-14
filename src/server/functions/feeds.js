@@ -2,6 +2,7 @@ import moment from 'moment'
 
 import { googleMaps } from '@config/urls'
 import { GoogleGeocodingAPIKey } from '@config/keys'
+import { LIKE, UNLIKE } from '@constant'
 
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
@@ -115,7 +116,7 @@ export const toggleLike = async (googleID, post_id) => {
 
     return Promise.resolve({
         total_likes: newLikes,
-        status: newLikes > oldLikes ? 1 : 0,
+        status: newLikes > oldLikes ? LIKE : UNLIKE,
     })
 }
 

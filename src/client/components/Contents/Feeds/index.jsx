@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 
-
 import styles from './feeds.css'
 
 import {
@@ -9,11 +8,14 @@ import {
     CardHeader,
     CardMedia,
     CardTitle,
+    CardText,
     CardActions,
 } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
+import FontIcon from 'material-ui/FontIcon'
 
-const Feeds = ({ loading, error, feeds }) => {
+const Feeds = ({ loading, error, feeds, toggleLike }) => {
+    console.log(feeds)
     return feeds.map((d, i) => (
         <Card
             key={d.post_id}
@@ -34,7 +36,16 @@ const Feeds = ({ loading, error, feeds }) => {
                 <img src={d.image} alt="" />
             </CardMedia>
             <CardActions className={styles.buttonsAlignRight}>
-                <FlatButton label="Like" />
+                <FlatButton
+                    label={
+                        d.status
+                            ? 'You and ' + d.likes + ' people like this!'
+                            : d.likes + ' people liked this, ' + 'Like'
+                    }
+                    primary={!d.status}
+                    secondary={d.status}
+                    onClick={toggleLike.bind(null, d.post_id)}
+                />
             </CardActions>
         </Card>
     ))
@@ -44,10 +55,16 @@ Feeds.propTypes = {
     loading: T.bool.isRequired,
     error: T.bool.isRequired,
     feeds: T.array.isRequired,
+
+    toggleLike: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
+import { toggleLike } from '@actions/feeds'
 
 const mapStateToProps = ({ feeds }) => ({ ...feeds })
+const mapDispatchToProps = dispatch => ({
+    toggleLike: event => dispatch(toggleLike(event)),
+})
 
-export default connect(mapStateToProps)(Feeds)
+export default connect(mapStateToProps, mapDispatchToProps)(Feeds)

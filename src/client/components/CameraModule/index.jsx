@@ -76,8 +76,16 @@ class CameraModule extends Component {
     }
 
     handleSubmitData = async () => {
-        const { addFeedData, user_id } = this.props
+        const {
+            addFeedData,
+            user_id,
+            showLoader,
+            hideLoader,
+            showSnackbar,
+        } = this.props
         const { title, subtitle, location, address, picture } = this.state
+
+        showLoader()
 
         const picture_name =
             Date.parse(new Date()) / 1000 + '-' + user_id + '.png'
@@ -86,7 +94,15 @@ class CameraModule extends Component {
         postData.append('file', picture, picture_name)
 
         // testing upload image
-        const res = await fetch(postImage, { method: 'POST', body: postData })
+        const [err, res] = await to(
+            fetch(postImage, { method: 'POST', body: postData })
+        )
+        if (err) {
+            hideLoader()
+            showSnackbar('Failed to add new post, please try again!')
+            return
+        }
+
         const { image } = await res.json()
 
         addFeedData({
@@ -98,6 +114,8 @@ class CameraModule extends Component {
         })
 
         this.handleClose()
+        hideLoader()
+        showSnackbar('New post added!')
     }
 
     initializeMedia = async () => {
@@ -355,11 +373,19 @@ CameraModule.propTypes = {
     user_id: T.string.isRequired,
 
     hideCameraModule: T.func.isRequired,
+    showLoader: T.func.isRequired,
+    hideLoader: T.func.isRequired,
+    showSnackbar: T.func.isRequired,
     addFeedData: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
-import { hideCameraModule } from '@actions/common'
+import {
+    hideCameraModule,
+    showLoader,
+    hideLoader,
+    showSnackbar,
+} from '@actions/common'
 import { addFeedData } from '@actions/feeds'
 
 const mapStateToProps = ({
@@ -372,6 +398,9 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = dispatch => ({
     hideCameraModule: () => dispatch(hideCameraModule()),
+    showLoader: () => dispatch(showLoader()),
+    hideLoader: () => dispatch(hideLoader()),
+    showSnackbar: event => dispatch(showSnackbar(event)),
     addFeedData: event => dispatch(addFeedData(event)),
 })
 

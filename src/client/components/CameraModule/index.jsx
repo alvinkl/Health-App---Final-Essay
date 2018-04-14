@@ -5,7 +5,7 @@ import T from 'prop-types'
 
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
-import { getLocationName } from '@urls'
+import { getLocationName, postImage } from '@urls'
 
 import FontIcon from 'material-ui/FontIcon'
 import IconButton from 'material-ui/IconButton'
@@ -75,17 +75,26 @@ class CameraModule extends Component {
         return address
     }
 
-    handleSubmitData = () => {
-        const { addFeedData } = this.props
+    handleSubmitData = async () => {
+        const { addFeedData, user_id } = this.props
         const { title, subtitle, location, address, picture } = this.state
+
+        const picture_name =
+            Date.parse(new Date()) / 1000 + '-' + user_id + '.png'
+
+        let postData = new FormData()
+        postData.append('file', picture, picture_name)
+
+        // testing upload image
+        const res = await fetch(postImage, { method: 'POST', body: postData })
+        const { image } = await res.json()
 
         addFeedData({
             title,
             subtitle,
             location,
             address,
-            image:
-                'https://drop.ndtv.com/albums/COOKS/corngallery/creolespicedcornthumb_640x480.jpg',
+            image,
         })
 
         this.handleClose()
@@ -138,6 +147,7 @@ class CameraModule extends Component {
         this.turnOffCamera()
 
         const picture = this.dataURItoBlob(canvas.toDataURL())
+
         this.setState({ picture })
     }
 
@@ -342,6 +352,7 @@ class CameraModule extends Component {
 
 CameraModule.propTypes = {
     camera_module: T.bool.isRequired,
+    user_id: T.string.isRequired,
 
     hideCameraModule: T.func.isRequired,
     addFeedData: T.func.isRequired,
@@ -351,8 +362,12 @@ import { connect } from 'react-redux'
 import { hideCameraModule } from '@actions/common'
 import { addFeedData } from '@actions/feeds'
 
-const mapStateToProps = ({ common: { camera_module } }) => ({
+const mapStateToProps = ({
+    common: { camera_module },
+    user: { googleID },
+}) => ({
     camera_module,
+    user_id: googleID,
 })
 
 const mapDispatchToProps = dispatch => ({

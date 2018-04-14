@@ -28,3 +28,7 @@ export const getLocationName = '/api/feeds/getLocationName'
 export const authGoogle = '/auth/google'
 export const authLogout = '/auth/logout'
 export const getUser = '/auth/current_user'
+
+// post image
+export const postImage =
+    'https://us-central1-final-essay-dev.cloudfunctions.net/storeImage'

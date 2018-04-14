@@ -69,30 +69,40 @@ export default (state = initial_state, action) => {
                 ...state,
                 feeds: [action.feed, ...state.feeds],
             }
-        case FEED_LIKED: {
-            const feeds = state.feeds
-
-            const fd = feeds.find(f => f.post_id === action.post_id)
-            fd.likes = action.total_likes
-            fd.status = LIKE
-
+        case FEED_LIKED:
             return {
                 ...state,
-                feeds,
+                feeds: state.feeds.reduce((p, c) => {
+                    if (c.post_id === action.post_id)
+                        return [
+                            ...p,
+                            {
+                                ...c,
+                                likes: action.total_likes,
+                                status: LIKE,
+                            },
+                        ]
+
+                    return [...p, c]
+                }, []),
             }
-        }
-        case FEED_UNLIKED: {
-            const feeds = state.feeds
-
-            const fd = feeds.find(f => f.post_id === action.post_id)
-            fd.likes = action.total_likes
-            fd.status = UNLIKE
-
+        case FEED_UNLIKED:
             return {
                 ...state,
-                feeds,
+                feeds: state.feeds.reduce((p, c) => {
+                    if (c.post_id === action.post_id)
+                        return [
+                            ...p,
+                            {
+                                ...c,
+                                likes: action.total_likes,
+                                status: UNLIKE,
+                            },
+                        ]
+
+                    return [...p, c]
+                }, []),
             }
-        }
         default:
             return state
     }

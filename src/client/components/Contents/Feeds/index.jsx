@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 
+import { LIKE, UNLIKE } from '@constant'
+
 import styles from './feeds.css'
 
 import {
@@ -15,40 +17,50 @@ import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 
 const Feeds = ({ loading, error, feeds, toggleLike }) => {
-    console.log(feeds)
-    return feeds.map((d, i) => (
-        <Card
-            key={d.post_id}
-            className={styles.feedCards}
-            expanded
-            initiallyExpanded
-        >
-            <CardHeader
-                title={d.user.username}
-                subtitle={d.create_time}
-                avatar={d.user.avatar}
-                showExpandableButton={false}
-            />
-            <CardMedia
-                expandable={true}
-                overlay={<CardTitle title={d.title} subtitle={d.subtitle} />}
+    return feeds.map((d, i) => {
+        let label
+
+        if (d.status === LIKE) {
+            if (d.likes - 1 > 0)
+                label = 'You and ' + d.likes + ' people like this!'
+            else label = 'You liked this post!'
+        } else {
+            if (d.likes > 0) label = d.likes + ' people liked this, ' + 'Like'
+            else label = 'Like!'
+        }
+
+        return (
+            <Card
+                key={d.post_id}
+                className={styles.feedCards}
+                expanded
+                initiallyExpanded
             >
-                <img src={d.image} alt="" />
-            </CardMedia>
-            <CardActions className={styles.buttonsAlignRight}>
-                <FlatButton
-                    label={
-                        d.status
-                            ? 'You and ' + d.likes + ' people like this!'
-                            : d.likes + ' people liked this, ' + 'Like'
-                    }
-                    primary={!d.status}
-                    secondary={d.status}
-                    onClick={toggleLike.bind(null, d.post_id)}
+                <CardHeader
+                    title={d.user.username}
+                    subtitle={d.create_time}
+                    avatar={d.user.avatar}
+                    showExpandableButton={false}
                 />
-            </CardActions>
-        </Card>
-    ))
+                <CardMedia
+                    expandable={true}
+                    overlay={
+                        <CardTitle title={d.title} subtitle={d.subtitle} />
+                    }
+                >
+                    <img src={d.image} alt="" />
+                </CardMedia>
+                <CardActions className={styles.buttonsAlignRight}>
+                    <FlatButton
+                        label={label}
+                        primary={!d.status}
+                        secondary={!!d.status}
+                        onClick={toggleLike.bind(null, d.post_id)}
+                    />
+                </CardActions>
+            </Card>
+        )
+    })
 }
 
 Feeds.propTypes = {

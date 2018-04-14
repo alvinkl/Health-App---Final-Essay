@@ -23,7 +23,7 @@ export const getMenusFromRestaurant = '/api/food/getMenusFromRestaurant'
 export const getFeeds = '/api/feeds/get'
 export const addFeed = '/api/feeds/add'
 export const getLocationName = '/api/feeds/getLocationName'
-export const addLike = '/api/feeds/addLike'
+export const toggleLike = '/api/feeds/toggleLike'
 export const getUserLike = '/api/feeds/getUserLike'
 
 // auth

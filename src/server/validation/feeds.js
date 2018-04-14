@@ -29,3 +29,14 @@ export const validateAddFeed = param => {
         },
     ]
 }
+
+const addLikeType = {
+    post_id: 0,
+}
+
+export const validateToggleLike = param => {
+    if (!eq(param, addLikeType))
+        return ['Parameter is invalid, post_id is required!']
+
+    return [false, param.post_id]
+}

@@ -41,7 +41,7 @@ export const getFeeds = async (page = 0) => {
         title: d.title,
         subtitle: d.subtitle,
         image: d.image,
-        likes: d.likes,
+        likes: d.likes.length,
         user: users.find(u => u._id === d.user_id),
         create_time: moment(d.create_time).fromNow(),
     }))
@@ -82,10 +82,41 @@ export const insertNewFeed = async (googleID, data) => {
         image: newFeeds.image,
         user: userData,
         create_time: moment(newFeeds.create_time).fromNow(),
-        like: newFeeds.like,
+        likes: newFeeds.likes.length,
     }
 
     return Promise.resolve(dt)
+}
+
+export const toggleLike = async (googleID, post_id) => {
+    const [err, feed] = await to(Feeds.findOne({ _id: post_id }))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    if (!feed)
+        return Promise.reject({
+            code: 400,
+            message: 'Feed with post_id: ' + post_id + ', not found!',
+        })
+
+    const { likes } = feed
+    const oldLikes = likes.length
+    const indexLikes = likes.indexOf(googleID)
+
+    // Change algorithm to better one,
+    // this might causes bugs in the future
+    if (~indexLikes) {
+        likes.splice(indexLikes, 1)
+    } else {
+        likes.push(googleID)
+    }
+
+    const newLikes = likes.length
+    feed.save()
+
+    return Promise.resolve({
+        total_likes: newLikes,
+        status: newLikes > oldLikes ? 1 : 0,
+    })
 }
 
 export const getLocationName = async (lat, lon) => {

@@ -10,7 +10,7 @@ import qs from '@helper/queryString'
 import Feeds from '@model/Feeds'
 import User from '@model/User'
 
-export const getFeeds = async (page = 0) => {
+export const getFeeds = async (current_user = 0, page = 0) => {
     const offset = page * 10
 
     const [err, data] = await to(
@@ -43,6 +43,7 @@ export const getFeeds = async (page = 0) => {
         subtitle: d.subtitle,
         image: d.image,
         likes: d.likes.length,
+        status: ~d.likes.indexOf(current_user) ? 1 : 0,
         user: users.find(u => u._id === d.user_id),
         create_time: moment(d.create_time).fromNow(),
     }))

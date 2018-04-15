@@ -11,7 +11,10 @@ import {
 } from '@functions/feeds'
 
 export const handleGetFeeds = async (req, res) => {
-    const [err, data] = await to(getFeeds())
+    const { googleID } = req.user
+
+    const [err, data] = await to(getFeeds(googleID))
+    if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)
 }

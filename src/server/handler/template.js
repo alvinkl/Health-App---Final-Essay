@@ -16,6 +16,7 @@ export const renderTemplate = async (req, res) => {
     if (req.user) {
         const { googleID, new: n } = req.user
         const [, user] = await to(getUserData(googleID))
+
         if (req.user.new) {
             if (!~req.url.indexOf('getting-started'))
                 return res.redirect('/getting-started')

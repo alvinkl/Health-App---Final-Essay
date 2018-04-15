@@ -11,7 +11,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 
 import DisplayRestaurantLocation from './DisplayRestaurantLocation'
 
-import styles from './contents.css'
+import styles from '../contents.css'
 
 const style = {
     colorWhite: {
@@ -39,19 +39,6 @@ const checkedIcon = <div className={styles.selectedRadio} />
 const uncheckedIcon = <div />
 
 export class SuggestFood extends Component {
-    static propTypes = {
-        suggestFood: T.shape({
-            food: T.object,
-            restaurant: T.array,
-            loading: T.bool,
-            error: T.bool,
-        }).isRequired,
-        fetchSuggestFood: T.func.isRequired,
-        fetchSuggestRestaurant: T.func.isRequired,
-        addToDiary: T.func.isRequired,
-        showSnackbar: T.func.isRequired,
-    }
-
     state = {
         step: 0,
         cuisine: '',
@@ -225,6 +212,20 @@ export class SuggestFood extends Component {
             </Paper>
         )
     }
+}
+
+SuggestFood.propTypes = {
+    suggestFood: T.shape({
+        food: T.object,
+        restaurant: T.array,
+        loading: T.bool,
+        error: T.bool,
+    }).isRequired,
+    fetchSuggestFood: T.func.isRequired,
+    fetchSuggestRestaurant: T.func.isRequired,
+    addToDiary: T.func.isRequired,
+    showSnackbar: T.func.isRequired,
+    fetchFeed: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'

@@ -7,6 +7,8 @@ import {
     HIDE_LOADER,
     SHOW_SNACKBAR,
     HIDE_SNACKBAR,
+    SHOW_CAMERA_MODULE,
+    HIDE_CAMERA_MODULE,
 } from '../actions/common'
 
 export const initial_state = {
@@ -21,6 +23,8 @@ export const initial_state = {
         show: false,
         message: '',
     },
+
+    camera_module: false,
 
     isSSR: false,
     userAgent: '',
@@ -77,6 +81,16 @@ export default function common(state = initial_state, action) {
                     show: false,
                     message: '',
                 },
+            }
+        case SHOW_CAMERA_MODULE:
+            return {
+                ...state,
+                camera_module: true,
+            }
+        case HIDE_CAMERA_MODULE:
+            return {
+                ...state,
+                camera_module: false,
             }
         default:
             return state

@@ -12,7 +12,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 
 import DisplayRestaurantLocation from './DisplayRestaurantLocation'
 
-import styles from './contents.css'
+import styles from '../contents.css'
 
 const style = {
     colorWhite: {

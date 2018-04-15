@@ -19,7 +19,18 @@ export const getRestaurantSuggestion = '/api/food/suggestRestaurant'
 export const getNearbyRestaurant = '/api/food/getNearbyRestaurant'
 export const getMenusFromRestaurant = '/api/food/getMenusFromRestaurant'
 
+// feeds
+export const getFeeds = '/api/feeds/get'
+export const addFeed = '/api/feeds/add'
+export const getLocationName = '/api/feeds/getLocationName'
+export const toggleLike = '/api/feeds/toggleLike'
+export const getUserLike = '/api/feeds/getUserLike'
+
 // auth
 export const authGoogle = '/auth/google'
 export const authLogout = '/auth/logout'
 export const getUser = '/auth/current_user'
+
+// post image
+export const postImage =
+    'https://us-central1-final-essay-dev.cloudfunctions.net/storeImage'

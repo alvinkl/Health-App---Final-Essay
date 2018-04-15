@@ -13,6 +13,7 @@ import Header from '@components/Header'
 import Navbar from '@components/Navbar'
 import Sidebar from '@components/Sidebar'
 import Snackbar from '@components/Snackbar'
+import CameraModule from '@components/CameraModule'
 
 import getRouteIndex from '@helper/getRouteIndex'
 
@@ -148,6 +149,8 @@ const Master = (
                 <Sidebar />
 
                 <Snackbar />
+
+                <CameraModule />
 
                 {loading && Loader}
             </MuiThemeProvider>

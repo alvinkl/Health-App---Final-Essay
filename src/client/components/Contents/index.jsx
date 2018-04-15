@@ -3,16 +3,16 @@ import T from 'prop-types'
 import { isEmpty } from 'lodash'
 
 import ContentHeader from './ContentHeader'
-import SuggestFood from './SuggestFoodMenu'
+import SuggestFood from './SuggestFood/SuggestFoodMenu'
+import Feeds from './Feeds'
 
 import { fetchUserData } from '@actions/user'
+import { fetchFeed } from '@actions/feeds'
 // import styles from './contents.css'
 
 class Contents extends Component {
-    static propTypes = {
-        // from redux
-        user: T.object.isRequired,
-        fetchUserData: T.func.isRequired,
+    state = {
+        page: 1,
     }
 
     static initialAction = store => {
@@ -20,9 +20,12 @@ class Contents extends Component {
     }
 
     componentDidMount() {
-        const { user, fetchUserData } = this.props
+        const { user, fetchUserData, fetchFeed } = this.props
+        const { page } = this.state
 
         if (!user.googleID) fetchUserData()
+
+        fetchFeed(page)
     }
 
     render() {
@@ -30,9 +33,17 @@ class Contents extends Component {
             <Fragment>
                 <ContentHeader />
                 <SuggestFood />
+                <Feeds />
             </Fragment>
         )
     }
+}
+
+Contents.propTypes = {
+    // from redux
+    user: T.object.isRequired,
+    fetchUserData: T.func.isRequired,
+    fetchFeed: T.func.isRequired,
 }
 
 // import withStyles from 'isomorphic-style-loader/lib/withStyles'
@@ -44,6 +55,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     fetchUserData: event => dispatch(fetchUserData(event)),
+    fetchFeed: event => dispatch(fetchFeed(event)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Contents)

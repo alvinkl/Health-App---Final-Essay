@@ -1956,6 +1956,10 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+createref@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/createref/-/createref-0.5.0.tgz#53cd150a438f7bd8b81808324c11627aedf53f6a"
+
 cross-spawn-async@^2.2.2:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/cross-spawn-async/-/cross-spawn-async-2.2.5.tgz#845ff0c0834a3ded9d160daca6d390906bb288cc"

@@ -17,8 +17,7 @@ import Paper from 'material-ui/Paper'
 
 import style from './charts.css'
 
-const Chart = ({ report }) => {
-    let today_total_calories = 0
+const Chart = ({ report, today_total_calories }) => {
     const data = Object.keys(report)
         .sort((a, b) => b - a)
         .map(r => ({
@@ -29,17 +28,11 @@ const Chart = ({ report }) => {
             snack: report[r].snack,
         }))
 
-    if (!isEmpty(report))
-        today_total_calories = Object.keys(report[0]).reduce(
-            (p, c) => p + report[0][c],
-            0
-        )
-
     return (
         <Paper className={style.paper} zDepth={2}>
             <div className={style.alignLeft}>
                 <h3>Calories</h3>
-                <h2>{today_total_calories.toFixed(2)}</h2>
+                <h2>{today_total_calories}</h2>
                 <div>
                     <p>Daily Average: 2267</p>
                     <p>Goal: 2555kcal</p>
@@ -65,12 +58,14 @@ const Chart = ({ report }) => {
 
 Chart.propTypes = {
     report: T.object.isRequired,
+    today_total_calories: T.string.isRequired,
 }
 
 import { connect } from 'react-redux'
 
 const mapStateToProps = ({ diary }) => ({
     report: diary.report,
+    today_total_calories: diary.today_total_calories,
 })
 
 export default connect(mapStateToProps)(Chart)

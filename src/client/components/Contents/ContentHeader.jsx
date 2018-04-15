@@ -1,12 +1,12 @@
 import React from 'react'
 import T from 'prop-types'
-import { isEmpty } from 'lodash'
 
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
 import { GridList, GridTile } from 'material-ui/GridList'
 import Chip from 'material-ui/Chip'
 import FontIcon from 'material-ui/FontIcon'
+import { cyan100, cyan500 } from 'material-ui/styles/colors'
 
 import styles from './contents.css'
 
@@ -29,7 +29,7 @@ const style = {
     },
 }
 
-const ContentHeader = ({ user }) => {
+const ContentHeader = ({ user, today_total_calories, showCameraModule }) => {
     const {
         googleID,
         name,
@@ -41,8 +41,6 @@ const ContentHeader = ({ user }) => {
             current_weight: { value: current_weight },
         },
     } = user
-
-    const current_calories = 800
 
     let $avatar = ''
     if (profile_img)
@@ -69,7 +67,8 @@ const ContentHeader = ({ user }) => {
                             >
                                 &#xE56C;
                             </FontIcon>
-                            &nbsp;{current_calories} / {target_calories}
+                            &nbsp;{today_total_calories} / {target_calories}
+                            &nbsp;calories
                         </Chip>
                         <Chip style={style.smallChip}>
                             <FontIcon
@@ -91,13 +90,19 @@ const ContentHeader = ({ user }) => {
                             </FontIcon>
                             &nbsp;{current_weight} / {target_weight} kg
                         </Chip>
-                        <Chip style={style.chip}>
+                        <Chip
+                            style={style.chip}
+                            color={cyan500}
+                            backgroundColor={cyan100}
+                            onClick={showCameraModule}
+                        >
                             <FontIcon
                                 className="material-icons"
                                 style={style.fontIconSize}
                             >
-                                &#xE56C;
+                                add_a_photo
                             </FontIcon>
+                            &nbsp; Add Photo
                         </Chip>
                     </div>
                 </GridTile>
@@ -108,6 +113,8 @@ const ContentHeader = ({ user }) => {
 
 ContentHeader.propTypes = {
     user: T.object,
+    today_total_calories: T.string.isRequired,
+    showCameraModule: T.func.isRequired,
 }
 
 ContentHeader.defaultProps = {
@@ -115,9 +122,15 @@ ContentHeader.defaultProps = {
 }
 
 import { connect } from 'react-redux'
+import { showCameraModule } from '@actions/common'
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, diary }) => ({
     user,
+    today_total_calories: diary.today_total_calories,
 })
 
-export default connect(mapStateToProps)(ContentHeader)
+const mapDispatchToProps = dispatch => ({
+    showCameraModule: () => dispatch(showCameraModule()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentHeader)

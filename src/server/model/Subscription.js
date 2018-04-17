@@ -1,6 +1,11 @@
 import m from 'mongoose'
 
 const subscriptionSchema = m.Schema({
+    user_id: {
+        type: String,
+        required: true,
+    },
+
     endpoint: {
         type: String,
         required: true,

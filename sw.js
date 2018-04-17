@@ -60,17 +60,29 @@ self.addEventListener('fetch', function(event) {
 })
 
 self.addEventListener('push', function(event) {
-    console.log('[Service Worker] Push Received')
-    console.log('[Service Worker] Push had this data: ', event.data.text())
+    console.log('Push Notification Received', event)
 
-    const title = 'Push Codelab'
-    const options = {
-        body: 'Yay it works.',
-        icon: 'images/icon.png',
-        badge: 'images/badge.png',
+    var data = {
+        title: 'New Feed!',
+        content: 'Someone post new feed! Take a look!',
+        openUrl: '/',
     }
 
-    event.waitUntil(self.registration.showNotification(title, options))
+    console.log(event.data.text())
+    if (event.data) data = JSON.parse(event.data.text())
+
+    var options = {
+        body: data.content,
+        image: data.image,
+        data: {
+            url: data.url,
+        },
+        icon: 'static/images/icons/icon-96x96.png',
+        badge: 'static/images/icons/icon-96x96.png',
+        dir: 'rtl',
+    }
+
+    event.waitUntil(self.registration.showNotification(data.title, options))
 })
 
 /* End of Service Worker Events */

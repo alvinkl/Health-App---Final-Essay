@@ -14,6 +14,7 @@ import { Provider } from 'react-redux'
 import configureStore from '@client/store'
 import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
+import { VapidPublicKeys } from '@config/keys'
 
 export const renderTemplateHome = async (user, userAgent, url) => {
     const render = setupTemplate({ userAgent, url }, { user })
@@ -70,6 +71,7 @@ const setupTemplate = (
             markup,
             helmet,
             preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
+            vapidPublicKeys: JSON.stringify(VapidPublicKeys),
         }
     })
 }

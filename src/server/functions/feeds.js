@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+import { sendNotification } from '@services/webpush'
+
 import { googleMaps } from '@config/urls'
 import { GoogleGeocodingAPIKey } from '@config/keys'
 import { LIKE, UNLIKE } from '@constant'
@@ -87,6 +89,8 @@ export const insertNewFeed = async (googleID, data) => {
         likes: newFeeds.likes.length,
     }
 
+    pushNotification()
+
     return Promise.resolve(dt)
 }
 
@@ -148,4 +152,11 @@ export const getLocationName = async (lat, lon) => {
     const address = data.results[0] ? data.results[0].formatted_address : ''
 
     return Promise.resolve({ address })
+}
+
+export const pushNotification = async content => {
+    sendNotification(
+        { endpoint: '', auth: '', p256dh: '' },
+        { title: 'Hello World', content: 'hello from the world', openURL: '/' }
+    )
 }

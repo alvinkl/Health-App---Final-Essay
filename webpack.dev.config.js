@@ -103,6 +103,9 @@ const serverConfig = {
         //     watch: true,
         // }),
         // Add sourcemap support for debugging
+        new webpack.DefinePlugin({
+            window: {},
+        }),
         new webpack.BannerPlugin({
             banner: 'require("source-map-support").install();',
             raw: true,

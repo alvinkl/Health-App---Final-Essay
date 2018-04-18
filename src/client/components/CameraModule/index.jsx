@@ -115,7 +115,6 @@ class CameraModule extends Component {
 
         this.handleClose()
         hideLoader()
-        showSnackbar('New post added!')
     }
 
     initializeMedia = async () => {

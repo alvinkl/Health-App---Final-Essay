@@ -1,15 +1,19 @@
+import idb from 'idb'
 import to from './asyncAwait'
 
-const dbPromise = window.idb.open('feeds-store', 1, function(db) {
-    if (!db.objectStoreNames.contains('feeds'))
-        db.createObjectStore('feeds', { keyPath: 'id' })
+let dbPromise = null
 
-    if (!db.objectStoreNames.contains('sync-feeds'))
-        db.createObjectStore('sync-feeds', { keyPath: 'id' })
-})
+const initIDB = () =>
+    (dbPromise = window.idb.open('feeds-store', 1, function(db) {
+        if (!db.objectStoreNames.contains('feeds'))
+            db.createObjectStore('feeds', { keyPath: 'id' })
 
-const writeData = (st, data) => {
-    const db = dbPromise
+        if (!db.objectStoreNames.contains('sync-feeds'))
+            db.createObjectStore('sync-feeds', { keyPath: 'id' })
+    }))
+
+const writeData = async (st, data) => {
+    const db = await dbPromise
 
     const tx = db.transaction(st, 'readwrite')
     const store = tx.objectStore(st)
@@ -21,13 +25,15 @@ const writeData = (st, data) => {
 
 export const backgroundSync = async (storeName, data) => {
     if ('serviceWorker' in window.navigator && 'SyncManager' in window) {
+        initIDB()
         const swReg = await window.navigator.serviceWorker.ready
 
-        const [err, dt] = await to(writeData(storeName, data))
-        if (err) return Promise.reject('Failed to add new feed to sync')
-
+        await writeData(storeName, data)
         await swReg.sync.register('sync-new-feeds')
-        return Promise.resolve(dt)
+
+        return Promise.resolve({
+            message: 'Feeds will be added soon when you are online!',
+        })
     }
 
     return Promise.reject('SyncManager is not supported in this device!')

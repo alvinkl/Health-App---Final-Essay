@@ -38,6 +38,7 @@
         "extract-text-webpack-plugin": "^3.0.2",
         "file-loader": "^1.1.6",
         "helmet": "^3.11.0",
+        "idb": "^2.1.1",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.5",
         "material-ui": "^0.20.0",

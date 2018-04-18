@@ -23,6 +23,7 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
             return (
                 <Card
                     key={d.post_id}
+                    id={d.id}
                     className={cn(styles.feedCards, styles.waitingSync)}
                     expanded
                     initiallyExpanded

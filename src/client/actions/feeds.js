@@ -3,6 +3,7 @@ import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
 import { getFeeds, addFeed, toggleLike as toggleLikeURL } from '@urls'
 import { LIKE, UNLIKE } from '@constant'
+import { readAllData } from '@helper/indexedDB-utilities'
 
 import { showSnackbar } from './common'
 
@@ -39,9 +40,16 @@ export const fetchFeed = (page = 1) => async dispatch => {
 
     const feeds = await res.json()
 
+    let idbData = await readAllData('sync-feeds')
+    idbData = idbData.map(dt => ({
+        post_id: dt.id,
+        waiting_for_sync: true,
+        ...dt,
+    }))
+
     return dispatch({
         type: FETCHED_FEEDS,
-        feeds,
+        feeds: [...idbData, ...feeds],
     })
 }
 

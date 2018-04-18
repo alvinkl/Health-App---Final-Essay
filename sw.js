@@ -97,9 +97,37 @@ self.addEventListener('sync', function(event) {
     if (event.tag === 'sync-new-feeds') {
         console.log('[Service Worker] Syncing new feeds')
 
-        var response = readAllData('sync-posts').then(function(data) {
+        var response = readAllData('sync-feeds').then(function(data) {
             for (var dt of data) {
-                console.log(dt)
+                console.log('[Service Worker] Syncing feed ', dt.id)
+                fetch(location.origin + '/api/feeds/add', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: dt.title,
+                        subtitle: dt.subtitle,
+                        image: dt.image,
+                        location: dt.location,
+                        address: dt.address,
+                    }),
+                    credentials: 'same-origin',
+                })
+                    .then(function() {
+                        console.log(
+                            '[Service Worker] Success Syncing Feed(id=',
+                            dt.id,
+                            ')'
+                        )
+                    })
+                    .catch(function() {
+                        console.log(
+                            '[Service Worker] Failed to Sync Feed(id=',
+                            dt.id,
+                            ')'
+                        )
+                    })
             }
         })
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
+import cn from 'classnames'
 
 import { LIKE, UNLIKE } from '@constant'
 
@@ -16,8 +17,34 @@ import {
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 
-const Feeds = ({ loading, error, feeds, toggleLike }) => {
+const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
     return feeds.map((d, i) => {
+        if (d.waiting_for_sync) {
+            return (
+                <Card
+                    key={d.post_id}
+                    className={cn(styles.feedCards, styles.waitingSync)}
+                    expanded
+                    initiallyExpanded
+                >
+                    <CardHeader
+                        title={user.name}
+                        subtitle="This Feed has not been posted yet!"
+                        avatar={user.avatar}
+                        showExpandableButton={false}
+                    />
+                    <CardMedia
+                        expandable={true}
+                        overlay={
+                            <CardTitle title={d.title} subtitle={d.subtitle} />
+                        }
+                    >
+                        <img src={d.image} alt="" />
+                    </CardMedia>
+                </Card>
+            )
+        }
+
         let label
 
         if (d.status === LIKE) {
@@ -67,6 +94,7 @@ Feeds.propTypes = {
     loading: T.bool.isRequired,
     error: T.bool.isRequired,
     feeds: T.array.isRequired,
+    user: T.object.isRequired,
 
     toggleLike: T.func.isRequired,
 }
@@ -74,7 +102,10 @@ Feeds.propTypes = {
 import { connect } from 'react-redux'
 import { toggleLike } from '@actions/feeds'
 
-const mapStateToProps = ({ feeds }) => ({ ...feeds })
+const mapStateToProps = ({ feeds, user }) => ({
+    ...feeds,
+    user: { name: user.name, avatar: user.profile_img },
+})
 const mapDispatchToProps = dispatch => ({
     toggleLike: event => dispatch(toggleLike(event)),
 })

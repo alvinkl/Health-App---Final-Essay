@@ -5,3 +5,8 @@
 .buttonsAlignRight {
     text-align: right;
 }
+
+.feedCards.waitingSync img {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}

@@ -76,7 +76,7 @@ export const addFeedData = ({
     if (err) {
         const sync_feed = {
             id: new Date().toISOString(),
-            post_data,
+            ...post_data,
         }
         const [errSync, syncMessage] = await to(
             backgroundSync('sync-feeds', sync_feed)

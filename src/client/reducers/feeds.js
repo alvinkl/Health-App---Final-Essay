@@ -3,6 +3,7 @@ import {
     FAILED_FETCH_FEEDS,
     FETCHED_FEEDS,
     ADD_FEED,
+    ADD_FEED_SYNCED,
     FAILED_ADD_FEED,
     FEED_ADDED,
     TOGGLE_LIKE_FEED,
@@ -68,6 +69,18 @@ export default (state = initial_state, action) => {
             return {
                 ...state,
                 feeds: [action.feed, ...state.feeds],
+            }
+        case ADD_FEED_SYNCED:
+            return {
+                ...state,
+                feeds: [
+                    {
+                        ...action.sync_feed,
+                        post_id: action.sync_feed.id,
+                        waiting_for_sync: true,
+                    },
+                    ...state.feeds,
+                ],
             }
         case FEED_LIKED:
             return {

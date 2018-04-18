@@ -68,3 +68,20 @@ function readAllData(st) {
         return store.getAll()
     })
 }
+
+function deleteItemFromData(st, id) {
+    return dbPromise
+        .then(function(db) {
+            const tx = db.transaction(st, 'readwrite')
+            const store = tx.objectStore(st)
+
+            store.delete(id)
+            return tx.complete
+        })
+        .then(function() {
+            console.log('Item deleted!')
+        })
+        .catch(function(err) {
+            console.log('Failed to delete', err)
+        })
+}

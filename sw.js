@@ -114,12 +114,16 @@ self.addEventListener('sync', function(event) {
                     }),
                     credentials: 'same-origin',
                 })
-                    .then(function() {
-                        console.log(
-                            '[Service Worker] Success Syncing Feed(id=',
-                            dt.id,
-                            ')'
-                        )
+                    .then(function(res) {
+                        console.log(res.ok)
+                        if (res.ok) {
+                            console.log(
+                                '[Service Worker] Success Syncing Feed(id=',
+                                dt.id,
+                                ')'
+                            )
+                            deleteItemFromData('sync-feeds', dt.id)
+                        }
                     })
                     .catch(function() {
                         console.log(

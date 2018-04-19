@@ -5,3 +5,4 @@ node_modules
 .tern*
 jsconfig.json
 seed
+keys-development.js

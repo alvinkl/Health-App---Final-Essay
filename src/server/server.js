@@ -67,6 +67,12 @@ app.get('/sw.js', (req, res) => {
     res.status(200).sendFile(path.resolve(__dirname, '../../sw.js'))
 })
 
+app.get('/.well-known/acme-challenge/:content', (req, res) =>
+    res.send(
+        'PREK_vBqr_gCaD8q7xSKQybQAQ9BecT-sseURL-3R-w.WK__BCdFyRmuDIUtcgDKIJ5pZKIyKbm9-W17ik5Hcco'
+    )
+)
+
 routes(app)
 
 const PORT = process.env.PORT || 8000

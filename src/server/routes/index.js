@@ -5,12 +5,16 @@ import foodAPI from './api/food'
 import dietplanAPI from './api/dietplan'
 import feedsAPI from './api/feeds'
 
+import webpush from '@services/webpush'
+
 export default app => {
     foodAPI(app)
     dietplanAPI(app)
     feedsAPI(app)
 
     auth(app)
+    webpush(app)
+
     // Template receive * url
     template(app)
 }

@@ -29,16 +29,25 @@
 
     <div id="root"><%- markup %></div>
 
+    <script src="/static/cdnjs/idb.min.js"></script>
+    <script src="/static/cdnjs/utilities.js"></script>
     <script type="text/javascript">
+        var swRegistration = null;
+        var isSubscribed = false
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
-                .then(function () { console.log('[Service Worker] Registered') })
-                .catch(function(err) { console.log('[Service Worker] Fails to register', err)  })
+                .then(function (swReg) { 
+                    console.log('[Service Worker] Registered');
+                    swRegistration = swReg;
+                })
+                .catch(function(err) { console.log('[Service Worker] Fails to register', err)  });
         }
     </script>
 
     <script>
         window.__INITIAL_STATE__ = <%- preloadedState %>;
+        window.__VAPID_PUBLIC_KEYS__ = <%- vapidPublicKeys %>;
     </script>
 
     <script src="/static/build/client.build.js"></script>

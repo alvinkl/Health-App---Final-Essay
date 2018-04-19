@@ -1,13 +1,18 @@
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
+import { backgroundSync } from '@helper/backgroundSyncing'
 import { getFeeds, addFeed, toggleLike as toggleLikeURL } from '@urls'
 import { LIKE, UNLIKE } from '@constant'
+import { readAllData } from '@helper/indexedDB-utilities'
+
+import { showSnackbar } from './common'
 
 export const FETCH_FEEDS = 'FETCH_FEEDS'
 export const FAILED_FETCH_FEEDS = 'FAILED_FETCH_FEEDS'
 export const FETCHED_FEEDS = 'FETCHED_FEEDS'
 export const ADD_FEED = 'ADD_FEED'
 export const FAILED_ADD_FEED = 'FAILED_ADD_FEED'
+export const ADD_FEED_SYNCED = 'ADD_FEED_SYNCED'
 export const FEED_ADDED = 'FEED_ADDED'
 export const TOGGLE_LIKE_FEED = 'TOGGLE_LIKE_FEED'
 export const FAILED_TOGGLE_LIKE_FEED = 'FAILED_TOGGLE_LIKE_FEED'
@@ -35,9 +40,16 @@ export const fetchFeed = (page = 1) => async dispatch => {
 
     const feeds = await res.json()
 
+    let idbData = await readAllData('sync-feeds')
+    idbData = idbData.map(dt => ({
+        post_id: dt.id,
+        waiting_for_sync: true,
+        ...dt,
+    }))
+
     return dispatch({
         type: FETCHED_FEEDS,
-        feeds,
+        feeds: [...idbData, ...feeds],
     })
 }
 
@@ -69,10 +81,26 @@ export const addFeedData = ({
             body: JSON.stringify(post_data),
         })
     )
-    if (err) return dispatch({ type: FAILED_ADD_FEED })
+    if (err) {
+        const sync_feed = {
+            id: new Date().toISOString(),
+            ...post_data,
+        }
+        const [errSync, syncMessage] = await to(
+            backgroundSync('sync-feeds', sync_feed)
+        )
+        if (errSync) {
+            dispatch(showSnackbar(errSync))
+            return dispatch({ type: FAILED_ADD_FEED })
+        }
+
+        dispatch(showSnackbar(syncMessage.message))
+        return dispatch({ type: ADD_FEED_SYNCED, sync_feed })
+    }
 
     const feed = await res.json()
 
+    dispatch(showSnackbar('Added New Feed!'))
     return dispatch({ type: FEED_ADDED, feed })
 }
 

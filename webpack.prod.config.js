@@ -6,21 +6,12 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // Node Server Config
 const nodeExternals = require('webpack-node-externals')
-const NodemonPlugin = require('nodemon-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-
-// Client prefix for SSR
-const autoprefixer = require('autoprefixer')
 
 // CSS config for server and client
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-// Offline Plugin
-const OfflinePlugin = require('offline-plugin')
-
 const alias = require('./aliases')
-
-const ENV = process.env.NODE_ENV || 'development'
 
 // Babel - Loader
 const babel_loader = {
@@ -32,7 +23,6 @@ const babel_loader = {
             ['transform-object-rest-spread'],
             ['transform-react-constant-elements'],
             ['transform-react-inline-elements'],
-            // require('babel-plugin-react-hot-loader/babel'),
         ],
     },
 }
@@ -61,11 +51,7 @@ const resolve = {
 const serverConfig = {
     name: 'server',
 
-    entry: [
-        'babel-polyfill',
-        'webpack/hot/poll?1000',
-        path.resolve(__dirname, 'src/server/server.js'),
-    ],
+    entry: ['babel-polyfill', path.resolve(__dirname, 'src/server/server.js')],
 
     module: {
         loaders: [
@@ -88,13 +74,11 @@ const serverConfig = {
         ],
     },
 
-    watch: true,
-
     target: 'node',
 
     resolve,
 
-    externals: [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })],
+    externals: [nodeExternals()],
 
     plugins: [
         // new CleanWebpackPlugin([__dirname + '/build/*'], {
@@ -111,8 +95,6 @@ const serverConfig = {
             raw: true,
             entryOnly: false,
         }),
-        new NodemonPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
@@ -131,11 +113,7 @@ const serverConfig = {
 const clientConfig = {
     name: 'client',
 
-    entry: [
-        'react-hot-loader/patch',
-        'babel-polyfill',
-        path.resolve(__dirname, 'src/client/index.jsx'),
-    ],
+    entry: ['babel-polyfill', path.resolve(__dirname, 'src/client/index.jsx')],
 
     module: {
         loaders: [
@@ -182,29 +160,24 @@ const clientConfig = {
     resolve,
 
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('production'),
+            },
+        }),
         // new CleanWebpackPlugin(['public/build/*'], {
         //     root: __dirname,
         //     verbose: true,
         //     watch: true,
         // }),
         new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({
             filename: 'style/style.css',
             allChunks: true,
         }),
     ],
 
-    devServer: {
-        host: '0.0.0.0',
-        port: 8080,
-        historyApiFallback: true,
-        hot: true,
-        https: true,
-        inline: true,
-    },
-
-    devtool: 'source-map',
+    devtool: 'cheap-mnodule-source-map',
 
     output: {
         path: path.resolve(__dirname, 'public/build'),

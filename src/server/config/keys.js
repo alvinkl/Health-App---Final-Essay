@@ -19,4 +19,14 @@ module.exports = {
     GoogleGeocodingAPIKey: 'AIzaSyC1j9Y4f72dto_M6JEeaK-Vo4wsc0d1xt8',
 
     ZomatoAPIKey: 'a0fd49f9dd95817830343343a8039a4f',
+
+    // Web Push Notification
+    VapidPrivateKeys: '6e-PR2S_emWv4bd2Ja0J1X1xYEwleuqwPlA3yALGNDQ',
+    VapidPublicKeys:
+        'BP58tstnkFgp6q0S75xUyODy6SnJyG5RDP_Ku_4A8IVt22nYctFSmtUnDw_xo-4sepu3y0XM2IvMLaZmQ1qES3c',
+
+    // Credentials
+    credentials: {
+        email: 'mailto:alvink77@gmail.com',
+    },
 }

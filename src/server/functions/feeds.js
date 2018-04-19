@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+import { sendPushNotification } from '@services/webpush'
+
 import { googleMaps } from '@config/urls'
 import { GoogleGeocodingAPIKey } from '@config/keys'
 import { LIKE, UNLIKE } from '@constant'
@@ -48,6 +50,13 @@ export const getFeeds = async (current_user = 0, page = 0) => {
         create_time: moment(d.create_time).fromNow(),
     }))
 
+    // sendPushNotification({
+    //     title: feeds_data[0].title,
+    //     content: feeds_data[0].subtitle,
+    //     image: feeds_data[0].image,
+    //     url: '/',
+    // })
+
     return Promise.resolve(feeds_data)
 }
 
@@ -87,6 +96,13 @@ export const insertNewFeed = async (googleID, data) => {
         likes: newFeeds.likes.length,
     }
 
+    sendPushNotification({
+        title: dt.title,
+        content: dt.user.username || 'A User' + ' has post at new feed!',
+        image: dt.image,
+        url: '/',
+    })
+
     return Promise.resolve(dt)
 }
 
@@ -115,9 +131,11 @@ export const toggleLike = async (googleID, post_id) => {
     const newLikes = likes.length
     feed.save()
 
+    const status = newLikes > oldLikes ? LIKE : UNLIKE
+
     return Promise.resolve({
         total_likes: newLikes,
-        status: newLikes > oldLikes ? LIKE : UNLIKE,
+        status,
     })
 }
 

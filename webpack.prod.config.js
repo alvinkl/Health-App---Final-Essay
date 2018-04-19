@@ -90,11 +90,11 @@ const serverConfig = {
         new webpack.DefinePlugin({
             window: {},
         }),
-        new webpack.BannerPlugin({
-            banner: 'require("source-map-support").install();',
-            raw: true,
-            entryOnly: false,
-        }),
+        // new webpack.BannerPlugin({
+        //     banner: 'require("source-map-support").install();',
+        //     raw: true,
+        //     entryOnly: false,
+        // }),
         new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 

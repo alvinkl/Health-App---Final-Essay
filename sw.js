@@ -165,7 +165,7 @@ var cacheAndFetchStrategy = function(event) {
     return caches.open(DYNAMIC_VERSION).then(function(cache) {
         return cache.match(event.request).then(function(response) {
             var { url } = event.request
-            if (~url.indexOf('auth/google')) return response
+            if (~url.indexOf('auth/google')) return fetch(event.request)
 
             var fetchPromise = fetch(event.request).then(function(
                 networkResponse

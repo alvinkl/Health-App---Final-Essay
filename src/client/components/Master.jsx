@@ -3,6 +3,7 @@ import T from 'prop-types'
 import { Helmet } from 'react-helmet'
 // import { renderRoutes } from 'react-router-config'
 import renderRoutes from '@client/routes/renderRoutes'
+import { isEmpty } from 'lodash'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -26,7 +27,7 @@ const Loader = (
 )
 
 const Master = (
-    { route, isSSR, userAgent, showHeader, hideHeader, loading },
+    { route, isSSR, userAgent, showHeader, hideHeader, loading, user_loggedin },
     { router }
 ) => {
     !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
@@ -81,6 +82,8 @@ const Master = (
                 <link rel="manifest" href="/static/manifest.json" />
 
                 <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="mobile-web-app-capable" content="yes" />
+
                 <meta
                     name="apple-mobile-web-app-status-bar-style"
                     content="black"
@@ -140,17 +143,17 @@ const Master = (
                 <meta name="theme-color" content="#3f51b5" />
             </Helmet>
             <MuiThemeProvider muiTheme={muiTheme}>
-                <Header />
+                {user_loggedin && <Header />}
                 <main className={styles.main}>
                     {renderRoutes(route.routes)}
                 </main>
-                <Navbar />
+                {user_loggedin && <Navbar />}
 
-                <Sidebar />
+                {user_loggedin && <Sidebar />}
 
                 <Snackbar />
 
-                <CameraModule />
+                {user_loggedin && <CameraModule />}
 
                 {loading && Loader}
             </MuiThemeProvider>
@@ -163,6 +166,7 @@ Master.propTypes = {
     isSSR: T.bool.isRequired,
     userAgent: T.string.isRequired,
     loading: T.bool.isRequired,
+    user_loggedin: T.bool.isRequired,
 
     showHeader: T.func.isRequired,
     hideHeader: T.func.isRequired,
@@ -175,10 +179,11 @@ Master.contextTypes = {
 import { connect } from 'react-redux'
 import { showHeader, hideHeader } from '@actions/common'
 
-const mapStateToProps = ({ common: { isSSR, userAgent, loading } }) => ({
+const mapStateToProps = ({ common: { isSSR, userAgent, loading }, user }) => ({
     isSSR,
     userAgent,
     loading,
+    user_loggedin: !isEmpty(user),
 })
 
 const mapDispatchToProps = dispatch => ({

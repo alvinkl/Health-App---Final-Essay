@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash'
+
 import {
     NutritionXAppID,
     NutritionXAppKeys,
@@ -17,6 +19,7 @@ import Restaurant from '@model/Restaurant'
 import Menu from '@model/Menu'
 
 import qs from '@helper/queryString'
+import { handleSuggestRestaurant } from '../handler/api/food'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -556,6 +559,26 @@ export const extractKeywords = (restaurants = []) => {
 // Suggest Food with Menu
 export const getRestaurantNearby = async location => {
     const { lat, lon } = location
+    const radius = 500 // .5km
+    const count = 3
+
+    const aggregateQuery = [
+        {
+            $geoNear: {
+                near: {
+                    coordinates: [lon, lat],
+                },
+                distanceField: 'distance',
+                spherical: true,
+                maxDistance: radius,
+            },
+        },
+        {
+            $limit: count,
+        },
+    ]
+    const restaurants_db = await Restaurant.aggregate(aggregateQuery)
+    if (!isEmpty(restaurants_db)) return restaurants_db
 
     const url = zomatoAPI.getNearbyRestaurant
 
@@ -564,7 +587,7 @@ export const getRestaurantNearby = async location => {
         lat,
         lon,
         count: 3,
-        radius: 500,
+        radius,
     })
 
     const headers = {
@@ -585,20 +608,39 @@ export const getRestaurantNearby = async location => {
     //     ({ restaurant: { R } }) => R.res_id
     // )
 
-    const restaurant_data = data.restaurants.map(({ restaurant }) => ({
-        restaurant_id: restaurant.R.res_id,
-        name: restaurant.name,
-        cuisines: restaurant.cuisines,
-        lat: restaurant.location.latitude,
-        lon: restaurant.location.longitude,
-        keywords: [
-            ...restaurant.cuisines.toLowerCase().split(', '),
-            ...restaurant.name.toLowerCase().split(' '),
-        ],
-        address: restaurant.location.address,
-        url: restaurant.url,
-        thumbnail: restaurant.thumb,
-    }))
+    const restaurant_data = data.restaurants.map(({ restaurant }) => {
+        const lat = parseFloat(restaurant.location.latitude)
+        const lon = parseFloat(restaurant.location.longitude)
+
+        return {
+            restaurant_id: restaurant.R.res_id,
+            name: restaurant.name,
+            cuisines: restaurant.cuisines,
+            coordinates: [lon, lat],
+            lat,
+            lon,
+            keywords: [
+                ...restaurant.cuisines.toLowerCase().split(', '),
+                ...restaurant.name.toLowerCase().split(' '),
+            ],
+            address: restaurant.location.address,
+            url: restaurant.url,
+            thumbnail: restaurant.thumb,
+        }
+    })
+
+    Restaurant.insertMany(restaurant_data, (err, docs) => {
+        if (err)
+            return console.error(
+                '[Functions][getRestaurantNearby] Failed to insert to DB,',
+                err.errmsg
+            )
+        return console.log(
+            '[Functions][getRestaurantNearby] ',
+            docs.length,
+            ' restaurants are inserted to DB'
+        )
+    })
 
     return Promise.resolve(restaurant_data)
 }

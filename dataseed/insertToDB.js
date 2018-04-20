@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const m = require('mongoose')
-const { mongoURI } = require('../src/server/config/keys')
+const mongoURI = 'mongodb://localhost/healthapp'
 
 m
     .connect(mongoURI)

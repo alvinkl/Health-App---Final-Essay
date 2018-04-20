@@ -1,7 +1,7 @@
 .headerInput {
     display: block;
     width: 100%;
-    height: 14vh;
+    height: 100px;
     background-color: rgb(0, 188, 212);
     text-align: center
 }

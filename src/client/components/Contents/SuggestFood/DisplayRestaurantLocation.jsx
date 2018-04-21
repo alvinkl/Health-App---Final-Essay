@@ -48,6 +48,7 @@ class DisplayRestaurantLocation extends Component {
                 url,
                 thumbnail,
             },
+            handleBackButton,
         } = this.props
         const { open, anchorEl } = this.state
 
@@ -62,8 +63,14 @@ class DisplayRestaurantLocation extends Component {
                 <CardActions>
                     <Fragment>
                         <FlatButton
+                            primary
                             onClick={this.handleClickAddDiary}
                             label="Add to Diary"
+                        />
+                        <FlatButton
+                            secondary
+                            onClick={handleBackButton}
+                            label="Back"
                         />
                         <Popover
                             open={open}
@@ -107,6 +114,7 @@ class DisplayRestaurantLocation extends Component {
 DisplayRestaurantLocation.propTypes = {
     restaurant: T.object.isRequired,
     handleAddToDiary: T.func.isRequired,
+    handleBackButton: T.func.isRequired,
 }
 
 export default DisplayRestaurantLocation

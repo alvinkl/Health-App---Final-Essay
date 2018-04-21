@@ -1,0 +1,93 @@
+{
+    "restaurant_id": 18256320,
+    "menus": [
+        {
+            "name": "Beef Sausage",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 410,
+                "fat": 25,
+                "carbohydrate": 30,
+                "protein": 14
+            }
+        },
+        {
+            "name": "Cheese Croissant",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 320,
+                "fat": 17,
+                "carbohydrate": 28,
+                "protein": 14
+            }
+        },
+        {
+            "name": "Chia Custard Danish",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 280,
+                "fat": 15,
+                "carbohydrate": 31,
+                "protein": 6
+            }
+        },
+        {
+            "name": "All Day B-fast Bun",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 390,
+                "fat": 15,
+                "carbohydrate": 56,
+                "protein": 8
+            }
+        },
+        {
+            "name": "Scramble Egg & Sardines in Chia Bagel",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 600,
+                "fat": 20,
+                "carbohydrate": 60,
+                "protein": 30
+            }
+        },
+        {
+            "name": "Whole Wheat Pastrami Sandwich",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 300,
+                "fat": 5,
+                "carbohydrate": 38,
+                "protein": 27
+            }
+        },
+        {
+            "name": "Beef Salami Focaccia Flatbread",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 300,
+                "fat": 9,
+                "carbohydrate": 24,
+                "protein": 20
+            }
+        },
+        {
+            "name": "Multigrain Smoked Chicken & Egg Sandwich",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 450,
+                "fat": 20,
+                "carbohydrate": 46,
+                "protein": 29
+            }
+        }
+    ]
+}

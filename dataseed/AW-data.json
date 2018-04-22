@@ -1,0 +1,159 @@
+{
+    "restaurant_id": 7415939,
+    "menus": [
+        {
+            "name": "Mozza Burger",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 600,
+                "fat": 39,
+                "carbohydrate": 36,
+                "protein": 27
+            }
+        },
+        {
+            "name": "Deluxe Burger",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 510,
+                "fat": 27,
+                "carbohydrate": 43,
+                "protein": 27
+            }
+        },
+        {
+            "name": "Fish Sandwich",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 574,
+                "fat": 29,
+                "carbohydrate": 58,
+                "protein": 24
+            }
+        },
+        {
+            "name": "Duo Aroma Chicken",
+            "serving_size": 2,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 277,
+                "fat": 15,
+                "carbohydrate": 18,
+                "protein": 17
+            }
+        },
+        {
+            "name": "Chicken Sandwich",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 400,
+                "fat": 15,
+                "carbohydrate": 31,
+                "protein": 35
+            }
+        },
+        {
+            "name": "Mango Chicken Pocket",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 635,
+                "fat": 13,
+                "carbohydrate": 110,
+                "protein": 22
+            }
+        },
+        {
+            "name": "Spicy Aroma Chicken",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 200,
+                "fat": 7.5,
+                "carbohydrate": 31,
+                "protein": 35
+            }
+        },
+        {
+            "name": "Chicken Soup",
+            "serving_size": 1,
+            "unit": "bowl",
+            "nutritions": {
+                "calories": 270,
+                "fat": 15,
+                "carbohydrate": 24,
+                "protein": 18
+            }
+        },
+        {
+            "name": "French Fries",
+            "serving_size": 1,
+            "unit": "pack",
+            "nutritions": {
+                "calories": 400,
+                "fat": 12,
+                "carbohydrate": 45,
+                "protein": 3
+            }
+        },
+        {
+            "name": "Curly Fries",
+            "serving_size": 1,
+            "unit": "pack",
+            "nutritions": {
+                "calories": 266,
+                "fat": 14,
+                "carbohydrate": 31,
+                "protein": 4
+            }
+        },
+        {
+            "name": "Beef Burger",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 420,
+                "fat": 33,
+                "carbohydrate": 0,
+                "protein": 30
+            }
+        },
+        {
+            "name": "Cheese Burger",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 420,
+                "fat": 21,
+                "carbohydrate": 37,
+                "protein": 23
+            }
+        },
+        {
+            "name": "Waffle Ice Cream",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 500,
+                "fat": 20,
+                "carbohydrate": 60,
+                "protein": 9
+            }
+        },
+        {
+            "name": "Waffer Butter with Syrup",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 500,
+                "fat": 20,
+                "carbohydrate": 50,
+                "protein": 5
+            }
+        }
+    ]
+}

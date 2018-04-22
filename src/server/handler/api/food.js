@@ -19,10 +19,12 @@ import {
     extractKeywords,
     getRestaurantNearby,
     getMenusFromRestaurant,
+    getRestaurantMapLocation,
 } from '@functions/food'
 
 import to from '@helper/asyncAwait'
 import { getNearbyRestaurantCuisine } from '../../functions/food'
+import { toLong } from 'ip'
 
 // Food API
 export const handleGetFood = async (req, res) => {
@@ -140,6 +142,14 @@ export const handleGetMenusFromRestaurant = async (req, res) => {
         return responseError(res, errGetMenus.code, errGetMenus.message)
 
     return responseJSON(res, menus)
+}
+
+export const handleGetRestaurantMapLocation = async (req, res) => {
+    const { lat, lon } = req.query
+
+    const map = await getRestaurantMapLocation(lat, lon)
+
+    res.send(map)
 }
 
 export const handleNotFoundRoute = (req, res) => {

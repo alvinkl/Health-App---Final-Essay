@@ -4,11 +4,14 @@ import { isEmpty } from 'lodash'
 
 import { CUISINE_TYPE } from '@constant'
 import to from '@helper/asyncAwait'
+import scrollToElement from './scrollToElement'
 
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import IconButton from 'material-ui/IconButton'
+import FontIcon from 'material-ui/FontIcon'
 
 import DisplayRestaurantLocation from './DisplayRestaurantLocation'
 
@@ -38,6 +41,19 @@ const style = {
 
 const checkedIcon = <div className={styles.selectedRadio} />
 const uncheckedIcon = <div />
+const BackButton = props => (
+    <IconButton
+        className={styles.backButton}
+        styles={{
+            width: 36,
+            height: 36,
+        }}
+        iconStyle={{ color: 'white' }}
+        {...props}
+    >
+        <FontIcon className="material-icons">arrow_back</FontIcon>
+    </IconButton>
+)
 
 export class SuggestFood extends Component {
     state = {
@@ -84,6 +100,11 @@ export class SuggestFood extends Component {
                 step: this.state.step + 1,
             },
             () => {
+                scrollToElement(
+                    document.documentElement,
+                    document.querySelector('#suggest-food'),
+                    600
+                )
                 // const { fetchSuggestRestaurant } = this.props
                 // const { cuisine, food: { keywords } } = this.state
                 // const cs = CUISINE_TYPE[cuisine.toUpperCase()]
@@ -115,6 +136,8 @@ export class SuggestFood extends Component {
 
         addToDiary(data)
     }
+
+    handleBackButton = () => this.setState({ step: this.state.step - 1 })
 
     renderStep = step => {
         const {
@@ -189,6 +212,7 @@ export class SuggestFood extends Component {
                 return (
                     <DisplayRestaurantLocation
                         handleAddToDiary={this.handleAddToDiary}
+                        handleBackButton={this.handleBackButton}
                         restaurant={restaurant}
                     />
                 )
@@ -205,6 +229,8 @@ export class SuggestFood extends Component {
 
         return (
             <Paper className={styles.suggestFood} zDepth={3} id="suggest-food">
+                {step > 0 &&
+                    step < 3 && <BackButton onClick={this.handleBackButton} />}
                 {loading && (
                     <CircularProgress className={styles.loader} size={30} />
                 )}

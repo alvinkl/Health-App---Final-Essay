@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash'
+
 import {
     NutritionXAppID,
     NutritionXAppKeys,
@@ -17,6 +19,7 @@ import Restaurant from '@model/Restaurant'
 import Menu from '@model/Menu'
 
 import qs from '@helper/queryString'
+import { handleSuggestRestaurant } from '../handler/api/food'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -556,6 +559,26 @@ export const extractKeywords = (restaurants = []) => {
 // Suggest Food with Menu
 export const getRestaurantNearby = async location => {
     const { lat, lon } = location
+    const radius = 500 // .5km
+    const count = 3
+
+    const aggregateQuery = [
+        {
+            $geoNear: {
+                near: {
+                    coordinates: [lon, lat],
+                },
+                distanceField: 'distance',
+                spherical: true,
+                maxDistance: radius,
+            },
+        },
+        {
+            $limit: count,
+        },
+    ]
+    const restaurants_db = await Restaurant.aggregate(aggregateQuery)
+    if (!isEmpty(restaurants_db)) return restaurants_db
 
     const url = zomatoAPI.getNearbyRestaurant
 
@@ -564,7 +587,7 @@ export const getRestaurantNearby = async location => {
         lat,
         lon,
         count: 3,
-        radius: 500,
+        radius,
     })
 
     const headers = {
@@ -585,20 +608,39 @@ export const getRestaurantNearby = async location => {
     //     ({ restaurant: { R } }) => R.res_id
     // )
 
-    const restaurant_data = data.restaurants.map(({ restaurant }) => ({
-        restaurant_id: restaurant.R.res_id,
-        name: restaurant.name,
-        cuisines: restaurant.cuisines,
-        lat: restaurant.location.latitude,
-        lon: restaurant.location.longitude,
-        keywords: [
-            ...restaurant.cuisines.toLowerCase().split(', '),
-            ...restaurant.name.toLowerCase().split(' '),
-        ],
-        address: restaurant.location.address,
-        url: restaurant.url,
-        thumbnail: restaurant.thumb,
-    }))
+    const restaurant_data = data.restaurants.map(({ restaurant }) => {
+        const lat = parseFloat(restaurant.location.latitude)
+        const lon = parseFloat(restaurant.location.longitude)
+
+        return {
+            restaurant_id: restaurant.R.res_id,
+            name: restaurant.name,
+            cuisines: restaurant.cuisines,
+            coordinates: [lon, lat],
+            lat,
+            lon,
+            keywords: [
+                ...restaurant.cuisines.toLowerCase().split(', '),
+                ...restaurant.name.toLowerCase().split(' '),
+            ],
+            address: restaurant.location.address,
+            url: restaurant.url,
+            thumbnail: restaurant.thumb,
+        }
+    })
+
+    Restaurant.insertMany(restaurant_data, (err, docs) => {
+        if (err)
+            return console.error(
+                '[Functions][getRestaurantNearby] Failed to insert to DB,',
+                err.errmsg
+            )
+        return console.log(
+            '[Functions][getRestaurantNearby] ',
+            docs.length,
+            ' restaurants are inserted to DB'
+        )
+    })
 
     return Promise.resolve(restaurant_data)
 }
@@ -647,4 +689,39 @@ export const getMenusFromRestaurant = async restaurant_ids => {
     // )
 
     return Promise.resolve(menus)
+}
+
+// FIX TO FETCH IMAGE!
+// https://maps.googleapis.com/maps/api/staticmap?center=-6.1765936299,106.7897127941&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S&key=AIzaSyC1j9Y4f72dto_M6JEeaK-Vo4wsc0d1xt8
+export const getRestaurantMapLocation = async (lat, lon) => {
+    const coordinates = lat + ',' + lon
+    const query = qs({
+        center: coordinates,
+        zoom: 20,
+        size: '600x300',
+        maptype: 'roadmap',
+        markers: 'color:blue|' + coordinates,
+        key: GoogleAPIKey,
+    })
+
+    // TODO: Return data in the form of buffer
+    // const [err, map] = await to(
+    //     fetch(googleMaps.getDisplayMap + query, {
+    //         method: 'GET',
+    //         headers: {
+    //             accept:
+    //                 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    //             'accept-encoding': 'gzip, deflate, br',
+    //             'accept-language':
+    //                 'en-US,en;q=0.9,id;q=0.8,ms;q=0.7,nb;q=0.6,ja;q=0.5',
+    //         },
+    //         mode: 'cors',
+    //     })
+    // )
+    // if (err) return Promise.reject({ err: err })
+
+    // const buffer = map.body._readableState.buffer.head.data
+
+    // return Promise.resolve({ buffer })
+    return Promise.resolve({ url: googleMaps.getDisplayMap + query})
 }

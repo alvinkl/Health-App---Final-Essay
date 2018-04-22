@@ -175,8 +175,8 @@ export const validateSanitizeLatLong = query => {
         false,
         {
             location: {
-                lon: query.lon,
-                lat: query.lat,
+                lon: parseFloat(query.lon),
+                lat: parseFloat(query.lat),
             },
             cuisine: query.cuisine,
         },

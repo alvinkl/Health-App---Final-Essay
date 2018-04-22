@@ -161,6 +161,7 @@ var cacheOnlyThenNetwork = function(event) {
 var firebaseURL =
     'firebasestorage.googleapis.com/v0/b/final-essay-dev.appspot.com/'
 
+// TODO: fix cache and fetch, when data fetched, use fetched data
 var cacheAndFetchStrategy = function(event) {
     return caches.open(DYNAMIC_VERSION).then(function(cache) {
         return cache.match(event.request).then(function(response) {

@@ -7,6 +7,7 @@ import {
     handleGetDiaryReport,
     handleGetNearbyRestaurant,
     handleGetMenusFromRestaurant,
+    handleGetRestaurantMapLocation,
 } from '@server/handler/api/food'
 
 import { mustAuthenticate } from '../middleware'
@@ -40,4 +41,10 @@ export default function(r) {
 
     // Food Report
     r.get(url.getDiaryReport, mustAuthenticate, handleGetDiaryReport)
+
+    r.get(
+        url.getRestaurantMapLocation,
+        mustAuthenticate,
+        handleGetRestaurantMapLocation
+    )
 }

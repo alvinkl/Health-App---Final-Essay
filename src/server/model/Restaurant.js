@@ -18,6 +18,11 @@ const restaurantSchema = m.Schema({
         index: true,
     },
 
+    coordinates: {
+        type: [Number],
+        required: true,
+    },
+
     lat: {
         type: Number,
         required: true,
@@ -43,5 +48,7 @@ const restaurantSchema = m.Schema({
 
     thumbnail: String,
 })
+
+restaurantSchema.index({ coordinates: '2dsphere' })
 
 export default m.model('restaurant', restaurantSchema)

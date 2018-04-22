@@ -690,3 +690,38 @@ export const getMenusFromRestaurant = async restaurant_ids => {
 
     return Promise.resolve(menus)
 }
+
+// FIX TO FETCH IMAGE!
+// https://maps.googleapis.com/maps/api/staticmap?center=-6.1765936299,106.7897127941&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S&key=AIzaSyC1j9Y4f72dto_M6JEeaK-Vo4wsc0d1xt8
+export const getRestaurantMapLocation = async (lat, lon) => {
+    const coordinates = lat + ',' + lon
+    const query = qs({
+        center: coordinates,
+        zoom: 20,
+        size: '600x300',
+        maptype: 'roadmap',
+        markers: 'color:blue|' + coordinates,
+        key: GoogleAPIKey,
+    })
+
+    // TODO: Return data in the form of buffer
+    // const [err, map] = await to(
+    //     fetch(googleMaps.getDisplayMap + query, {
+    //         method: 'GET',
+    //         headers: {
+    //             accept:
+    //                 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    //             'accept-encoding': 'gzip, deflate, br',
+    //             'accept-language':
+    //                 'en-US,en;q=0.9,id;q=0.8,ms;q=0.7,nb;q=0.6,ja;q=0.5',
+    //         },
+    //         mode: 'cors',
+    //     })
+    // )
+    // if (err) return Promise.reject({ err: err })
+
+    // const buffer = map.body._readableState.buffer.head.data
+
+    // return Promise.resolve({ buffer })
+    return Promise.resolve({ url: googleMaps.getDisplayMap + query})
+}

@@ -7,6 +7,7 @@ export const googleMaps = {
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
     getPlaceDetails: 'https://maps.googleapis.com/maps/api/place/details/json',
     getLocationName: 'https://maps.googleapis.com/maps/api/geocode/json',
+    getDisplayMap: 'https://maps.googleapis.com/maps/api/staticmap',
 }
 
 export const zomatoAPI = {

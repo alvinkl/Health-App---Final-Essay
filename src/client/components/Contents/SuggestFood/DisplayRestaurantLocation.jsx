@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 
 import { MEAL_TYPE } from '@constant'
+import { getRestaurantMapLocation } from '@urls'
+import to from '@helper/asyncAwait'
+import qs from '@helper/queryString'
 
 import {
     Card,
@@ -15,9 +18,77 @@ import FlatButton from 'material-ui/FlatButton'
 import Popover from 'material-ui/Popover/Popover'
 import { Menu, MenuItem } from 'material-ui/Menu'
 
+const style = {
+    img: {
+        width: '100%'
+    }
+}
+
 class DisplayRestaurantLocation extends Component {
     state = {
         open: false,
+        mapURL: '',
+    }
+
+    componentDidMount() {
+        this.fetchStaticMapURL()
+    }
+
+    fetchStaticMapURL = async () => {
+        const { restaurant: { lat, lon } } = this.props
+
+        const query = qs({
+            lat,
+            lon,
+        })
+        const [err, res] = await to(
+            fetch(getRestaurantMapLocation + query, {
+                method: 'GET',
+                headers: { 'accept-content': 'application/json' },
+                credentials: 'same-origin',
+            })
+        )
+        if (err) return
+
+        const data = await res.json()
+        if (data) {
+            const mapURL = data.url
+            this.setState({ mapURL })
+        }
+    }
+
+    // use when fetching google static maps returns buffer instead of url
+    fetchStaticMap = async () => {
+        const { restaurant: { lat, lon } } = this.props
+
+        const query = qs({
+            lat,
+            lon,
+        })
+        const [err, res] = await to(
+            fetch(getRestaurantMapLocation + query, {
+                method: 'GET',
+                headers: { 'accept-content': 'application/json' },
+                credentials: 'same-origin',
+            })
+        )
+        if (err) return
+
+        const data = await res.json()
+        if (data) {
+            const b64 = this.arrayBufferToBase64(data.buffer.data)
+            const mapURL = 'data:image/jpeg;base64,' + b64
+            this.setState({ mapURL })
+        }
+    }
+
+    arrayBufferToBase64(buffer) {
+        let binary = ''
+        const bytes = [].slice.call(new Uint8Array(buffer))
+
+        bytes.forEach(b => (binary += String.fromCharCode(b)))
+
+        return window.btoa(binary)
     }
 
     handleAddDiary = (_, value) => {
@@ -50,7 +121,7 @@ class DisplayRestaurantLocation extends Component {
             },
             handleBackButton,
         } = this.props
-        const { open, anchorEl } = this.state
+        const { open, anchorEl, mapURL } = this.state
 
         return (
             <Card id={restaurant_id}>
@@ -59,7 +130,10 @@ class DisplayRestaurantLocation extends Component {
                     subtitle={cuisines}
                     avatar={thumbnail}
                 />
-                <CardText>{address}</CardText>
+                <CardText>
+                    {mapURL && <img src={mapURL} alt="map" style={style.img} />}
+                    {address}
+                </CardText>
                 <CardActions>
                     <Fragment>
                         <FlatButton

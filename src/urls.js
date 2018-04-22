@@ -18,6 +18,7 @@ export const getRestaurantSuggestion = '/api/food/suggestRestaurant'
 // Suggest Food with Menu
 export const getNearbyRestaurant = '/api/food/getNearbyRestaurant'
 export const getMenusFromRestaurant = '/api/food/getMenusFromRestaurant'
+export const getRestaurantMapLocation = '/api/food/getRestaurantMapLocation'
 
 // feeds
 export const getFeeds = '/api/feeds/get'

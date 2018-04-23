@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 import { Helmet } from 'react-helmet'
 // import { renderRoutes } from 'react-router-config'
@@ -26,139 +26,154 @@ const Loader = (
     </div>
 )
 
-const Master = (
-    { route, isSSR, userAgent, showHeader, hideHeader, loading, user_loggedin },
-    { router }
-) => {
-    !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
+class Master extends Component {
+    componentDidMount() {
+        const { showSnackbar, showOnlineTheme, showOfflineTheme } = this.props
 
-    let muiT = {
-        avatar: {
-            borderColor: null,
-        },
+        window.addEventListener('online', () => {
+            // showOnlineTheme()
+            showSnackbar("You're coming back online!")
+        })
+        window.addEventListener('offline', () => {
+            // showOfflineTheme()
+            showSnackbar("You're offline!")
+        })
     }
-    if (isSSR) muiT = { ...muiT, userAgent }
 
-    let muiTheme = getMuiTheme(
-        {
-            palette: {
-                primary1Color: cyan500,
-                primary2Color: cyan700,
-                primary3Color: cyan100,
+    render() {
+        const {
+            route,
+            isSSR,
+            userAgent,
+            showHeader,
+            hideHeader,
+            loading,
+            user_loggedin,
+            theme_color,
+        } = this.props
+        const { router } = this.context
+        !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
+
+        let muiT = {
+            avatar: {
+                borderColor: null,
             },
-        },
-        muiT
-    )
+        }
+        if (isSSR) muiT = { ...muiT, userAgent }
 
-    return (
-        <Fragment>
-            <Helmet defaultTitle="PWA Health App">
-                <link
-                    rel="shortcut icon"
-                    href="/build/favicon.ico"
-                    type="image/x-icon"
-                />
-                <link
-                    rel="icon"
-                    href="/static/favicon.ico"
-                    type="image/x-icon"
-                />
+        return (
+            <Fragment>
+                <Helmet defaultTitle="PWA Health App">
+                    <link
+                        rel="shortcut icon"
+                        href="/build/favicon.ico"
+                        type="image/x-icon"
+                    />
+                    <link
+                        rel="icon"
+                        href="/static/favicon.ico"
+                        type="image/x-icon"
+                    />
 
-                <link
-                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-                    rel="stylesheet"
-                />
+                    <link
+                        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                        rel="stylesheet"
+                    />
 
-                <link href="/static/build/style/style.css" rel="stylesheet" />
+                    <link
+                        href="/static/build/style/style.css"
+                        rel="stylesheet"
+                    />
 
-                <meta charSet="UTF-8" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-                />
+                    <meta charSet="UTF-8" />
+                    <meta
+                        name="viewport"
+                        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+                    />
 
-                <meta httpEquiv="X-UA-Compatible" content="ie-edge" />
+                    <meta httpEquiv="X-UA-Compatible" content="ie-edge" />
 
-                <link rel="manifest" href="/static/manifest.json" />
+                    <link rel="manifest" href="/static/manifest.json" />
 
-                <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta name="mobile-web-app-capable" content="yes" />
+                    <meta name="apple-mobile-web-app-capable" content="yes" />
+                    <meta name="mobile-web-app-capable" content="yes" />
 
-                <meta
-                    name="apple-mobile-web-app-status-bar-style"
-                    content="black"
-                />
-                <meta name="apple-mobile-web-app-title" content="PWAGram" />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-57x57.png"
-                    sizes="57x57"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-60x60.png"
-                    sizes="60x60"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-72x72.png"
-                    sizes="72x72"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-76x76.png"
-                    sizes="76x76"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-114x114.png"
-                    sizes="114x114"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-120x120.png"
-                    sizes="120x120"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-144x144.png"
-                    sizes="144x144"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-152x152.png"
-                    sizes="152x152"
-                />
-                <link
-                    rel="apple-touch-icon"
-                    href="/static/images/icons/apple-icon-180x180.png"
-                    sizes="180x180"
-                />
+                    <meta
+                        name="apple-mobile-web-app-status-bar-style"
+                        content="black"
+                    />
+                    <meta name="apple-mobile-web-app-title" content="PWAGram" />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-57x57.png"
+                        sizes="57x57"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-60x60.png"
+                        sizes="60x60"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-72x72.png"
+                        sizes="72x72"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-76x76.png"
+                        sizes="76x76"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-114x114.png"
+                        sizes="114x114"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-120x120.png"
+                        sizes="120x120"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-144x144.png"
+                        sizes="144x144"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-152x152.png"
+                        sizes="152x152"
+                    />
+                    <link
+                        rel="apple-touch-icon"
+                        href="/static/images/icons/apple-icon-180x180.png"
+                        sizes="180x180"
+                    />
 
-                <meta
-                    name="msapplication-TileImage"
-                    content="static/images/icons/app-icon-144x144.png"
-                />
-                <meta name="msapplication-TileColor" content="#fff" />
-                <meta name="theme-color" content="#3f51b5" />
-            </Helmet>
-            <MuiThemeProvider muiTheme={muiTheme}>
-                {user_loggedin && <Header />}
-                <main className={styles.main}>
-                    {renderRoutes(route.routes)}
-                </main>
-                {user_loggedin && <Navbar />}
+                    <meta
+                        name="msapplication-TileImage"
+                        content="static/images/icons/app-icon-144x144.png"
+                    />
+                    <meta name="msapplication-TileColor" content="#fff" />
+                    <meta name="theme-color" content="#3f51b5" />
+                </Helmet>
+                <MuiThemeProvider muiTheme={getMuiTheme(theme_color, muiT)}>
+                    {user_loggedin && <Header />}
+                    <main className={styles.main}>
+                        {renderRoutes(route.routes)}
+                    </main>
+                    {user_loggedin && <Navbar />}
 
-                {user_loggedin && <Sidebar />}
+                    {user_loggedin && <Sidebar />}
 
-                <Snackbar />
+                    <Snackbar />
 
-                {user_loggedin && <CameraModule />}
+                    {user_loggedin && <CameraModule />}
 
-                {loading && Loader}
-            </MuiThemeProvider>
-        </Fragment>
-    )
+                    {loading && Loader}
+                </MuiThemeProvider>
+            </Fragment>
+        )
+    }
 }
 
 Master.propTypes = {
@@ -167,9 +182,13 @@ Master.propTypes = {
     userAgent: T.string.isRequired,
     loading: T.bool.isRequired,
     user_loggedin: T.bool.isRequired,
+    theme_color: T.object.isRequired,
 
     showHeader: T.func.isRequired,
     hideHeader: T.func.isRequired,
+    showSnackbar: T.func.isRequired,
+    showOnlineTheme: T.func.isRequired,
+    showOfflineTheme: T.func.isRequired,
 }
 
 Master.contextTypes = {
@@ -177,18 +196,31 @@ Master.contextTypes = {
 }
 
 import { connect } from 'react-redux'
-import { showHeader, hideHeader } from '@actions/common'
+import {
+    showHeader,
+    hideHeader,
+    showSnackbar,
+    showOnlineTheme,
+    showOfflineTheme,
+} from '@actions/common'
 
-const mapStateToProps = ({ common: { isSSR, userAgent, loading }, user }) => ({
+const mapStateToProps = ({
+    common: { isSSR, userAgent, loading, theme_color },
+    user,
+}) => ({
     isSSR,
     userAgent,
     loading,
     user_loggedin: !isEmpty(user),
+    theme_color,
 })
 
 const mapDispatchToProps = dispatch => ({
     showHeader: () => dispatch(showHeader()),
     hideHeader: () => dispatch(hideHeader()),
+    showOnlineTheme: () => dispatch(showOnlineTheme()),
+    showOfflineTheme: () => dispatch(showOfflineTheme()),
+    showSnackbar: event => dispatch(showSnackbar(event)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Master)

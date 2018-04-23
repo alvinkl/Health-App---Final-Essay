@@ -1,4 +1,13 @@
 import {
+    cyan100,
+    cyan500,
+    cyan700,
+    grey100,
+    grey500,
+    grey700,
+} from 'material-ui/styles/colors'
+
+import {
     OPEN_SIDEBAR,
     CLOSE_SIDEBAR,
     SHOW_HEADER,
@@ -9,6 +18,8 @@ import {
     HIDE_SNACKBAR,
     SHOW_CAMERA_MODULE,
     HIDE_CAMERA_MODULE,
+    SHOW_ONLINE_THEME,
+    SHOW_OFFLINE_THEME,
 } from '../actions/common'
 
 export const initial_state = {
@@ -28,6 +39,14 @@ export const initial_state = {
 
     isSSR: false,
     userAgent: '',
+
+    theme_color: {
+        palette: {
+            primary1Color: cyan500,
+            primary2Color: cyan700,
+            primary3Color: cyan100,
+        },
+    },
 }
 
 export default function common(state = initial_state, action) {
@@ -91,6 +110,28 @@ export default function common(state = initial_state, action) {
             return {
                 ...state,
                 camera_module: false,
+            }
+        case SHOW_ONLINE_THEME:
+            return {
+                ...state,
+                theme_color: {
+                    palette: {
+                        primary1Color: cyan500,
+                        primary2Color: cyan700,
+                        primary3Color: cyan100,
+                    },
+                },
+            }
+        case SHOW_OFFLINE_THEME:
+            return {
+                ...state,
+                theme_color: {
+                    palette: {
+                        primary1Color: grey500,
+                        primary2Color: grey700,
+                        primary3Color: grey100,
+                    },
+                },
             }
         default:
             return state

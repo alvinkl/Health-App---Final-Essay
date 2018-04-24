@@ -2,6 +2,7 @@ import {
     FETCH_FEEDS,
     FAILED_FETCH_FEEDS,
     FETCHED_FEEDS,
+    FETCHED_FEEDS_IDB,
     ADD_FEED,
     ADD_FEED_SYNCED,
     FAILED_ADD_FEED,
@@ -41,6 +42,7 @@ export default (state = initial_state, action) => {
             }
 
         case FETCHED_FEEDS:
+        case FETCHED_FEEDS_IDB:
             return {
                 ...state,
                 loading: false,

@@ -32,7 +32,7 @@ import 'isomorphic-fetch'
 const app = express()
 
 // Use EJS as templating Engine
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, '../../build/views'))
 app.set('view engine', 'ejs')
 
 // Secure HTTP Headers

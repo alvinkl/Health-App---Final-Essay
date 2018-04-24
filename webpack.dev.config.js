@@ -18,6 +18,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // Offline Plugin
 const OfflinePlugin = require('offline-plugin')
 
+// HTML plugin
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+
 const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'development'
@@ -111,9 +114,13 @@ const serverConfig = {
             raw: true,
             entryOnly: false,
         }),
-        new NodemonPlugin(),
+        new NodemonPlugin({
+            script: './build/server.build.js',
+            watch: path.resolve('./build'),
+            ignore: ['*.js.map'],
+        }),
         new webpack.HotModuleReplacementPlugin(),
-        new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
+        // new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
     node: {
@@ -138,13 +145,13 @@ const clientConfig = {
     // ],
 
     entry: {
-        'build/client.build': [
+        'client.build': [
             'react-hot-loader/patch',
             // 'babel-polyfill',
             path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
             path.resolve(__dirname, 'src/client/index.jsx'),
         ],
-        'build/idb-utilities': [
+        'idb-utilities': [
             // 'babel-polyfill',
             path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
             path.resolve(__dirname, 'src/helper/indexedDB-utilities.js'),
@@ -201,10 +208,18 @@ const clientConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
+        new HTMLWebpackPlugin({
+            title: 'PWA Health App',
+            inject: true,
+            template:
+                '!!raw-loader!' +
+                path.resolve(__dirname, 'src/server/views/layout.ejs'),
+            filename: path.resolve(__dirname, 'build/views/layout.ejs'),
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({
-            filename: 'build/style/style.css',
+            filename: 'style/style.css',
             allChunks: true,
         }),
     ],
@@ -221,7 +236,8 @@ const clientConfig = {
     devtool: 'source-map',
 
     output: {
-        path: path.resolve(__dirname, 'public'),
+        path: path.resolve(__dirname, 'public', 'build'),
+        publicPath: 'static/build',
         filename: '[name].js',
     },
 }

@@ -2,9 +2,11 @@ import { getFoodDiary, addFoodToDiary, getDiaryReport } from '@urls'
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
 import parseDate from '@helper/parseDate'
+import { readData, readAllData, writeData } from '@helper/indexedDB-utilities'
 
 export const FAIL_FETCH_DIARY = 'FAIL_FETCH_DIARY'
 export const FETCHED_DIARY = 'FETCHED_DIARY'
+export const FETCHED_DIARY_IDB = 'FETCHED_DIARY_IDB'
 export const FETCHED_DIARY_REPORT = 'FETCHED_DIARY_REPORT'
 
 export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
@@ -19,6 +21,13 @@ export const fetchDiary = (startDate, endDate) => async dispatch => {
         endDate: endDate || parseDate(today),
     })
 
+    // Fetch from IDB
+    const idb_diary = await readData('diary', query)
+    dispatch({
+        type: FETCHED_DIARY_IDB,
+        diary: idb_diary ? idb_diary.data : [],
+    })
+
     const [err, data] = await to(
         fetch(getFoodDiary + query, {
             method: 'GET',
@@ -31,6 +40,11 @@ export const fetchDiary = (startDate, endDate) => async dispatch => {
     if (err) return Promise.reject(dispatch({ type: FAIL_FETCH_DIARY }))
 
     const diary = await data.json()
+
+    writeData('diary', {
+        id: query,
+        data: diary,
+    })
 
     return Promise.resolve(
         dispatch({

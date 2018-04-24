@@ -53,12 +53,18 @@ var trimCache = function(cacheName, url, totalToTrim, indexToPop) {
 }
 
 // IndexedDB
-var dbPromise = idb.open('feeds-store', 1, function(db) {
+var dbPromise = idb.open('api-store', 1, function(db) {
     if (!db.objectStoreNames.contains('feeds'))
         db.createObjectStore('feeds', { keyPath: 'id' })
 
     if (!db.objectStoreNames.contains('sync-feeds'))
         db.createObjectStore('sync-feeds', { keyPath: 'id' })
+
+    if (!db.objectStoreNames.contains('diary'))
+        db.createObjectStore('diary', { keyPath: 'id' })
+
+    if (!db.objectStoreNames.contains('diary-report'))
+        db.createObjectStore('diary-report', { keyPath: 'id' })
 })
 
 function readAllData(st) {

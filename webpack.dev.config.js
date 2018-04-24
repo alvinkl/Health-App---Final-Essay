@@ -131,11 +131,25 @@ const serverConfig = {
 const clientConfig = {
     name: 'client',
 
-    entry: [
-        'react-hot-loader/patch',
-        'babel-polyfill',
-        path.resolve(__dirname, 'src/client/index.jsx'),
-    ],
+    // entry: [
+    //     'react-hot-loader/patch',
+    //     'babel-polyfill',
+    //     path.resolve(__dirname, 'src/client/index.jsx'),
+    // ],
+
+    entry: {
+        'build/client.build': [
+            'react-hot-loader/patch',
+            // 'babel-polyfill',
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/client/index.jsx'),
+        ],
+        'build/idb-utilities': [
+            // 'babel-polyfill',
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/helper/indexedDB-utilities.js'),
+        ],
+    },
 
     module: {
         loaders: [
@@ -190,7 +204,7 @@ const clientConfig = {
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({
-            filename: 'style/style.css',
+            filename: 'build/style/style.css',
             allChunks: true,
         }),
     ],
@@ -207,8 +221,8 @@ const clientConfig = {
     devtool: 'source-map',
 
     output: {
-        path: path.resolve(__dirname, 'public/build'),
-        filename: 'client.build.js',
+        path: path.resolve(__dirname, 'public'),
+        filename: '[name].js',
     },
 }
 

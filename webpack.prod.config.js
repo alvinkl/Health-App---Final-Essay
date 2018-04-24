@@ -11,7 +11,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 // CSS config for server and client
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+// HTML Webpack Plugin
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+
 const alias = require('./aliases')
+
+const ENV = process.env.NODE_ENV || 'production'
 
 // Babel - Loader
 const babel_loader = {
@@ -95,7 +100,7 @@ const serverConfig = {
         //     raw: true,
         //     entryOnly: false,
         // }),
-        new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
+        // new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
     node: {
@@ -113,7 +118,17 @@ const serverConfig = {
 const clientConfig = {
     name: 'client',
 
-    entry: ['babel-polyfill', path.resolve(__dirname, 'src/client/index.jsx')],
+    entry: {
+        'client.build': [
+            'react-hot-loader/patch',
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/client/index.jsx'),
+        ],
+        'idb-utilities': [
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/helper/indexedDB-utilities.js'),
+        ],
+    },
 
     module: {
         loaders: [
@@ -162,14 +177,17 @@ const clientConfig = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify('production'),
+                NODE_ENV: JSON.stringify(ENV),
             },
         }),
-        // new CleanWebpackPlugin(['public/build/*'], {
-        //     root: __dirname,
-        //     verbose: true,
-        //     watch: true,
-        // }),
+        new HTMLWebpackPlugin({
+            title: 'PWA Health App',
+            inject: true,
+            template:
+                '!!raw-loader!' +
+                path.resolve(__dirname, 'src/server/views/layout.ejs'),
+            filename: path.resolve(__dirname, 'build/views/layout.ejs'),
+        }),
         new webpack.NamedModulesPlugin(),
         new ExtractTextPlugin({
             filename: 'style/style.css',
@@ -180,9 +198,12 @@ const clientConfig = {
     devtool: 'cheap-mnodule-source-map',
 
     output: {
-        path: path.resolve(__dirname, 'public/build'),
-        filename: 'client.build.js',
+        path: path.resolve(__dirname, 'public', 'build'),
+        publicPath: 'static/build',
+        filename: '[name].js',
     },
 }
+
+console.log('[Webpack] Bundling for ', ENV, ' environment!')
 
 module.exports = [serverConfig, clientConfig]

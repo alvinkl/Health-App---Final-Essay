@@ -29,7 +29,6 @@ const ENV = process.env.NODE_ENV || 'development'
 const babel_loader = {
     loader: 'babel-loader',
     options: {
-        presets: ['env', 'react'],
         plugins: [
             ['transform-class-properties'],
             ['transform-object-rest-spread'],
@@ -42,6 +41,7 @@ const babel_loader = {
 
 const server_babel_loader = Object.assign({}, babel_loader, {
     options: {
+        presets: ['env', 'react'],
         plugins: [
             ...babel_loader.options.plugins,
             [
@@ -51,10 +51,16 @@ const server_babel_loader = Object.assign({}, babel_loader, {
                     extensions: ['.css'],
                 },
             ],
+            ['dynamic-import-node'],
         ],
     },
 })
-const client_babel_loader = Object.assign({}, babel_loader, {})
+const client_babel_loader = Object.assign({}, babel_loader, {
+    options: {
+        presets: ['env', 'react'],
+        plugins: [...babel_loader.options.plugins, ['dynamic-import-webpack']],
+    },
+})
 
 const resolve = {
     alias,
@@ -237,7 +243,7 @@ const clientConfig = {
 
     output: {
         path: path.resolve(__dirname, 'public', 'build'),
-        publicPath: 'static/build',
+        publicPath: '/static/build/',
         filename: '[name].js',
     },
 }

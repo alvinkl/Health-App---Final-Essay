@@ -46,10 +46,8 @@ const setupTemplate = (
     /* Start of Setting up React Router and initial actions */
     const client_routes = matchRoutes(routes, url)
     const initial_actions = client_routes.map(({ route }) => {
-        let { initialAction } = route.component
-        return initialAction instanceof Function
-            ? initialAction(store)
-            : Promise.resolve(null)
+        let { load } = route.component
+        return load instanceof Function ? load(store) : Promise.resolve(null)
     })
 
     /* End of Setting up React Router and initial actions */

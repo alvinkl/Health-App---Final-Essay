@@ -22,7 +22,6 @@ const ENV = process.env.NODE_ENV || 'production'
 const babel_loader = {
     loader: 'babel-loader',
     options: {
-        presets: ['env', 'react'],
         plugins: [
             ['transform-class-properties'],
             ['transform-object-rest-spread'],
@@ -34,6 +33,7 @@ const babel_loader = {
 
 const server_babel_loader = Object.assign({}, babel_loader, {
     options: {
+        presets: ['env', 'react'],
         plugins: [
             ...babel_loader.options.plugins,
             [
@@ -43,10 +43,16 @@ const server_babel_loader = Object.assign({}, babel_loader, {
                     extensions: ['.css'],
                 },
             ],
+            ['dynamic-import-node'],
         ],
     },
 })
-const client_babel_loader = Object.assign({}, babel_loader, {})
+const client_babel_loader = Object.assign({}, babel_loader, {
+    options: {
+        presets: ['env', 'react'],
+        plugins: [...babel_loader.options.plugins, ['dynamic-import-webpack']],
+    },
+})
 
 const resolve = {
     alias,
@@ -119,6 +125,20 @@ const clientConfig = {
     name: 'client',
 
     entry: {
+        vendor: [
+            'babel-polyfill',
+            'classnames',
+            'es6-promise',
+            'lodash',
+            'react',
+            'react-dom',
+            'react-redux',
+            'react-router',
+            'react-router-dom',
+            'react-router-redux',
+            'react-router-transition',
+            'react-transition-group',
+        ],
         'client.build': [
             'react-hot-loader/patch',
             path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
@@ -188,6 +208,10 @@ const clientConfig = {
                 path.resolve(__dirname, 'src/server/views/layout.ejs'),
             filename: path.resolve(__dirname, 'build/views/layout.ejs'),
         }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            filename: 'vendor.js',
+        }),
         new webpack.NamedModulesPlugin(),
         new ExtractTextPlugin({
             filename: 'style/style.css',
@@ -199,7 +223,7 @@ const clientConfig = {
 
     output: {
         path: path.resolve(__dirname, 'public', 'build'),
-        publicPath: 'static/build',
+        publicPath: '/static/build/',
         filename: '[name].js',
     },
 }

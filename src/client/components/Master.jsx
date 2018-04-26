@@ -10,11 +10,12 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 import CircularProgress from 'material-ui/CircularProgress'
 
-import Header from '@components/Header'
-import Navbar from '@components/Navbar'
-import Sidebar from '@components/Sidebar'
+import generateAsyncComponent from '@client/routes/generateAsyncComponent'
+// import Header from '@components/Header'
+// import Navbar from '@components/Navbar'
+// import Sidebar from '@components/Sidebar'
 import Snackbar from '@components/Snackbar'
-import CameraModule from '@components/CameraModule'
+// import CameraModule from '@components/CameraModule'
 
 import getRouteIndex from '@helper/getRouteIndex'
 
@@ -27,8 +28,22 @@ const Loader = (
 )
 
 class Master extends Component {
+    state = {
+        Header: null,
+        Navbar: null,
+        Sidebar: null,
+        CameraModule: null,
+    }
+
     componentDidMount() {
-        const { showSnackbar, showOnlineTheme, showOfflineTheme } = this.props
+        const {
+            showSnackbar,
+            showOnlineTheme,
+            showOfflineTheme,
+            user_loggedin,
+        } = this.props
+
+        if (user_loggedin) this.renderLoggedinComponent()
 
         window.addEventListener('online', () => {
             // showOnlineTheme()
@@ -40,6 +55,39 @@ class Master extends Component {
         })
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.user_loggedin) this.renderLoggedinComponent()
+    }
+
+    renderLoggedinComponent = async () => {
+        const { Header, Navbar, Sidebar, CameraModule } = this.state
+        if (!Header && !Navbar && !Sidebar && !CameraModule) {
+            const impH = generateAsyncComponent({
+                loader: () =>
+                    import(/* webpackChunkName: "Header" */ '@components/Header'),
+            })
+            const impNB = generateAsyncComponent({
+                loader: () =>
+                    import(/* webpackChunkName: "Navbar" */ '@components/Navbar'),
+            })
+            const impSB = generateAsyncComponent({
+                loader: () =>
+                    import(/* webpackChunkName: "Sidebar" */ '@components/Sidebar'),
+            })
+            const impCM = generateAsyncComponent({
+                loader: () =>
+                    import(/* webpackChunkName: "Camera Module" */ '@components/CameraModule'),
+            })
+
+            this.setState({
+                Header: impH,
+                Navbar: impNB,
+                Sidebar: impSB,
+                CameraModule: impCM,
+            })
+        }
+    }
+
     render() {
         const {
             route,
@@ -48,9 +96,9 @@ class Master extends Component {
             showHeader,
             hideHeader,
             loading,
-            user_loggedin,
             theme_color,
         } = this.props
+        const { Header, Navbar, Sidebar, CameraModule } = this.state
         const { router } = this.context
         !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
 
@@ -157,17 +205,17 @@ class Master extends Component {
                     <meta name="theme-color" content="#3f51b5" />
                 </Helmet>
                 <MuiThemeProvider muiTheme={getMuiTheme(theme_color, muiT)}>
-                    {user_loggedin && <Header />}
+                    {!!Header && <Header />}
                     <main className={styles.main}>
                         {renderRoutes(route.routes)}
                     </main>
-                    {user_loggedin && <Navbar />}
+                    {!!Navbar && <Navbar />}
 
-                    {user_loggedin && <Sidebar />}
+                    {!!Sidebar && <Sidebar />}
 
                     <Snackbar />
 
-                    {user_loggedin && <CameraModule />}
+                    {!!CameraModule && <CameraModule />}
 
                     {loading && Loader}
                 </MuiThemeProvider>

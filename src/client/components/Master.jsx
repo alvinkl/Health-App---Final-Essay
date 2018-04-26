@@ -4,11 +4,11 @@ import { Helmet } from 'react-helmet'
 // import { renderRoutes } from 'react-router-config'
 import renderRoutes from '@client/routes/renderRoutes'
 import { isEmpty } from 'lodash'
+import Loadable from 'react-loadable'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
-import CircularProgress from 'material-ui/CircularProgress'
 
 import generateAsyncComponent from '@client/routes/generateAsyncComponent'
 // import Header from '@components/Header'
@@ -16,16 +16,17 @@ import generateAsyncComponent from '@client/routes/generateAsyncComponent'
 // import Sidebar from '@components/Sidebar'
 import Snackbar from '@components/Snackbar'
 // import CameraModule from '@components/CameraModule'
+import Loader from './Loader'
 
 import getRouteIndex from '@helper/getRouteIndex'
 
 import styles from './master.css'
 
-const Loader = (
-    <div className={styles.loader}>
-        <CircularProgress />
-    </div>
-)
+const loadingComponent = props => {
+    if (props.pastDelay) return Loader
+
+    return null
+}
 
 class Master extends Component {
     state = {
@@ -62,21 +63,29 @@ class Master extends Component {
     renderLoggedinComponent = async () => {
         const { Header, Navbar, Sidebar, CameraModule } = this.state
         if (!Header && !Navbar && !Sidebar && !CameraModule) {
-            const impH = generateAsyncComponent({
+            const impH = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Header" */ '@components/Header'),
+                loading: loadingComponent,
+                delay: 300,
             })
-            const impNB = generateAsyncComponent({
+            const impNB = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Navbar" */ '@components/Navbar'),
+                loading: loadingComponent,
+                delay: 300,
             })
-            const impSB = generateAsyncComponent({
+            const impSB = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Sidebar" */ '@components/Sidebar'),
+                loading: loadingComponent,
+                delay: 300,
             })
-            const impCM = generateAsyncComponent({
+            const impCM = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Camera Module" */ '@components/CameraModule'),
+                loading: loadingComponent,
+                delay: 300,
             })
 
             this.setState({

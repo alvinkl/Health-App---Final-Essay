@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "engines": {
-        "node": "8.0.0",
+        "node": "8.1.1",
         "npm": "5.4.2",
         "yarn": "1.5.1"
     },
@@ -18,7 +18,6 @@
         "lint": "eslint ./src/*",
         "generate-debug": "donejs add vscode",
         "debug": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js",
-        "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development ",
         "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
     },
     "betterScripts": {
@@ -99,6 +98,7 @@
         "helmet": "^3.11.0",
         "html-webpack-plugin": "^3.2.0",
         "idb": "^2.1.1",
+        "ip": "^1.1.5",
         "isomorphic-fetch": "^2.2.1",
         "isomorphic-style-loader": "^4.0.0",
         "json-loader": "^0.5.7",

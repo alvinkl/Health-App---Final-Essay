@@ -41,8 +41,8 @@ let ProtectedRoute = ({ protect, route, p, user }) => {
     if (protect && isEmpty(user)) return <Redirect to="/landing" push />
     // if (protect && !user.googleID) return <Redirect to="/landing" push />
 
-    // if (user.new && !!route.name && route.name !== 'getting-started')
-    //     return <Redirect to="/getting-started" push />
+    if (protect && route.name !== 'getting-started' && !user.diet_plan.success)
+        return <Redirect to="/getting-started" push />
 
     // if (!user.new && !!route.name && route.name === 'getting-started')
     //     return <Redirect to="/home" push />

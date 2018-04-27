@@ -24,6 +24,10 @@ export const initialState = {
             value: 0,
             tp: 1,
         },
+        target_weight: {
+            value: 0,
+            tp: 1,
+        },
         activity: 0,
         dateBirth: null,
 

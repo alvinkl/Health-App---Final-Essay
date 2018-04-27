@@ -9,6 +9,11 @@ import { matchRoutes } from 'react-router-config'
 import renderRoutes from '@client/routes/renderRoutes'
 import routes from '@client/routes'
 
+// React Loadable
+import Loadable from 'react-loadable'
+import { getBundles } from 'react-loadable/webpack'
+// import stats from '@root/build/react-loadable.json'
+
 // Redux
 import { Provider } from 'react-redux'
 import configureStore from '@client/store'
@@ -27,6 +32,8 @@ export const renderTemplateLanding = (user, userAgent, url) => {
 
     return render
 }
+
+let stats = null
 
 const setupTemplate = (
     { userAgent, url },
@@ -52,14 +59,23 @@ const setupTemplate = (
 
     /* End of Setting up React Router and initial actions */
 
+    // React loadable
+    let modules = []
+
     return Promise.all(initial_actions).then(() => {
         const markup = renderToString(
-            <Provider store={store}>
-                <StaticRouter location={url} context={static_context}>
-                    {renderRoutes(routes)}
-                </StaticRouter>
-            </Provider>
+            <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+                <Provider store={store}>
+                    <StaticRouter location={url} context={static_context}>
+                        {renderRoutes(routes)}
+                    </StaticRouter>
+                </Provider>
+            </Loadable.Capture>
         )
+
+        if (!stats) stats = require('./react-loadable.json')
+
+        let bundles = getBundles(stats, modules)
 
         const finalState = store.getState()
 
@@ -70,6 +86,12 @@ const setupTemplate = (
             helmet,
             preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
             vapidPublicKeys: JSON.stringify(VapidPublicKeys),
+            preloadedBundles: bundles
+                .map(
+                    bundle =>
+                        `<script src="/static/build/${bundle.file}"></script>`
+                )
+                .join('\n'),
         }
     })
 }

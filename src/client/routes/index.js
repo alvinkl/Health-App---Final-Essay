@@ -37,13 +37,13 @@ const route = [
                 path: '/',
                 exact: true,
                 protected: true,
-                // component: generateAsyncComponent({
-                //     loader: () =>
-                //         import(/* webpackChunkName: "Contents" */ '@components/Contents'),
-                // }),
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Contents" */ '@components/Contents'),
+                    modules: ['@components/Contents'],
+                    webpack: () => [
+                        require.resolveWeak('@components/Contents'),
+                    ],
                     loading: loadingComponent,
                 }),
             },
@@ -61,6 +61,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Diary */ '@components/Diary'),
+                    modules: ['@components/Diary'],
+                    webpack: () => [require.resolveWeak('@components/Diary')],
                     loading: loadingComponent,
                 }),
             },
@@ -71,7 +73,9 @@ const route = [
                 protected: true,
                 component: Loadable({
                     loader: () =>
-                        import(/*  webpackChunkName: Diary */ '@components/Report'),
+                        import(/*  webpackChunkName: Report */ '@components/Report'),
+                    modules: ['@components/Report'],
+                    webpack: () => [require.resolveWeak('@components/Report')],
                     loading: loadingComponent,
                 }),
             },
@@ -83,7 +87,9 @@ const route = [
                 exact: true,
                 component: Loadable({
                     loader: () =>
-                        import(/*  webpackChunkName: Diary */ '@components/Landing'),
+                        import(/*  webpackChunkName: Landing */ '@components/Landing'),
+                    modules: ['@components/Landing'],
+                    webpack: () => [require.resolveWeak('@components/Landing')],
                     loading: loadingComponent,
                 }),
             },
@@ -93,7 +99,13 @@ const route = [
                 exact: true,
                 component: Loadable({
                     loader: () =>
-                        import(/*  webpackChunkName: Diary */ '@components/Landing/GettingStarted'),
+                        import(/*  webpackChunkName: GettingStarted */ '@components/Landing/GettingStarted'),
+                    modules: ['@components/Landing/GettingStarted'],
+                    webpack: () => [
+                        require.resolveWeak(
+                            '@components/Landing/GettingStarted'
+                        ),
+                    ],
                     loading: loadingComponent,
                 }),
             },

@@ -14,6 +14,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // HTML Webpack Plugin
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 
+// React Loadable
+const { ReactLoadablePlugin } = require('react-loadable/webpack')
+
 const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'production'
@@ -27,6 +30,7 @@ const babel_loader = {
             ['transform-object-rest-spread'],
             ['transform-react-constant-elements'],
             ['transform-react-inline-elements'],
+            ['react-loadable/babel'],
         ],
     },
 }
@@ -82,6 +86,10 @@ const serverConfig = {
                     },
                 },
             },
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            },
         ],
     },
 
@@ -97,7 +105,6 @@ const serverConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
-        // Add sourcemap support for debugging
         new webpack.DefinePlugin({
             window: {},
         }),
@@ -200,17 +207,20 @@ const clientConfig = {
                 NODE_ENV: JSON.stringify(ENV),
             },
         }),
-        new HTMLWebpackPlugin({
-            title: 'PWA Health App',
-            inject: true,
-            template:
-                '!!raw-loader!' +
-                path.resolve(__dirname, 'src/server/views/layout.ejs'),
-            filename: path.resolve(__dirname, 'build/views/layout.ejs'),
+        new ReactLoadablePlugin({
+            filename: './src/server/functions/react-loadable.json',
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.js',
+        }),
+        new HTMLWebpackPlugin({
+            title: 'PWA Health App',
+            inject: false,
+            template:
+                '!!raw-loader!' +
+                path.resolve(__dirname, 'src/server/views/layout.ejs'),
+            filename: path.resolve(__dirname, 'build/views/layout.ejs'),
         }),
         new webpack.NamedModulesPlugin(),
         new ExtractTextPlugin({
@@ -219,7 +229,7 @@ const clientConfig = {
         }),
     ],
 
-    devtool: 'cheap-mnodule-source-map',
+    devtool: 'cheap-module-source-map',
 
     output: {
         path: path.resolve(__dirname, 'public', 'build'),

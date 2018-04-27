@@ -23,7 +23,7 @@ import getRouteIndex from '@helper/getRouteIndex'
 import styles from './master.css'
 
 const loadingComponent = props => {
-    if (props.pastDelay) return Loader
+    if (props.pastDelay) return null
 
     return null
 }
@@ -67,24 +67,34 @@ class Master extends Component {
                 loader: () =>
                     import(/* webpackChunkName: "Header" */ '@components/Header'),
                 loading: loadingComponent,
+                modules: ['@components/Header'],
+                webpack: () => [require.resolveWeak('@components/Header')],
                 delay: 300,
             })
             const impNB = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Navbar" */ '@components/Navbar'),
                 loading: loadingComponent,
+                modules: ['@components/Navbar'],
+                webpack: () => [require.resolveWeak('@components/Navbar')],
                 delay: 300,
             })
             const impSB = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Sidebar" */ '@components/Sidebar'),
                 loading: loadingComponent,
+                modules: ['@components/Sidebar'],
+                webpack: () => [require.resolveWeak('@components/Sidebar')],
                 delay: 300,
             })
             const impCM = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Camera Module" */ '@components/CameraModule'),
                 loading: loadingComponent,
+                modules: ['@components/CameraModule'],
+                webpack: () => [
+                    require.resolveWeak('@components/CameraModule'),
+                ],
                 delay: 300,
             })
 

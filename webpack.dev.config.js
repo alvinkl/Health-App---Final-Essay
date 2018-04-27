@@ -21,6 +21,9 @@ const OfflinePlugin = require('offline-plugin')
 // HTML plugin
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 
+// React Loadable
+const { ReactLoadablePlugin } = require('react-loadable/webpack')
+
 const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'development'
@@ -34,6 +37,7 @@ const babel_loader = {
             ['transform-object-rest-spread'],
             ['transform-react-constant-elements'],
             ['transform-react-inline-elements'],
+            ['react-loadable/babel'],
             // require('babel-plugin-react-hot-loader/babel'),
         ],
     },
@@ -94,6 +98,10 @@ const serverConfig = {
                     },
                 },
             },
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            },
         ],
     },
 
@@ -112,6 +120,7 @@ const serverConfig = {
         //     watch: true,
         // }),
         // Add sourcemap support for debugging
+
         new webpack.DefinePlugin({
             window: {},
         }),
@@ -214,9 +223,12 @@ const clientConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
+        new ReactLoadablePlugin({
+            filename: './src/server/functions/react-loadable.json',
+        }),
         new HTMLWebpackPlugin({
             title: 'PWA Health App',
-            inject: true,
+            inject: false,
             template:
                 '!!raw-loader!' +
                 path.resolve(__dirname, 'src/server/views/layout.ejs'),

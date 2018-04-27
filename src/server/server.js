@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session'
 import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
+import Loadable from 'react-loadable'
 
 import routes from './routes'
 import { cookieKey, mongoURI } from './config/keys'
@@ -76,4 +77,8 @@ app.get('/.well-known/acme-challenge/:content', (req, res) =>
 routes(app)
 
 const PORT = process.env.PORT || 8000
-app.listen(PORT)
+Loadable.preloadAll().then(() => {
+    app.listen(PORT, () => {
+        console.log('Server running on port:', PORT)
+    })
+})

@@ -12,13 +12,13 @@ var STATIC_CACHE = [
 
     '/static/favicon.ico',
     '/static/manifest.json',
-    '/report',
-    '/diary',
+    // '/report',
+    // '/diary',
     '/landing',
     '/getting-started',
 
     '/static/build/client.build.js',
-    '/static/build/client.build.js.map',
+    '/static/build/vendor.js',
     '/static/build/style/style.css',
 
     'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',

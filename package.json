@@ -4,14 +4,16 @@
     "description": "",
     "main": "index.js",
     "engines": {
-        "node": ">=8.0.0",
-        "npm": ">=5.4.2",
-        "yarn": ">=1.5.1"
+        "node": "8.0.0",
+        "npm": "5.4.2",
+        "yarn": "1.5.1"
     },
     "scripts": {
         "start": "node build/server.build.js",
         "build": "better-npm-run build",
+        "watch-dev": "better-npm-run watch-development",
         "start-dev": "better-npm-run start-development",
+        "build-dev": "better-npm-run build-development",
         "start-nodemon": "nodemon src/server/index.js --exec babel-node",
         "lint": "eslint ./src/*",
         "generate-debug": "donejs add vscode",
@@ -20,8 +22,20 @@
         "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
     },
     "betterScripts": {
-        "start-development": {
+        "watch-development": {
             "command": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        "start-development": {
+            "command": "node build/server.build.js",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        "build-development": {
+            "command": "rimraf ./build && rimraf ./public/build && webpack -p --config webpack.prod.config.js --progress",
             "env": {
                 "NODE_ENV": "development"
             }
@@ -55,12 +69,26 @@
     "homepage": "https://github.com/alvinkl/Health-App---Final-Essay#readme",
     "dependencies": {
         "autoprefixer": "^8.0.0",
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
         "babel-plugin-css-modules-transform": "^1.5.0",
+        "babel-plugin-dynamic-import-node": "^1.2.0",
+        "babel-plugin-dynamic-import-webpack": "^1.0.2",
+        "babel-plugin-extensible-destructuring": "^4.2.0",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-plugin-transform-react-constant-elements": "^6.23.0",
+        "babel-plugin-transform-react-inline-elements": "^6.22.0",
         "babel-polyfill": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-react": "^6.24.1",
         "better-npm-run": "^0.1.0",
         "body-parser": "^1.18.2",
         "classnames": "^2.2.5",
+        "clean-webpack-plugin": "^0.1.19",
         "cookie-session": "^2.0.0-beta.3",
+        "copy-webpack-plugin": "^4.4.1",
         "createref": "^0.5.0",
         "css-loader": "^0.28.9",
         "ejs": "^2.5.7",
@@ -69,8 +97,11 @@
         "extract-text-webpack-plugin": "^3.0.2",
         "file-loader": "^1.1.6",
         "helmet": "^3.11.0",
+        "html-webpack-plugin": "^3.2.0",
         "idb": "^2.1.1",
         "isomorphic-fetch": "^2.2.1",
+        "isomorphic-style-loader": "^4.0.0",
+        "json-loader": "^0.5.7",
         "lodash": "^4.17.5",
         "material-ui": "^0.20.0",
         "moment": "^2.21.0",
@@ -78,10 +109,12 @@
         "passport": "^0.4.0",
         "passport-google-oauth20": "^1.0.0",
         "postcss-loader": "^2.1.0",
+        "raw-loader": "^0.5.1",
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "react-helmet": "^5.2.0",
         "react-input-mask": "^1.2.2",
+        "react-loadable": "^5.3.1",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-config": "^1.0.0-beta.4",
@@ -92,24 +125,11 @@
         "recharts": "^1.0.0-beta.10",
         "redux": "^3.7.2",
         "redux-thunk": "^2.2.0",
+        "request-promise": "^4.2.2",
         "sass-loader": "^6.0.6",
         "style-loader": "^0.20.1",
-        "web-push": "^3.3.0",
-        "babel-cli": "^6.26.0",
-        "babel-core": "^6.26.0",
-        "babel-loader": "^7.1.2",
-        "babel-plugin-extensible-destructuring": "^4.2.0",
-        "babel-plugin-transform-class-properties": "^6.24.1",
-        "babel-plugin-transform-object-rest-spread": "^6.26.0",
-        "babel-plugin-transform-react-constant-elements": "^6.23.0",
-        "babel-plugin-transform-react-inline-elements": "^6.22.0",
-        "babel-preset-env": "^1.6.1",
-        "babel-preset-react": "^6.24.1",
-        "clean-webpack-plugin": "^0.1.19",
-        "copy-webpack-plugin": "^4.4.1",
-        "isomorphic-style-loader": "^4.0.0",
-        "request-promise": "^4.2.2",
         "sugarss": "^1.0.1",
+        "web-push": "^3.3.0",
         "webpack": "^3.11.0",
         "webpack-node-externals": "^1.6.0"
     },

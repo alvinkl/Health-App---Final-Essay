@@ -30,8 +30,9 @@
     <div id="root"><%- markup %></div>
 
     <script src="/static/cdnjs/idb.min.js"></script>
+    <!-- <script src="/static/build/idb-utilities.js"></script> -->
     <script src="/static/cdnjs/utilities.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" defer>
         var swRegistration = null;
         var isSubscribed = false
 
@@ -50,8 +51,7 @@
         window.__VAPID_PUBLIC_KEYS__ = <%- vapidPublicKeys %>;
     </script>
 
-    <script src="/static/build/client.build.js"></script>
-    <script src="/static/build/client.build.js.map"></script>
+
     
 </body>
 

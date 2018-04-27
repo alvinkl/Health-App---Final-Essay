@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session'
 import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
+// import Loadable from 'react-loadable'
 
 import routes from './routes'
 import { cookieKey, mongoURI } from './config/keys'
@@ -32,7 +33,7 @@ import 'isomorphic-fetch'
 const app = express()
 
 // Use EJS as templating Engine
-app.set('views', path.join(__dirname, 'views'))
+app.set('views', path.join(__dirname, '../../build/views'))
 app.set('view engine', 'ejs')
 
 // Secure HTTP Headers
@@ -76,4 +77,8 @@ app.get('/.well-known/acme-challenge/:content', (req, res) =>
 routes(app)
 
 const PORT = process.env.PORT || 8000
-app.listen(PORT)
+// Loadable.preloadAll().then(() => {
+app.listen(PORT, () => {
+    console.log('Server running on port:', PORT)
+})
+// })

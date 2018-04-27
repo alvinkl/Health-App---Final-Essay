@@ -18,6 +18,12 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // Offline Plugin
 const OfflinePlugin = require('offline-plugin')
 
+// HTML plugin
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+
+// React Loadable
+const { ReactLoadablePlugin } = require('react-loadable/webpack')
+
 const alias = require('./aliases')
 
 const ENV = process.env.NODE_ENV || 'development'
@@ -26,12 +32,12 @@ const ENV = process.env.NODE_ENV || 'development'
 const babel_loader = {
     loader: 'babel-loader',
     options: {
-        presets: ['env', 'react'],
         plugins: [
             ['transform-class-properties'],
             ['transform-object-rest-spread'],
             ['transform-react-constant-elements'],
             ['transform-react-inline-elements'],
+            ['react-loadable/babel'],
             // require('babel-plugin-react-hot-loader/babel'),
         ],
     },
@@ -39,6 +45,7 @@ const babel_loader = {
 
 const server_babel_loader = Object.assign({}, babel_loader, {
     options: {
+        presets: ['env', 'react'],
         plugins: [
             ...babel_loader.options.plugins,
             [
@@ -48,10 +55,16 @@ const server_babel_loader = Object.assign({}, babel_loader, {
                     extensions: ['.css'],
                 },
             ],
+            ['dynamic-import-node'],
         ],
     },
 })
-const client_babel_loader = Object.assign({}, babel_loader, {})
+const client_babel_loader = Object.assign({}, babel_loader, {
+    options: {
+        presets: ['env', 'react'],
+        plugins: [...babel_loader.options.plugins, ['dynamic-import-webpack']],
+    },
+})
 
 const resolve = {
     alias,
@@ -85,6 +98,10 @@ const serverConfig = {
                     },
                 },
             },
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            },
         ],
     },
 
@@ -103,6 +120,7 @@ const serverConfig = {
         //     watch: true,
         // }),
         // Add sourcemap support for debugging
+
         new webpack.DefinePlugin({
             window: {},
         }),
@@ -111,9 +129,13 @@ const serverConfig = {
             raw: true,
             entryOnly: false,
         }),
-        new NodemonPlugin(),
+        new NodemonPlugin({
+            script: './build/server.build.js',
+            watch: path.resolve('./build'),
+            ignore: ['*.js.map'],
+        }),
         new webpack.HotModuleReplacementPlugin(),
-        new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
+        // new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
     node: {
@@ -131,11 +153,25 @@ const serverConfig = {
 const clientConfig = {
     name: 'client',
 
-    entry: [
-        'react-hot-loader/patch',
-        'babel-polyfill',
-        path.resolve(__dirname, 'src/client/index.jsx'),
-    ],
+    // entry: [
+    //     'react-hot-loader/patch',
+    //     'babel-polyfill',
+    //     path.resolve(__dirname, 'src/client/index.jsx'),
+    // ],
+
+    entry: {
+        'client.build': [
+            'react-hot-loader/patch',
+            // 'babel-polyfill',
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/client/index.jsx'),
+        ],
+        'idb-utilities': [
+            // 'babel-polyfill',
+            path.resolve(__dirname, 'src/client/require-babelPolyfill.js'),
+            path.resolve(__dirname, 'src/helper/indexedDB-utilities.js'),
+        ],
+    },
 
     module: {
         loaders: [
@@ -187,6 +223,17 @@ const clientConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
+        // new ReactLoadablePlugin({
+        //     filename: './src/server/functions/react-loadable.json',
+        // }),
+        new HTMLWebpackPlugin({
+            title: 'PWA Health App',
+            inject: true,
+            template:
+                '!!raw-loader!' +
+                path.resolve(__dirname, 'src/server/views/layout.ejs'),
+            filename: path.resolve(__dirname, 'build/views/layout.ejs'),
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new ExtractTextPlugin({
@@ -207,8 +254,9 @@ const clientConfig = {
     devtool: 'source-map',
 
     output: {
-        path: path.resolve(__dirname, 'public/build'),
-        filename: 'client.build.js',
+        path: path.resolve(__dirname, 'public', 'build'),
+        publicPath: '/static/build/',
+        filename: '[name].js',
     },
 }
 

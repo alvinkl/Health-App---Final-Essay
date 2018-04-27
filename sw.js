@@ -12,13 +12,13 @@ var STATIC_CACHE = [
 
     '/static/favicon.ico',
     '/static/manifest.json',
-    '/report',
-    '/diary',
+    // '/report',
+    // '/diary',
     '/landing',
     '/getting-started',
 
     '/static/build/client.build.js',
-    '/static/build/client.build.js.map',
+    '/static/build/vendor.js',
     '/static/build/style/style.css',
 
     'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
@@ -162,10 +162,14 @@ var firebaseURL =
     'firebasestorage.googleapis.com/v0/b/final-essay-dev.appspot.com/'
 
 // TODO: fix cache and fetch, when data fetched, use fetched data
+// TODO: Use this strategy only for assets, but for dynamic contents use standard fetch then update indexedDB
 var cacheAndFetchStrategy = function(event) {
+    var { url } = event.request
+
+    if (~url.indexOf('/api/')) return fetch(event.request)
+
     return caches.open(DYNAMIC_VERSION).then(function(cache) {
         return cache.match(event.request).then(function(response) {
-            var { url } = event.request
             if (~url.indexOf('auth/google')) return fetch(event.request)
 
             var fetchPromise = fetch(event.request).then(function(

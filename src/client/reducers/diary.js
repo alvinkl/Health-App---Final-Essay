@@ -1,4 +1,8 @@
-import { FETCHED_DIARY, FETCHED_DIARY_REPORT } from '@actions/diary'
+import {
+    FETCHED_DIARY,
+    FETCHED_DIARY_REPORT,
+    FETCHED_DIARY_IDB,
+} from '@actions/diary'
 
 export const initial_state = {
     today_diary: {
@@ -15,6 +19,7 @@ export const initial_state = {
 export default (state = initial_state, action) => {
     switch (action.type) {
         case FETCHED_DIARY:
+        case FETCHED_DIARY_IDB:
             return {
                 ...state,
                 today_diary: action.diary,

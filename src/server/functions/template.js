@@ -9,6 +9,11 @@ import { matchRoutes } from 'react-router-config'
 import renderRoutes from '@client/routes/renderRoutes'
 import routes from '@client/routes'
 
+// React Loadable
+// import Loadable from 'react-loadable'
+// import { getBundles } from 'react-loadable/webpack'
+// import stats from '@root/build/react-loadable.json'
+
 // Redux
 import { Provider } from 'react-redux'
 import configureStore from '@client/store'
@@ -28,6 +33,8 @@ export const renderTemplateLanding = (user, userAgent, url) => {
     return render
 }
 
+// let stats = null
+
 const setupTemplate = (
     { userAgent, url },
     initial_state,
@@ -46,22 +53,29 @@ const setupTemplate = (
     /* Start of Setting up React Router and initial actions */
     const client_routes = matchRoutes(routes, url)
     const initial_actions = client_routes.map(({ route }) => {
-        let { initialAction } = route.component
-        return initialAction instanceof Function
-            ? initialAction(store)
-            : Promise.resolve(null)
+        let { load } = route.component
+        return load instanceof Function ? load(store) : Promise.resolve(null)
     })
 
     /* End of Setting up React Router and initial actions */
 
+    // React loadable
+    let modules = []
+
     return Promise.all(initial_actions).then(() => {
         const markup = renderToString(
+            // <Loadable.Capture report={moduleName => modules.push(moduleName)}>
             <Provider store={store}>
                 <StaticRouter location={url} context={static_context}>
                     {renderRoutes(routes)}
                 </StaticRouter>
             </Provider>
+            // </Loadable.Capture>
         )
+
+        // if (!stats) stats = require('./react-loadable.json')
+
+        // let bundles = getBundles(stats, modules)
 
         const finalState = store.getState()
 
@@ -72,6 +86,12 @@ const setupTemplate = (
             helmet,
             preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
             vapidPublicKeys: JSON.stringify(VapidPublicKeys),
+            // preloadedBundles: bundles
+            //     .map(
+            //         bundle =>
+            //             `<script src="/static/build/${bundle.file}"></script>`
+            //     )
+            //     .join('\n'),
         }
     })
 }

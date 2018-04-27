@@ -3,13 +3,14 @@ import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
 import { getFeeds, addFeed, toggleLike as toggleLikeURL } from '@urls'
 import { LIKE, UNLIKE } from '@constant'
-import { readAllData } from '@helper/indexedDB-utilities'
+import { readAllData, writeData } from '@helper/indexedDB-utilities'
 
 import { showSnackbar } from './common'
 
 export const FETCH_FEEDS = 'FETCH_FEEDS'
 export const FAILED_FETCH_FEEDS = 'FAILED_FETCH_FEEDS'
 export const FETCHED_FEEDS = 'FETCHED_FEEDS'
+export const FETCHED_FEEDS_IDB = 'FETCHED_FEEDS_IDB'
 export const ADD_FEED = 'ADD_FEED'
 export const FAILED_ADD_FEED = 'FAILED_ADD_FEED'
 export const ADD_FEED_SYNCED = 'ADD_FEED_SYNCED'
@@ -26,6 +27,21 @@ export const fetchFeed = (page = 1) => async dispatch => {
         page,
     })
 
+    // offline feeds not yet posted
+    let idb_offline_feeds = await readAllData('sync-feeds')
+    idb_offline_feeds = idb_offline_feeds.map(dt => ({
+        post_id: dt.id,
+        waiting_for_sync: true,
+        ...dt,
+    }))
+
+    // fetch from indexedDB if any
+    const idb_feeds = await readAllData('feeds')
+    dispatch({
+        type: FETCHED_FEEDS_IDB,
+        feeds: [...idb_offline_feeds, ...idb_feeds],
+    })
+
     const [err, res] = await to(
         fetch(getFeeds + query, {
             method: 'GET',
@@ -35,21 +51,21 @@ export const fetchFeed = (page = 1) => async dispatch => {
             credentials: 'same-origin',
         })
     )
-
     if (err) return dispatch({ type: FAILED_FETCH_FEEDS })
 
     const feeds = await res.json()
 
-    let idbData = await readAllData('sync-feeds')
-    idbData = idbData.map(dt => ({
-        post_id: dt.id,
-        waiting_for_sync: true,
-        ...dt,
-    }))
+    // Update idb
+    feeds.map(feed =>
+        writeData('feeds', {
+            ...feed,
+            id: feed.post_id,
+        })
+    )
 
     return dispatch({
         type: FETCHED_FEEDS,
-        feeds: [...idbData, ...feeds],
+        feeds: [...idb_offline_feeds, ...feeds],
     })
 }
 

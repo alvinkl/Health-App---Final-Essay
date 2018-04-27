@@ -8,6 +8,8 @@ export const SHOW_SNACKBAR = 'SHOW_SNACKBAR'
 export const HIDE_SNACKBAR = 'HIDE_SNACKBAR'
 export const SHOW_CAMERA_MODULE = 'SHOW_CAMERA_MODULE'
 export const HIDE_CAMERA_MODULE = 'HIDE_CAMERA_MODULE'
+export const SHOW_ONLINE_THEME = 'SHOW_ONLINE_THEME'
+export const SHOW_OFFLINE_THEME = 'SHOW_OFFLINE_THEME'
 
 export const openSidebar = () => ({
     type: OPEN_SIDEBAR,
@@ -48,4 +50,12 @@ export const showCameraModule = () => ({
 
 export const hideCameraModule = () => ({
     type: HIDE_CAMERA_MODULE,
+})
+
+export const showOnlineTheme = () => ({
+    type: SHOW_ONLINE_THEME,
+})
+
+export const showOfflineTheme = () => ({
+    type: SHOW_OFFLINE_THEME,
 })

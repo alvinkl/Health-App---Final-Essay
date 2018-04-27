@@ -53,35 +53,41 @@ var trimCache = function(cacheName, url, totalToTrim, indexToPop) {
 }
 
 // IndexedDB
-var dbPromise = idb.open('feeds-store', 1, function(db) {
-    if (!db.objectStoreNames.contains('feeds'))
-        db.createObjectStore('feeds', { keyPath: 'id' })
+// var dbPromise = idb.open('api-store', 1, function(db) {
+//     if (!db.objectStoreNames.contains('feeds'))
+//         db.createObjectStore('feeds', { keyPath: 'id' })
 
-    if (!db.objectStoreNames.contains('sync-feeds'))
-        db.createObjectStore('sync-feeds', { keyPath: 'id' })
-})
+//     if (!db.objectStoreNames.contains('sync-feeds'))
+//         db.createObjectStore('sync-feeds', { keyPath: 'id' })
 
-function readAllData(st) {
-    return dbPromise.then(function(db) {
-        var tx = db.transaction(st, 'readonly')
-        var store = tx.objectStore(st)
-        return store.getAll()
-    })
-}
+//     if (!db.objectStoreNames.contains('diary'))
+//         db.createObjectStore('diary', { keyPath: 'id' })
 
-function deleteItemFromData(st, id) {
-    return dbPromise
-        .then(function(db) {
-            const tx = db.transaction(st, 'readwrite')
-            const store = tx.objectStore(st)
+//     if (!db.objectStoreNames.contains('diary-report'))
+//         db.createObjectStore('diary-report', { keyPath: 'id' })
+// })
 
-            store.delete(id)
-            return tx.complete
-        })
-        .then(function() {
-            console.log('Item deleted!')
-        })
-        .catch(function(err) {
-            console.log('Failed to delete', err)
-        })
-}
+// function readAllData(st) {
+//     return dbPromise.then(function(db) {
+//         var tx = db.transaction(st, 'readonly')
+//         var store = tx.objectStore(st)
+//         return store.getAll()
+//     })
+// }
+
+// function deleteItemFromData(st, id) {
+//     return dbPromise
+//         .then(function(db) {
+//             const tx = db.transaction(st, 'readwrite')
+//             const store = tx.objectStore(st)
+
+//             store.delete(id)
+//             return tx.complete
+//         })
+//         .then(function() {
+//             console.log('Item deleted!')
+//         })
+//         .catch(function(err) {
+//             console.log('Failed to delete', err)
+//         })
+// }

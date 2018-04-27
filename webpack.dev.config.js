@@ -223,12 +223,12 @@ const clientConfig = {
         //     verbose: true,
         //     watch: true,
         // }),
-        new ReactLoadablePlugin({
-            filename: './src/server/functions/react-loadable.json',
-        }),
+        // new ReactLoadablePlugin({
+        //     filename: './src/server/functions/react-loadable.json',
+        // }),
         new HTMLWebpackPlugin({
             title: 'PWA Health App',
-            inject: false,
+            inject: true,
             template:
                 '!!raw-loader!' +
                 path.resolve(__dirname, 'src/server/views/layout.ejs'),

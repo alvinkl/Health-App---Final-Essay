@@ -207,16 +207,16 @@ const clientConfig = {
                 NODE_ENV: JSON.stringify(ENV),
             },
         }),
-        new ReactLoadablePlugin({
-            filename: './src/server/functions/react-loadable.json',
-        }),
+        // new ReactLoadablePlugin({
+        //     filename: './src/server/functions/react-loadable.json',
+        // }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.js',
         }),
         new HTMLWebpackPlugin({
             title: 'PWA Health App',
-            inject: false,
+            inject: true,
             template:
                 '!!raw-loader!' +
                 path.resolve(__dirname, 'src/server/views/layout.ejs'),

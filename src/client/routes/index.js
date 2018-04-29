@@ -97,6 +97,7 @@ const route = [
                 name: 'getting-started',
                 path: '/getting-started',
                 exact: true,
+                protected: true,
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: GettingStarted */ '@components/Landing/GettingStarted'),

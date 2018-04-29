@@ -38,14 +38,16 @@ import { connect } from 'react-redux'
 import T from 'prop-types'
 
 let ProtectedRoute = ({ protect, route, p, user }) => {
-    if (protect && isEmpty(user)) return <Redirect to="/landing" push />
-    // if (protect && !user.googleID) return <Redirect to="/landing" push />
-
-    if (protect && route.name !== 'getting-started' && !user.diet_plan.success)
-        return <Redirect to="/getting-started" push />
-
-    // if (!user.new && !!route.name && route.name === 'getting-started')
-    //     return <Redirect to="/home" push />
+    if (protect) {
+        if (isEmpty(user)) return <Redirect to="/landing" push />
+        if (user.new && route.name !== 'getting-started')
+            return <Redirect to="/getting-started" push />
+        if (
+            !user.new &&
+            (route.name === 'getting-started' || route.name === 'landing')
+        )
+            return <Redirect to="/" push />
+    }
 
     return <route.component {...p} />
 }

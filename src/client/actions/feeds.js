@@ -56,10 +56,10 @@ export const fetchFeed = (page = 1) => async dispatch => {
     const feeds = await res.json()
 
     // Update idb
-    feeds.map(feed =>
+    feeds.map((feed, index) =>
         writeData('feeds', {
             ...feed,
-            id: feed.post_id,
+            id: index + feed.post_id,
         })
     )
 

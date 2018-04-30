@@ -76,13 +76,7 @@ class CameraModule extends Component {
     }
 
     handleSubmitData = async () => {
-        const {
-            addFeedData,
-            user_id,
-            showLoader,
-            hideLoader,
-            showSnackbar,
-        } = this.props
+        const { addFeedData, user_id, showLoader, hideLoader } = this.props
         const { title, subtitle, location, address, picture } = this.state
 
         showLoader()
@@ -90,27 +84,15 @@ class CameraModule extends Component {
         const picture_name =
             Date.parse(new Date()) / 1000 + '-' + user_id + '.png'
 
-        let postData = new FormData()
-        postData.append('file', picture, picture_name)
-
-        // testing upload image
-        const [err, res] = await to(
-            fetch(postImage, { method: 'POST', body: postData })
-        )
-        if (err) {
-            hideLoader()
-            showSnackbar('Failed to add new post, please try again!')
-            return
-        }
-
-        const { image } = await res.json()
-
         addFeedData({
             title,
+            picture: {
+                picture_name,
+                picture_blob: picture,
+            },
             subtitle,
             location,
             address,
-            image,
         })
 
         this.handleClose()

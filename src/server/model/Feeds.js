@@ -12,7 +12,7 @@ const locationSchema = m.Schema(
         },
         address: {
             type: String,
-            required: true,
+            default: '',
         },
     },
     { _id: 0 }

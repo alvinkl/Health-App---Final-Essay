@@ -101,30 +101,46 @@ self.addEventListener('sync', function(event) {
         var response = readAllData('sync-feeds').then(function(data) {
             for (var dt of data) {
                 console.log('[Service Worker] Syncing feed ', dt.id)
-                fetch(location.origin + '/api/feeds/add', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: dt.title,
-                        subtitle: dt.subtitle,
-                        image: dt.image,
-                        location: dt.location,
-                        address: dt.address,
-                    }),
-                    credentials: 'same-origin',
-                })
+                var postImageData = new FormData()
+                postImageData.append(
+                    'file',
+                    dt.picture.picture_blob,
+                    dt.picture.picture_name
+                )
+
+                fetch(
+                    'https://us-central1-final-essay-dev.cloudfunctions.net/storeImage',
+                    { method: 'POST', body: postImageData }
+                )
                     .then(function(res) {
-                        console.log(res.ok)
-                        if (res.ok) {
-                            console.log(
-                                '[Service Worker] Success Syncing Feed(id=',
-                                dt.id,
-                                ')'
-                            )
-                            deleteItemFromData('sync-feeds', dt.id)
-                        }
+                        return res.json()
+                    })
+                    .then(function(data) {
+                        var image = data.image
+                        fetch(location.origin + '/api/feeds/add', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                title: dt.title,
+                                subtitle: dt.subtitle,
+                                image: image,
+                                location: dt.location,
+                                address: dt.address,
+                            }),
+                            credentials: 'same-origin',
+                        }).then(function(res) {
+                            console.log(res.ok)
+                            if (res.ok) {
+                                console.log(
+                                    '[Service Worker] Success Syncing Feed(id=',
+                                    dt.id,
+                                    ')'
+                                )
+                                deleteItemFromData('sync-feeds', dt.id)
+                            }
+                        })
                     })
                     .catch(function() {
                         console.log(

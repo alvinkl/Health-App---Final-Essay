@@ -24,7 +24,9 @@ const loadRoute = cb => {
 }
 
 const loadingComponent = props => {
-    return Loader
+    if (props.pastDelay) return Loader
+
+    return null
 }
 
 const route = [
@@ -40,6 +42,7 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Contents" */ '@components/Contents'),
+                    pastDelay: 500,
                     modules: ['@components/Contents'],
                     webpack: () => [
                         require.resolveWeak('@components/Contents'),
@@ -61,6 +64,7 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Diary */ '@components/Diary'),
+                    pastDelay: 500,
                     modules: ['@components/Diary'],
                     webpack: () => [require.resolveWeak('@components/Diary')],
                     loading: loadingComponent,
@@ -74,6 +78,7 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Report */ '@components/Report'),
+                    pastDelay: 500,
                     modules: ['@components/Report'],
                     webpack: () => [require.resolveWeak('@components/Report')],
                     loading: loadingComponent,
@@ -88,6 +93,7 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Landing */ '@components/Landing'),
+                    pastDelay: 500,
                     modules: ['@components/Landing'],
                     webpack: () => [require.resolveWeak('@components/Landing')],
                     loading: loadingComponent,
@@ -101,6 +107,7 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: GettingStarted */ '@components/Landing/GettingStarted'),
+                    pastDelay: 500,
                     modules: ['@components/Landing/GettingStarted'],
                     webpack: () => [
                         require.resolveWeak(

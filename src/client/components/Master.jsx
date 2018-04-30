@@ -69,7 +69,7 @@ class Master extends Component {
                 loading: loadingComponent,
                 modules: ['@components/Header'],
                 webpack: () => [require.resolveWeak('@components/Header')],
-                delay: 300,
+                pastDelay: 500,
             })
             const impNB = Loadable({
                 loader: () =>
@@ -77,7 +77,7 @@ class Master extends Component {
                 loading: loadingComponent,
                 modules: ['@components/Navbar'],
                 webpack: () => [require.resolveWeak('@components/Navbar')],
-                delay: 300,
+                pastDelay: 500,
             })
             const impSB = Loadable({
                 loader: () =>
@@ -85,7 +85,7 @@ class Master extends Component {
                 loading: loadingComponent,
                 modules: ['@components/Sidebar'],
                 webpack: () => [require.resolveWeak('@components/Sidebar')],
-                delay: 300,
+                pastDelay: 500,
             })
             const impCM = Loadable({
                 loader: () =>
@@ -95,7 +95,7 @@ class Master extends Component {
                 webpack: () => [
                     require.resolveWeak('@components/CameraModule'),
                 ],
-                delay: 300,
+                pastDelay: 500,
             })
 
             this.setState({

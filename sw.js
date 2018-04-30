@@ -15,7 +15,7 @@ var STATIC_CACHE = [
     '/static/manifest.json',
     // '/report',
     // '/diary',
-    '/landing',
+    // '/landing',
     // '/getting-started',
 
     '/static/build/client.build.js',

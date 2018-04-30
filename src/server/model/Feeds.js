@@ -49,6 +49,12 @@ const feedSchema = m.Schema({
         default: Date.now,
         index: true,
     },
+
+    status: {
+        type: Number,
+        required: true,
+        default: 1,
+    },
 })
 
 export default m.model('feeds', feedSchema)

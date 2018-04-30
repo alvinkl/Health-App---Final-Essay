@@ -33,7 +33,16 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
                         subtitle="This Feed has not been posted yet!"
                         avatar={user.avatar}
                         showExpandableButton={false}
-                    />
+                    >
+                        {d.own_feed && (
+                            <FlatButton
+                                className={styles.deleteButton}
+                                label="X"
+                                secondary
+                                onClick={toggleLike.bind(null, d.post_id)}
+                            />
+                        )}
+                    </CardHeader>
                     <CardMedia
                         expandable={true}
                         overlay={
@@ -48,7 +57,7 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
 
         let label
 
-        if (d.status === LIKE) {
+        if (d.like_status === LIKE) {
             if (d.likes - 1 > 0)
                 label = 'You and ' + d.likes + ' people like this!'
             else label = 'You liked this post!'
@@ -69,7 +78,17 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
                     subtitle={d.create_time}
                     avatar={d.user.avatar}
                     showExpandableButton={false}
-                />
+                    closeIcon
+                >
+                    {d.own_feed && (
+                        <FlatButton
+                            className={styles.deleteButton}
+                            label="X"
+                            secondary
+                            onClick={toggleLike.bind(null, d.post_id)}
+                        />
+                    )}
+                </CardHeader>
                 <CardMedia
                     expandable={true}
                     overlay={
@@ -81,8 +100,8 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
                 <CardActions className={styles.buttonsAlignRight}>
                     <FlatButton
                         label={label}
-                        primary={!d.status}
-                        secondary={!!d.status}
+                        primary={!d.like_status}
+                        secondary={!!d.like_status}
                         onClick={toggleLike.bind(null, d.post_id)}
                     />
                 </CardActions>

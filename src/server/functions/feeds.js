@@ -1,10 +1,11 @@
 import moment from 'moment'
+import { Types as mTypes } from 'mongoose'
 
 import { sendPushNotification } from '@services/webpush'
 
 import { googleMaps } from '@config/urls'
 import { GoogleGeocodingAPIKey } from '@config/keys'
-import { LIKE, UNLIKE } from '@constant'
+import { LIKE, UNLIKE, FEED_AVAILABLE, FEED_REMOVED } from '@constant'
 
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
@@ -12,11 +13,14 @@ import qs from '@helper/queryString'
 import Feeds from '@model/Feeds'
 import User from '@model/User'
 
-export const getFeeds = async (current_user = 0, page = 0) => {
+export const getGeneralFeeds = async (current_user = 0, page = 0) => {
     const offset = page * 10
 
+    const queryFeeds = {
+        status: FEED_AVAILABLE,
+    }
     const [err, data] = await to(
-        Feeds.find()
+        Feeds.find(queryFeeds)
             .skip(offset)
             .limit(5)
             .sort({ create_time: -1 })
@@ -45,7 +49,8 @@ export const getFeeds = async (current_user = 0, page = 0) => {
         subtitle: d.subtitle,
         image: d.image,
         likes: d.likes.length,
-        status: ~d.likes.indexOf(current_user) ? 1 : 0,
+        like_status: ~d.likes.indexOf(current_user) ? 1 : 0,
+        own_feed: d.user_id === current_user,
         user: users.find(u => u._id === d.user_id),
         create_time: moment(d.create_time).fromNow(),
     }))
@@ -60,10 +65,35 @@ export const getFeeds = async (current_user = 0, page = 0) => {
     return Promise.resolve(feeds_data)
 }
 
+export const getOneFeed = async (user_id, post_id) => {
+    const query = {
+        _id: mTypes.ObjectId(post_id),
+        user_id,
+    }
+
+    const [err, feed] = await to(Feeds.findOne(query))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return feed
+}
+
+export const deleteFeed = async post_id => {
+    const [err] = await to(
+        Feeds.update(
+            { _id: mTypes.ObjectId(post_id) },
+            { $set: { status: FEED_REMOVED } }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, mesage: err })
+
+    return Promise.resolve()
+}
+
 export const insertNewFeed = async (googleID, data) => {
     const newFeeds = new Feeds({
         user_id: googleID,
         ...data,
+        status: FEED_AVAILABLE,
     })
 
     const [err] = await to(newFeeds.save())
@@ -131,11 +161,11 @@ export const toggleLike = async (googleID, post_id) => {
     const newLikes = likes.length
     feed.save()
 
-    const status = newLikes > oldLikes ? LIKE : UNLIKE
+    const like_status = newLikes > oldLikes ? LIKE : UNLIKE
 
     return Promise.resolve({
         total_likes: newLikes,
-        status,
+        like_status,
     })
 }
 

@@ -173,14 +173,14 @@ export const toggleLike = post_id => async dispatch => {
     )
     if (err) return dispatch({ type: FAILED_TOGGLE_LIKE_FEED })
 
-    const { total_likes, status } = await res.json()
-    if (status === LIKE)
+    const { total_likes, like_status } = await res.json()
+    if (like_status === LIKE)
         return dispatch({
             type: FEED_LIKED,
             post_id,
             total_likes,
         })
-    else if (status === UNLIKE)
+    else if (like_status === UNLIKE)
         return dispatch({
             type: FEED_UNLIKED,
             post_id,

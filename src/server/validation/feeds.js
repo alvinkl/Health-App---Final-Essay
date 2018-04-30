@@ -30,6 +30,23 @@ export const validateAddFeed = param => {
     ]
 }
 
+const deleteFeedType = {
+    post_id: 0,
+}
+
+export const validateDeleteFeed = param => {
+    if (!eq(param, deleteFeedType)) return ['Parameter is invalid']
+
+    const { post_id } = param
+    if (typeof post_id !== 'string') {
+        return ['post_id must be string']
+    }
+
+    if (!post_id.length) return ['post_id is invalid']
+
+    return [false, post_id]
+}
+
 const addLikeType = {
     post_id: 0,
 }

@@ -10,3 +10,10 @@
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
+
+.deleteButton {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    min-width: 0 !important;
+}

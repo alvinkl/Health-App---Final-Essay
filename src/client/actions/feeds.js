@@ -1,9 +1,18 @@
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
-import { getFeeds, addFeed, toggleLike as toggleLikeURL } from '@urls'
+import {
+    getFeeds,
+    addFeed,
+    toggleLike as toggleLikeURL,
+    postImage,
+} from '@urls'
 import { LIKE, UNLIKE } from '@constant'
-import { readAllData, writeData } from '@helper/indexedDB-utilities'
+import {
+    readAllData,
+    writeData,
+    clearAllData,
+} from '@helper/indexedDB-utilities'
 
 import { showSnackbar } from './common'
 
@@ -28,10 +37,12 @@ export const fetchFeed = (page = 1) => async dispatch => {
     })
 
     // offline feeds not yet posted
+    const urlCreator = window.URL || window.webkitURL
     let idb_offline_feeds = await readAllData('sync-feeds')
     idb_offline_feeds = idb_offline_feeds.map(dt => ({
         post_id: dt.id,
         waiting_for_sync: true,
+        image: urlCreator.createObjectURL(dt.picture.picture_blob),
         ...dt,
     }))
 
@@ -55,11 +66,12 @@ export const fetchFeed = (page = 1) => async dispatch => {
 
     const feeds = await res.json()
 
-    // Update idb
-    feeds.map(feed =>
+    // Update idb - add index to post_id to sort the data from IDB
+    clearAllData('feeds')
+    feeds.map((feed, index) =>
         writeData('feeds', {
             ...feed,
-            id: feed.post_id,
+            id: index + feed.post_id,
         })
     )
 
@@ -72,52 +84,73 @@ export const fetchFeed = (page = 1) => async dispatch => {
 export const addFeedData = ({
     title,
     subtitle,
-    image,
     location,
-    address,
+    address = '',
+    picture: { picture_name, picture_blob },
+    picture,
 }) => async dispatch => {
     dispatch({ type: ADD_FEED })
 
-    const url = addFeed
-    const post_data = {
+    let postImageData = new FormData()
+    postImageData.append('file', picture_blob, picture_name)
+
+    const post_data_feed = {
         title,
         subtitle,
-        image,
         location: JSON.stringify(location),
         address,
     }
 
-    const [err, res] = await to(
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(post_data),
-        })
+    const [errImg, resImg] = await to(
+        fetch(postImage, { method: 'POST', body: postImageData })
     )
-    if (err) {
-        const sync_feed = {
-            id: new Date().toISOString(),
-            ...post_data,
-        }
-        const [errSync, syncMessage] = await to(
-            backgroundSync('sync-feeds', sync_feed)
-        )
-        if (errSync) {
-            dispatch(showSnackbar(errSync))
-            return dispatch({ type: FAILED_ADD_FEED })
+    if (!errImg) {
+        const { image } = await resImg.json()
+
+        const post_data = {
+            image,
+            ...post_data_feed,
         }
 
-        dispatch(showSnackbar(syncMessage.message))
-        return dispatch({ type: ADD_FEED_SYNCED, sync_feed })
+        const [err, res] = await to(
+            fetch(addFeed, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(post_data),
+            })
+        )
+        if (!err) {
+            const feed = await res.json()
+
+            dispatch(showSnackbar('Added New Feed!'))
+            return dispatch({ type: FEED_ADDED, feed })
+        }
+    }
+    // Fallback to background sync
+    let sync_feed = {
+        id: new Date().toISOString(),
+        picture,
+        ...post_data_feed,
+    }
+    const [errSync, syncMessage] = await to(
+        backgroundSync('sync-feeds', sync_feed)
+    )
+    if (errSync) {
+        dispatch(showSnackbar(errSync))
+        return dispatch({ type: FAILED_ADD_FEED })
     }
 
-    const feed = await res.json()
+    const urlCreator = window.URL || window.webkitURL
+    sync_feed = {
+        ...sync_feed,
+        image: urlCreator.createObjectURL(sync_feed.picture.picture_blob),
+    }
 
-    dispatch(showSnackbar('Added New Feed!'))
-    return dispatch({ type: FEED_ADDED, feed })
+    dispatch(showSnackbar(syncMessage.message))
+    return dispatch({ type: ADD_FEED_SYNCED, sync_feed })
 }
 
 export const toggleLike = post_id => async dispatch => {

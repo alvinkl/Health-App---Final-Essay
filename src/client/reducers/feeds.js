@@ -11,6 +11,7 @@ import {
     FAILED_TOGGLE_LIKE_FEED,
     FEED_LIKED,
     FEED_UNLIKED,
+    FEED_SYNC_DELETED,
 } from '@actions/feeds'
 import { LIKE, UNLIKE } from '@constant'
 
@@ -118,6 +119,31 @@ export default (state = initial_state, action) => {
                     return [...p, c]
                 }, []),
             }
+        case FEED_SYNC_DELETED:
+            {
+                const { feeds } = state
+                let index = 0
+
+                for (let feed of feeds) {
+                    if (feed.post_id === action.post_id) break
+                    index++
+                }
+
+                if (index <= feeds.length)
+                    return {
+                        ...state,
+                        feeds: [
+                            ...feeds.slice(0, index),
+                            ...feeds.slice(index + 1),
+                        ],
+                    }
+
+                return {
+                    ...state,
+                    feeds,
+                }
+            }
+            break
         default:
             return state
     }

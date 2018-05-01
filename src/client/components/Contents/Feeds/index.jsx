@@ -17,12 +17,22 @@ import {
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 
-const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
+const DeleteIcon = <FontIcon className="material-icons">delete</FontIcon>
+
+const Feeds = ({
+    loading,
+    error,
+    feeds,
+    user,
+    toggleLike,
+    deleteFeed,
+    deleteSyncFeed,
+}) => {
     return feeds.map((d, i) => {
         if (d.waiting_for_sync) {
             return (
                 <Card
-                    key={d.post_id}
+                    key={d.id}
                     id={d.id}
                     className={cn(styles.feedCards, styles.waitingSync)}
                     expanded
@@ -37,9 +47,9 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
                         {d.own_feed && (
                             <FlatButton
                                 className={styles.deleteButton}
-                                label="X"
+                                icon={DeleteIcon}
                                 secondary
-                                onClick={toggleLike.bind(null, d.post_id)}
+                                onClick={deleteSyncFeed.bind(null, d.post_id)}
                             />
                         )}
                     </CardHeader>
@@ -83,9 +93,9 @@ const Feeds = ({ loading, error, feeds, user, toggleLike }) => {
                     {d.own_feed && (
                         <FlatButton
                             className={styles.deleteButton}
-                            label="X"
+                            icon={DeleteIcon}
                             secondary
-                            onClick={toggleLike.bind(null, d.post_id)}
+                            onClick={deleteFeed.bind(null, d.post_id)}
                         />
                     )}
                 </CardHeader>
@@ -117,10 +127,12 @@ Feeds.propTypes = {
     user: T.object.isRequired,
 
     toggleLike: T.func.isRequired,
+    deleteFeed: T.func.isRequired,
+    deleteSyncFeed: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
-import { toggleLike } from '@actions/feeds'
+import { toggleLike, deleteFeed, deleteSyncFeed } from '@actions/feeds'
 
 const mapStateToProps = ({ feeds, user }) => ({
     ...feeds,
@@ -128,6 +140,8 @@ const mapStateToProps = ({ feeds, user }) => ({
 })
 const mapDispatchToProps = dispatch => ({
     toggleLike: event => dispatch(toggleLike(event)),
+    deleteFeed: event => dispatch(deleteFeed(event)),
+    deleteSyncFeed: event => dispatch(deleteSyncFeed(event)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Feeds)

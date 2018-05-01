@@ -47,10 +47,10 @@ export const handleDeleteFeed = async (req, res) => {
 
     if (!feed) return responseError(res, 400, 'Feed not found!')
 
-    const [errDelete] = await to(deleteFeed(post_id))
+    const [errDelete, success] = await to(deleteFeed(post_id))
     if (errDelete) return responseError(res, errDelete.code, errDelete.message)
 
-    return responseJSON(res)
+    return responseJSON(res, success)
 }
 
 export const handleToggleLike = async (req, res) => {

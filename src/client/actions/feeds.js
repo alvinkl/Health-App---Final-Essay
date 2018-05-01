@@ -6,12 +6,14 @@ import {
     addFeed,
     toggleLike as toggleLikeURL,
     postImage,
+    deleteFeed as deleteFeedURL,
 } from '@urls'
 import { LIKE, UNLIKE } from '@constant'
 import {
     readAllData,
     writeData,
     clearAllData,
+    deleteItemFromData,
 } from '@helper/indexedDB-utilities'
 
 import { showSnackbar } from './common'
@@ -22,8 +24,14 @@ export const FETCHED_FEEDS = 'FETCHED_FEEDS'
 export const FETCHED_FEEDS_IDB = 'FETCHED_FEEDS_IDB'
 export const ADD_FEED = 'ADD_FEED'
 export const FAILED_ADD_FEED = 'FAILED_ADD_FEED'
+export const DELETE_FEED = 'DELETE_FEED'
+export const DELETE_SYNC_FEED = 'DELETE_SYNC_FEED'
+export const FAILED_DELETE_FEED = 'FAILED_DELETE_FEED'
+export const FAILED_DELETE_SYNC_FEED = 'FAILED_DELETE_SYNC_FEED'
 export const ADD_FEED_SYNCED = 'ADD_FEED_SYNCED'
 export const FEED_ADDED = 'FEED_ADDED'
+export const FEED_DELETED = 'FEED_DELETED'
+export const FEED_SYNC_DELETED = 'FEED_SYNC_DELETED'
 export const TOGGLE_LIKE_FEED = 'TOGGLE_LIKE_FEED'
 export const FAILED_TOGGLE_LIKE_FEED = 'FAILED_TOGGLE_LIKE_FEED'
 export const FEED_LIKED = 'FEED_LIKED'
@@ -133,6 +141,7 @@ export const addFeedData = ({
     let sync_feed = {
         id: new Date().toISOString(),
         picture,
+        own_feed: true,
         ...post_data_feed,
     }
     const [errSync, syncMessage] = await to(
@@ -151,6 +160,40 @@ export const addFeedData = ({
 
     dispatch(showSnackbar(syncMessage.message))
     return dispatch({ type: ADD_FEED_SYNCED, sync_feed })
+}
+
+export const deleteFeed = post_id => async dispatch => {
+    dispatch({ type: DELETE_FEED })
+
+    const url = deleteFeedURL
+    const [err] = await to(
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ post_id }),
+        })
+    )
+
+    if (err) {
+        dispatch(showSnackbar(err))
+        return dispatch({ type: FAILED_DELETE_FEED })
+    }
+
+    dispatch(showSnackbar('Successfully delete the feed!'))
+    dispatch(fetchFeed())
+    return dispatch({ type: FEED_DELETED, post_id })
+}
+
+export const deleteSyncFeed = post_id => async dispatch => {
+    dispatch({ type: DELETE_SYNC_FEED })
+
+    deleteItemFromData('sync-feeds', post_id)
+
+    dispatch(showSnackbar('Feed deleted!'))
+    return dispatch({ type: FEED_SYNC_DELETED, post_id })
 }
 
 export const toggleLike = post_id => async dispatch => {

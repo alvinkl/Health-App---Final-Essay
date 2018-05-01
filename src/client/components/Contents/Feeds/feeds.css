@@ -13,7 +13,7 @@
 
 .deleteButton {
     position: absolute !important;
-    top: 0;
-    right: 0;
+    top: 20%;
+    right: 5%;
     min-width: 0 !important;
 }

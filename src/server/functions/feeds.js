@@ -86,7 +86,7 @@ export const deleteFeed = async post_id => {
     )
     if (err) return Promise.reject({ code: 500, mesage: err })
 
-    return Promise.resolve()
+    return Promise.resolve({ success: 1 })
 }
 
 export const insertNewFeed = async (googleID, data) => {
@@ -124,6 +124,7 @@ export const insertNewFeed = async (googleID, data) => {
         user: userData,
         create_time: moment(newFeeds.create_time).fromNow(),
         likes: newFeeds.likes.length,
+        own_feed: true,
     }
 
     sendPushNotification({

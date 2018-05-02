@@ -20,6 +20,8 @@ import {
     HIDE_CAMERA_MODULE,
     SHOW_ONLINE_THEME,
     SHOW_OFFLINE_THEME,
+    SET_OFFLINE,
+    SET_ONLINE,
 } from '../actions/common'
 
 export const initial_state = {
@@ -47,6 +49,8 @@ export const initial_state = {
             primary3Color: cyan100,
         },
     },
+
+    is_online: true,
 }
 
 export default function common(state = initial_state, action) {
@@ -132,6 +136,16 @@ export default function common(state = initial_state, action) {
                         primary3Color: grey100,
                     },
                 },
+            }
+        case SET_OFFLINE:
+            return {
+                ...state,
+                is_online: false,
+            }
+        case SET_ONLINE:
+            return {
+                ...state,
+                is_online: true,
             }
         default:
             return state

@@ -10,6 +10,8 @@ export const SHOW_CAMERA_MODULE = 'SHOW_CAMERA_MODULE'
 export const HIDE_CAMERA_MODULE = 'HIDE_CAMERA_MODULE'
 export const SHOW_ONLINE_THEME = 'SHOW_ONLINE_THEME'
 export const SHOW_OFFLINE_THEME = 'SHOW_OFFLINE_THEME'
+export const SET_OFFLINE = 'SET_OFFLINE'
+export const SET_ONLINE = 'SET_ONLINE'
 
 export const openSidebar = () => ({
     type: OPEN_SIDEBAR,
@@ -59,3 +61,13 @@ export const showOnlineTheme = () => ({
 export const showOfflineTheme = () => ({
     type: SHOW_OFFLINE_THEME,
 })
+
+export const setOffline = () => dispatch => {
+    dispatch(showSnackbar("You're Offline!"))
+    return dispatch({ type: SET_OFFLINE })
+}
+
+export const setOnline = () => dispatch => {
+    dispatch(showSnackbar("You're coming back online!"))
+    return dispatch({ type: SET_ONLINE })
+}

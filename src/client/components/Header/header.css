@@ -1,3 +1,8 @@
 .noShadow {
     box-shadow: none !important;
+    position: fixed !important;
+}
+
+.offline {
+    margin-top: 20px;
 }

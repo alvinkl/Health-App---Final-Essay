@@ -1,15 +1,18 @@
 import React from 'react'
+import cn from 'classnames'
 import T from 'prop-types'
 import { isEmpty } from 'lodash'
 
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
 
+import styles from './sidebar.css'
+
 const style = {
     fontSize: '14px',
 }
 
-const SidebarHeader = ({ user }) => {
+const SidebarHeader = ({ user, is_online }) => {
     let $avatar = ''
 
     if (!isEmpty(user)) {
@@ -31,18 +34,25 @@ const SidebarHeader = ({ user }) => {
     }
 
     return (
-        <AppBar title={$avatar} titleStyle={style} showMenuIconButton={false} />
+        <AppBar
+            className={cn({ [styles.offline]: !is_online })}
+            title={$avatar}
+            titleStyle={style}
+            showMenuIconButton={false}
+        />
     )
 }
 
 SidebarHeader.propTypes = {
     user: T.object.isRequired,
+    is_online: T.bool.isRequired,
 }
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = state => ({
-    user: state.user,
+const mapStateToProps = ({ user, common: { is_online } }) => ({
+    user,
+    is_online,
 })
 
 export default connect(mapStateToProps)(SidebarHeader)

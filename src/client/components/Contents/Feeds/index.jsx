@@ -38,7 +38,16 @@ const linkSpecificFeed = (router, post_id) =>
     router.history.push('/feed/' + post_id)
 
 const Feeds = (
-    { loading, error, feeds, user, toggleLike, deleteFeed, deleteSyncFeed },
+    {
+        loading,
+        is_online,
+        error,
+        feeds,
+        user,
+        toggleLike,
+        deleteFeed,
+        deleteSyncFeed,
+    },
     { router }
 ) => {
     return feeds.map((d, i) => {
@@ -105,6 +114,7 @@ const Feeds = (
                     {d.own_feed && (
                         <FlatButton
                             className={styles.deleteButton}
+                            disabled={!is_online}
                             icon={DeleteIcon}
                             onClick={deleteFeed.bind(null, d.post_id)}
                         />
@@ -119,7 +129,10 @@ const Feeds = (
                     <img src={d.image} alt="" />
                 </CardMedia>
                 <CardActions className={cn(styles.likesButton)}>
-                    <IconButton onClick={toggleLike.bind(null, d.post_id)}>
+                    <IconButton
+                        onClick={toggleLike.bind(null, d.post_id)}
+                        disabled={!is_online}
+                    >
                         <FontIcon
                             className="material-icons"
                             color={d.like_status ? 'red' : 'grey'}
@@ -152,6 +165,7 @@ const Feeds = (
 
 Feeds.propTypes = {
     loading: T.bool.isRequired,
+    is_online: T.bool.isRequired,
     error: T.bool.isRequired,
     feeds: T.array.isRequired,
     user: T.object.isRequired,
@@ -168,9 +182,10 @@ Feeds.contextTypes = {
 import { connect } from 'react-redux'
 import { toggleLike, deleteFeed, deleteSyncFeed } from '@actions/feeds'
 
-const mapStateToProps = ({ feeds, user }) => ({
+const mapStateToProps = ({ feeds, user, common: { is_online } }) => ({
     ...feeds,
     user: { name: user.name, avatar: user.profile_img },
+    is_online,
 })
 const mapDispatchToProps = dispatch => ({
     toggleLike: event => dispatch(toggleLike(event)),

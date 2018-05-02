@@ -95,7 +95,7 @@ class SpecificFeed extends Component {
     handleBackButton = () => this.context.router.history.push('/')
 
     renderInsertComment = () => {
-        const { current_user } = this.props
+        const { current_user, is_online } = this.props
         const { comment } = this.state
 
         return (
@@ -108,6 +108,7 @@ class SpecificFeed extends Component {
                         <TextField
                             fullWidth
                             onChange={this.handleCommentChange}
+                            disabled={!is_online}
                             value={comment}
                             hintText={
                                 'Comment as ' + current_user.username + '...'
@@ -118,6 +119,7 @@ class SpecificFeed extends Component {
                         <FlatButton
                             className={styles.sendButton}
                             onClick={this.handleSubmitComment}
+                            disabled={!is_online}
                             label={
                                 <FontIcon className="material-icons">
                                     send
@@ -222,6 +224,7 @@ class SpecificFeed extends Component {
 
 SpecificFeed.propTypes = {
     loading: T.bool.isRequired,
+    is_online: T.bool.isRequired,
     feed: T.object.isRequired,
     current_user: T.object.isRequired,
     match: T.object.isRequired,
@@ -244,6 +247,7 @@ import { addComment } from '@actions/feeds'
 const mapStateToProps = ({
     feeds: { current_feed, loading },
     user: { profile_img, name },
+    common: { is_online },
 }) => ({
     loading,
     feed: current_feed,
@@ -251,6 +255,7 @@ const mapStateToProps = ({
         avatar: profile_img,
         username: name,
     },
+    is_online,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -26,6 +26,82 @@ export const initial_state = {
     feeds: [],
 
     current_feed: {},
+    personal_feeds: {
+        user_id: '5ab0f03454dfa62c81d6642f',
+        username: 'Alvin Kristanto',
+        avatar:
+            'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+        feeds: [
+            {
+                post_id: '5ae91d7f4dfb9ebb57955904',
+                title: 'test comment',
+                subtitle: 'test comment',
+                image:
+                    'https://firebasestorage.googleapis.com/v0/b/final-essay-dev.appspot.com/o/1525226877-105695347333761287865.png?alt=media&token=766c4c51-4aae-47bb-ae4d-acb210d4bc1f',
+                likes: [
+                    {
+                        _id: '105695347333761287865',
+                        username: 'Alvin Kristanto',
+                        avatar:
+                            'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                    },
+                ],
+                total_likes: 1,
+                comments: [
+                    {
+                        content:
+                            '&lt;script src=&quot;asdasd&quot;&gt;var x = 5&lt;/script&gt;',
+                        user: {
+                            _id: '105695347333761287865',
+                            username: 'Alvin Kristanto',
+                            avatar:
+                                'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                        },
+                        create_time: '2018-05-02T09:07:22.601Z',
+                    },
+                    {
+                        content: 'Nice Photo mate!',
+                        user: {
+                            _id: '105695347333761287865',
+                            username: 'Alvin Kristanto',
+                            avatar:
+                                'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                        },
+                        create_time: '2018-05-02T06:29:27.308Z',
+                    },
+                    {
+                        content: 'Great photo!',
+                        user: {
+                            _id: '105695347333761287865',
+                            username: 'Alvin Kristanto',
+                            avatar:
+                                'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                        },
+                        create_time: '2018-05-02T06:33:30.831Z',
+                    },
+                    {
+                        content: 'cool photo!',
+                        user: {
+                            _id: '105695347333761287865',
+                            username: 'Alvin Kristanto',
+                            avatar:
+                                'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                        },
+                        create_time: '2018-05-02T06:34:25.741Z',
+                    },
+                ],
+                like_status: 1,
+                own_feed: true,
+                user: {
+                    _id: '105695347333761287865',
+                    username: 'Alvin Kristanto',
+                    avatar:
+                        'https://lh5.googleusercontent.com/-400_gowIAMo/AAAAAAAAAAI/AAAAAAAAHWw/4O3N-a2P8Xw/photo.jpg?sz=50',
+                },
+                create_time: '7 hours ago',
+            },
+        ],
+    },
 
     new_feed: {
         loading: false,

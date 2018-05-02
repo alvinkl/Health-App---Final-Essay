@@ -42,7 +42,7 @@ const Feeds = (
         loading,
         is_online,
         error,
-        feeds,
+        data,
         user,
         toggleLike,
         deleteFeed,
@@ -50,7 +50,7 @@ const Feeds = (
     },
     { router }
 ) => {
-    return feeds.map((d, i) => {
+    return data.map((d, i) => {
         if (d.waiting_for_sync) {
             return (
                 <Card
@@ -167,7 +167,7 @@ Feeds.propTypes = {
     loading: T.bool.isRequired,
     is_online: T.bool.isRequired,
     error: T.bool.isRequired,
-    feeds: T.array.isRequired,
+    data: T.array.isRequired,
     user: T.object.isRequired,
 
     toggleLike: T.func.isRequired,
@@ -182,8 +182,13 @@ Feeds.contextTypes = {
 import { connect } from 'react-redux'
 import { toggleLike, deleteFeed, deleteSyncFeed } from '@actions/feeds'
 
-const mapStateToProps = ({ feeds, user, common: { is_online } }) => ({
-    ...feeds,
+const mapStateToProps = ({
+    feeds: { loading, error },
+    user,
+    common: { is_online },
+}) => ({
+    loading,
+    error,
     user: { name: user.name, avatar: user.profile_img },
     is_online,
 })

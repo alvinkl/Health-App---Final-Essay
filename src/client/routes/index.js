@@ -70,7 +70,7 @@ const route = [
             },
             {
                 name: 'personalFeed',
-                path: '/user/:user_id',
+                path: '/myfeed',
                 exact: true,
                 protected: true,
                 component: Loadable({

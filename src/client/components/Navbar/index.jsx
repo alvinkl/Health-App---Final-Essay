@@ -30,15 +30,13 @@ class Navbar extends Component {
     }
 
     select = index => {
-        const { user_id } = this.props
-
         this.setState({ selectedIndex: index })
 
         let link = '/'
         if (index === 0) link = '/'
         else if (index === 1) link = '/diary'
         else if (index === 2) link = '/report'
-        else if (index === 3) link = '/user/' + user_id
+        else if (index === 3) link = '/myfeed'
 
         return this.context.router.history.push(link)
     }
@@ -79,14 +77,12 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
     navbar: T.bool.isRequired,
-    user_id: T.string.isRequired,
 }
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({ common: { navbar }, user: { _id } }) => ({
+const mapStateToProps = ({ common: { navbar } }) => ({
     navbar,
-    user_id: _id,
 })
 
 export default connect(mapStateToProps)(Navbar)

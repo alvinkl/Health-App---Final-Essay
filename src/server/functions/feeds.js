@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { Types as mTypes } from 'mongoose'
+import { uniq } from 'lodash'
 
 import { sendPushNotification } from '@services/webpush'
 
@@ -27,7 +28,17 @@ export const getGeneralFeeds = async (current_user = 0, page = 0) => {
     )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const google_ids = data.map(d => d.user_id)
+    const google_ids = uniq(
+        data.reduce(
+            (p, c) => [
+                ...p,
+                c.user_id,
+                ...c.comments.map(d => d.user_id),
+                ...c.likes.map(d => d.user_id),
+            ],
+            []
+        )
+    )
 
     const query = [
         { $match: { googleID: { $in: google_ids } } },
@@ -48,33 +59,41 @@ export const getGeneralFeeds = async (current_user = 0, page = 0) => {
         title: d.title,
         subtitle: d.subtitle,
         image: d.image,
-        likes: d.likes.length,
+        likes: d.likes.map(user_id => ({
+            ...users.find(u => u._id === user_id),
+        })),
+        total_likes: d.likes.length,
+        comments: d.comments.map(d => ({
+            content: d.content,
+            user: users.find(u => u._id === d.user_id),
+        })),
         like_status: ~d.likes.indexOf(current_user) ? 1 : 0,
         own_feed: d.user_id === current_user,
         user: users.find(u => u._id === d.user_id),
         create_time: moment(d.create_time).fromNow(),
     }))
 
-    // sendPushNotification({
-    //     title: feeds_data[0].title,
-    //     content: feeds_data[0].subtitle,
-    //     image: feeds_data[0].image,
-    //     url: '/',
-    // })
-
     return Promise.resolve(feeds_data)
 }
 
-export const getOneFeed = async (user_id, post_id) => {
-    const query = {
-        _id: mTypes.ObjectId(post_id),
-        user_id,
-    }
+export const getOneFeed = async (post_id, user_id) => {
+    let query = { _id: mTypes.ObjectId(post_id) }
+    if (user_id)
+        query = {
+            ...query,
+            user_id,
+        }
 
     const [err, feed] = await to(Feeds.findOne(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    return feed
+    if (!feed)
+        return Promise.error({
+            code: 400,
+            message: `Feed with id=${post_id} not found!`,
+        })
+
+    return Promise.resolve(feed)
 }
 
 export const deleteFeed = async post_id => {
@@ -123,7 +142,9 @@ export const insertNewFeed = async (googleID, data) => {
         image: newFeeds.image,
         user: userData,
         create_time: moment(newFeeds.create_time).fromNow(),
-        likes: newFeeds.likes.length,
+        likes: [],
+        comments: [],
+        total_likes: 0,
         own_feed: true,
     }
 
@@ -135,6 +156,21 @@ export const insertNewFeed = async (googleID, data) => {
     })
 
     return Promise.resolve(dt)
+}
+
+export const addComment = async (feed, { googleID, content }) => {
+    const comment = {
+        user_id: googleID,
+        content,
+        status: 1,
+    }
+
+    feed.comments.push(comment)
+
+    const [err, res] = await to(feed.save())
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve(res)
 }
 
 export const toggleLike = async (googleID, post_id) => {

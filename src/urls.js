@@ -27,6 +27,7 @@ export const deleteFeed = '/api/feeds/delete'
 export const getLocationName = '/api/feeds/getLocationName'
 export const toggleLike = '/api/feeds/toggleLike'
 export const getUserLike = '/api/feeds/getUserLike'
+export const addComment = '/api/feeds/addComment'
 
 // auth
 export const authGoogle = '/auth/google'

@@ -7,6 +7,7 @@ import {
     handleDeleteFeed,
     handleToggleLike,
     handleGetLocationName,
+    handleAddComment,
 } from '@server/handler/api/feeds'
 
 export default function(r) {
@@ -17,4 +18,5 @@ export default function(r) {
     r.post(url.addFeed, mustAuthenticate, handleAddFeed)
     r.post(url.deleteFeed, mustAuthenticate, handleDeleteFeed)
     r.post(url.toggleLike, mustAuthenticate, handleToggleLike)
+    r.post(url.addComment, mustAuthenticate, handleAddComment)
 }

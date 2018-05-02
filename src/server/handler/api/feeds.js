@@ -5,6 +5,7 @@ import {
     validateAddFeed,
     validateDeleteFeed,
     validateToggleLike,
+    validateAddComment,
 } from '@validation/feeds'
 
 import {
@@ -14,6 +15,7 @@ import {
     insertNewFeed,
     getLocationName,
     toggleLike,
+    addComment,
 } from '@functions/feeds'
 
 export const handleGetFeeds = async (req, res) => {
@@ -42,10 +44,8 @@ export const handleDeleteFeed = async (req, res) => {
     const [errParam, post_id] = validateDeleteFeed(req.body)
     if (errParam) return responseError(res, 400, errParam)
 
-    const [errFeed, feed] = await to(getOneFeed(googleID, post_id))
+    const [errFeed] = await to(getOneFeed(post_id, googleID))
     if (errFeed) return responseError(res, errFeed.code, errFeed.message)
-
-    if (!feed) return responseError(res, 400, 'Feed not found!')
 
     const [errDelete, success] = await to(deleteFeed(post_id))
     if (errDelete) return responseError(res, errDelete.code, errDelete.message)
@@ -71,4 +71,25 @@ export const handleGetLocationName = async (req, res) => {
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)
+}
+
+export const handleAddComment = async (req, res) => {
+    const { googleID } = req.user
+
+    const [errParam, param] = validateAddComment(req.body)
+    if (errParam) return responseError(res, 400, errParam)
+
+    const [errGetFeed, feed] = await to(getOneFeed(param.post_id))
+    if (errGetFeed)
+        return responseError(res, errGetFeed.code, errGetFeed.message)
+
+    const comment = {
+        googleID,
+        content: param.content,
+    }
+    const [errAddComment, newFeed] = await to(addComment(feed, comment))
+    if (errAddComment)
+        return responseError(res, errAddComment.code, errAddComment.message)
+
+    return responseJSON(res, newFeed)
 }

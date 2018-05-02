@@ -51,6 +51,24 @@ const route = [
                 }),
             },
             {
+                name: 'specificFeed',
+                path: '/feed/:post_id',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/* webpackChunkName: "Specific_Feed" */ '@components/Contents/Feeds/SpecificFeed'),
+                    pastDelay: 500,
+                    modules: ['@components/Contents/Feeds/SpecificFeed'],
+                    webpack: () => [
+                        require.resolveWeak(
+                            '@components/Contents/Feeds/SpecificFeed'
+                        ),
+                    ],
+                    loading: loadingComponent,
+                }),
+            },
+            {
                 name: 'redirect-home',
                 path: '/home',
                 exact: true,

@@ -66,6 +66,7 @@ export const getGeneralFeeds = async (current_user = 0, page = 0) => {
         comments: d.comments.map(d => ({
             content: d.content,
             user: users.find(u => u._id === d.user_id),
+            create_time: d.create_time,
         })),
         like_status: ~d.likes.indexOf(current_user) ? 1 : 0,
         own_feed: d.user_id === current_user,
@@ -76,7 +77,9 @@ export const getGeneralFeeds = async (current_user = 0, page = 0) => {
     return Promise.resolve(feeds_data)
 }
 
-export const getOneFeed = async (post_id, user_id) => {
+export const getOneFeed = async (post_id, user_id, detail = false) => {
+    let data = {}
+
     let query = { _id: mTypes.ObjectId(post_id) }
     if (user_id)
         query = {
@@ -93,7 +96,50 @@ export const getOneFeed = async (post_id, user_id) => {
             message: `Feed with id=${post_id} not found!`,
         })
 
-    return Promise.resolve(feed)
+    data = feed
+
+    if (detail) {
+        const google_ids = uniq([
+            feed.user_id,
+            ...feed.comments.map(d => d.user_id),
+            ...feed.likes.map(d => d.user_id),
+        ])
+        const query_user = [
+            { $match: { googleID: { $in: google_ids } } },
+            {
+                $project: {
+                    _id: '$googleID',
+                    username: '$name',
+                    avatar: '$profile_img',
+                },
+            },
+        ]
+
+        const [errUser, users] = await to(User.aggregate(query_user))
+        if (errUser) return Promise.reject({ code: 500, message: err })
+
+        data = {
+            post_id: feed._id,
+            title: feed.title,
+            subtitle: feed.subtitle,
+            image: feed.image,
+            likes: feed.likes.map(user_id => ({
+                ...users.find(u => u._id === user_id),
+            })),
+            total_likes: feed.likes.length,
+            comments: feed.comments.map(d => ({
+                content: d.content,
+                user: users.find(u => u._id === feed.user_id),
+                create_time: d.create_time,
+            })),
+            like_status: ~feed.likes.indexOf(user_id) ? 1 : 0,
+            own_feed: feed.user_id === user_id,
+            user: users.find(u => u._id === feed.user_id),
+            create_time: moment(feed.create_time).fromNow(),
+        }
+    }
+
+    return Promise.resolve(data)
 }
 
 export const deleteFeed = async post_id => {
@@ -170,7 +216,7 @@ export const addComment = async (feed, { googleID, content }) => {
     const [err, res] = await to(feed.save())
     if (err) return Promise.reject({ code: 500, message: err })
 
-    return Promise.resolve(res)
+    return Promise.resolve(res._id)
 }
 
 export const toggleLike = async (googleID, post_id) => {

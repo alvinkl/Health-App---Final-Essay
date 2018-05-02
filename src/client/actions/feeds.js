@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash'
+
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
@@ -7,6 +9,7 @@ import {
     toggleLike as toggleLikeURL,
     postImage,
     deleteFeed as deleteFeedURL,
+    addComment as addCommentURL,
 } from '@urls'
 import { LIKE, UNLIKE } from '@constant'
 import {
@@ -20,7 +23,9 @@ import { showSnackbar } from './common'
 
 export const FETCH_FEEDS = 'FETCH_FEEDS'
 export const FAILED_FETCH_FEEDS = 'FAILED_FETCH_FEEDS'
+export const FAILED_FETCH_SINGLE_FEED = 'FAILED_FETCH_SINGLE_FEED'
 export const FETCHED_FEEDS = 'FETCHED_FEEDS'
+export const FETCHED_SINGLE_FEED = 'FETCHED_SINGLE_FEED'
 export const FETCHED_FEEDS_IDB = 'FETCHED_FEEDS_IDB'
 export const ADD_FEED = 'ADD_FEED'
 export const FAILED_ADD_FEED = 'FAILED_ADD_FEED'
@@ -36,6 +41,12 @@ export const TOGGLE_LIKE_FEED = 'TOGGLE_LIKE_FEED'
 export const FAILED_TOGGLE_LIKE_FEED = 'FAILED_TOGGLE_LIKE_FEED'
 export const FEED_LIKED = 'FEED_LIKED'
 export const FEED_UNLIKED = 'FEED_UNLIKED'
+export const GETTING_FEED_FROM_STORE = 'GETTING_FEED_FROM_STORE'
+export const RECEIVED_FEED_FROM_STORE = 'RECEIVED_FEED_FROM_STORE'
+export const REMOVE_CURRENT_FEED = 'REMOVE_CURRENT_FEED'
+export const ADD_COMMENT = 'ADD_COMMENT'
+export const FAILED_ADD_COMMENT = 'FAILED_ADD_COMMENT'
+export const COMMENT_ADDED = 'COMMENT_ADDED'
 
 export const fetchFeed = (page = 1) => async dispatch => {
     dispatch({ type: FETCH_FEEDS })
@@ -87,6 +98,40 @@ export const fetchFeed = (page = 1) => async dispatch => {
         type: FETCHED_FEEDS,
         feeds: [...idb_offline_feeds, ...feeds],
     })
+}
+
+export const getFeedFromStore = post_id => async (dispatch, getState) => {
+    dispatch({ type: GETTING_FEED_FROM_STORE })
+    const { current_feed, feeds } = getState().feeds
+
+    if (!isEmpty(current_feed)) dispatch({ type: REMOVE_CURRENT_FEED })
+
+    let curr_feed = feeds.filter(f => f.post_id === post_id)
+
+    if (!isEmpty(curr_feed))
+        return dispatch({
+            type: RECEIVED_FEED_FROM_STORE,
+            current_feed: curr_feed[0],
+        })
+
+    // fetch single feed
+    const query = qs({
+        post_id,
+    })
+    const [err, res] = await to(
+        fetch(getFeeds + query, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+    if (err) return dispatch({ type: FAILED_FETCH_SINGLE_FEED })
+
+    const feed = await res.json()
+
+    return dispatch({ type: FETCHED_SINGLE_FEED, current_feed: feed })
 }
 
 export const addFeedData = ({
@@ -229,4 +274,33 @@ export const toggleLike = post_id => async dispatch => {
             post_id,
             total_likes,
         })
+}
+
+export const addComment = ({ post_id, comment }) => async dispatch => {
+    dispatch({ type: ADD_COMMENT })
+
+    const data = {
+        post_id,
+        content: comment,
+    }
+    const [err, res] = await to(
+        fetch(addCommentURL, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data),
+        })
+    )
+
+    if (err) {
+        dispatch(showSnackbar(err))
+        return dispatch({ type: FAILED_ADD_COMMENT })
+    }
+
+    const feed = await res.json()
+
+    dispatch(showSnackbar('Comment Added!'))
+    return dispatch({ type: COMMENT_ADDED, feed })
 }

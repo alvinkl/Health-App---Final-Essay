@@ -27,6 +27,11 @@ const commentSchema = m.Schema({
         type: String,
         required: true,
     },
+    create_time: {
+        type: Date,
+        default: Date.now,
+        index: true,
+    },
     status: {
         type: Number,
         required: true,

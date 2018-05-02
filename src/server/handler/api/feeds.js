@@ -21,7 +21,16 @@ import {
 export const handleGetFeeds = async (req, res) => {
     const { googleID } = req.user
 
-    const [err, data] = await to(getGeneralFeeds(googleID))
+    const { post_id } = req.query
+
+    if (!post_id) {
+        const [err, data] = await to(getGeneralFeeds(googleID))
+        if (err) return responseError(res, err.code, err.message)
+
+        return responseJSON(res, data)
+    }
+
+    const [err, data] = await to(getOneFeed(post_id, googleID, true))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)
@@ -87,9 +96,10 @@ export const handleAddComment = async (req, res) => {
         googleID,
         content: param.content,
     }
-    const [errAddComment, newFeed] = await to(addComment(feed, comment))
+    const [errAddComment] = await to(addComment(feed, comment))
     if (errAddComment)
         return responseError(res, errAddComment.code, errAddComment.message)
 
+    const [, newFeed] = await to(getOneFeed(param.post_id, 0, true))
     return responseJSON(res, newFeed)
 }

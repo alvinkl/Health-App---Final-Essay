@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 import cn from 'classnames'
+import { Link } from 'react-router-dom'
 
 import { LIKE, UNLIKE } from '@constant'
 
@@ -16,18 +17,26 @@ import {
 } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
+import IconButton from 'material-ui/IconButton'
+import Badge from 'material-ui/Badge'
+
+import AvatarStacks from './Avatar'
+
+const style = {
+    likes: {
+        padding: '10px 16px',
+    },
+}
 
 const DeleteIcon = <FontIcon className="material-icons">delete</FontIcon>
 
-const Feeds = ({
-    loading,
-    error,
-    feeds,
-    user,
-    toggleLike,
-    deleteFeed,
-    deleteSyncFeed,
-}) => {
+const linkSpecificFeed = (router, post_id) =>
+    router.history.push('/feed/' + post_id)
+
+const Feeds = (
+    { loading, error, feeds, user, toggleLike, deleteFeed, deleteSyncFeed },
+    { router }
+) => {
     return feeds.map((d, i) => {
         if (d.waiting_for_sync) {
             return (
@@ -68,12 +77,12 @@ const Feeds = ({
         let label
 
         if (d.like_status === LIKE) {
-            if (d.likes - 1 > 0)
-                label = 'You and ' + d.likes + ' people like this!'
+            if (d.total_likes - 1 > 0)
+                label = 'You and ' + d.total_likes + ' people like this!'
             else label = 'You liked this post!'
         } else {
-            if (d.likes > 0) label = d.likes + ' people liked this, ' + 'Like'
-            else label = 'Like!'
+            if (d.total_likes > 0)
+                label = d.total_likes + ' people liked this, ' + 'Like'
         }
 
         return (
@@ -107,14 +116,33 @@ const Feeds = ({
                 >
                     <img src={d.image} alt="" />
                 </CardMedia>
-                <CardActions className={styles.buttonsAlignRight}>
-                    <FlatButton
-                        label={label}
-                        primary={!d.like_status}
-                        secondary={!!d.like_status}
-                        onClick={toggleLike.bind(null, d.post_id)}
-                    />
+                <CardActions className={cn(styles.likesButton)}>
+                    <IconButton onClick={toggleLike.bind(null, d.post_id)}>
+                        <FontIcon
+                            className="material-icons"
+                            color={d.like_status ? 'red' : 'grey'}
+                        >
+                            thumb_up
+                        </FontIcon>
+                    </IconButton>
+                    <Badge
+                        className={styles.badgeComments}
+                        badgeContent={d.comments.length}
+                    >
+                        <IconButton
+                            onClick={linkSpecificFeed.bind(
+                                null,
+                                router,
+                                d.post_id
+                            )}
+                        >
+                            <FontIcon className="material-icons" color="grey">
+                                comment
+                            </FontIcon>
+                        </IconButton>
+                    </Badge>
                 </CardActions>
+                {!!label && <CardText style={style.likes}>{label}</CardText>}
             </Card>
         )
     })
@@ -129,6 +157,10 @@ Feeds.propTypes = {
     toggleLike: T.func.isRequired,
     deleteFeed: T.func.isRequired,
     deleteSyncFeed: T.func.isRequired,
+}
+
+Feeds.contextTypes = {
+    router: T.object.isRequired,
 }
 
 import { connect } from 'react-redux'

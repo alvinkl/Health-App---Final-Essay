@@ -1,15 +1,22 @@
+const routeIndexWithHeader = [0, 1, 2, 3]
+
 const getRouteIndex = router => {
-    const { route: { location: { pathname } } } = router
-    switch (pathname) {
-        case '/':
-            return 0
-        case '/diary':
-            return 1
-        case '/report':
-            return 2
-        default:
-            return -1
-    }
+    const {
+        route: {
+            location: { pathname },
+        },
+    } = router
+
+    if (pathname.match(/\/$/)) return 0
+    if (pathname.match(/\/diary/)) return 1
+    if (pathname.match(/\/report/)) return 2
+    if (pathname.match(/\/user/)) return 3
+    if (pathname.match(/\/feed/)) return 4
+
+    return -1
 }
+
+export const isRouteWithHeader = router =>
+    !!~routeIndexWithHeader.indexOf(getRouteIndex(router))
 
 export default getRouteIndex

@@ -5,6 +5,7 @@ import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
 import {
     getFeeds,
+    getPersonalFeeds as getPersonalFeedsURL,
     addFeed,
     toggleLike as toggleLikeURL,
     postImage,
@@ -22,9 +23,12 @@ import {
 import { showSnackbar } from './common'
 
 export const FETCH_FEEDS = 'FETCH_FEEDS'
+export const FETCH_PERSONAL_FEEDS = 'FETCH_PERSONAL_FEEDS'
 export const FAILED_FETCH_FEEDS = 'FAILED_FETCH_FEEDS'
+export const FAILED_FETCH_PERSONAL_FEEDS = 'FAILED_FETCH_PERSONAL_FEEDS'
 export const FAILED_FETCH_SINGLE_FEED = 'FAILED_FETCH_SINGLE_FEED'
 export const FETCHED_FEEDS = 'FETCHED_FEEDS'
+export const FETCHED_PERSONAL_FEEDS = 'FETCHED_PERSONAL_FEEDS'
 export const FETCHED_SINGLE_FEED = 'FETCHED_SINGLE_FEED'
 export const FETCHED_FEEDS_IDB = 'FETCHED_FEEDS_IDB'
 export const ADD_FEED = 'ADD_FEED'
@@ -132,6 +136,62 @@ export const getFeedFromStore = post_id => async (dispatch, getState) => {
     const feed = await res.json()
 
     return dispatch({ type: FETCHED_SINGLE_FEED, current_feed: feed })
+}
+
+export const getPersonalFeeds = ({ user_id }) => async dispatch => {
+    dispatch({ type: FETCH_PERSONAL_FEEDS })
+
+    let query = ''
+
+    // offline feeds not yet posted only show for my feed
+    let idb_offline_feeds = []
+    if (!user_id) {
+        const urlCreator = window.URL || window.webkitURL
+        idb_offline_feeds = await readAllData('sync-feeds')
+        idb_offline_feeds = idb_offline_feeds.map(dt => ({
+            post_id: dt.id,
+            waiting_for_sync: true,
+            image: urlCreator.createObjectURL(dt.picture.picture_blob),
+            ...dt,
+        }))
+    }
+
+    // fetch from indexedDB if any
+    // const idb_feeds = await readAllData('feeds')
+    // dispatch({
+    //     type: FETCHED_FEEDS_IDB,
+    //     feeds: [...idb_offline_feeds, ...idb_feeds],
+    // })
+
+    const [err, res] = await to(
+        fetch(getPersonalFeedsURL + query, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+    if (err) return dispatch({ type: FAILED_FETCH_PERSONAL_FEEDS })
+
+    const personal_feeds = await res.json()
+
+    // Update idb - add index to post_id to sort the data from IDB
+    // clearAllData('feeds')
+    // feeds.map((feed, index) =>
+    //     writeData('feeds', {
+    //         ...feed,
+    //         id: index + feed.post_id,
+    //     })
+    // )
+
+    return dispatch({
+        type: FETCHED_PERSONAL_FEEDS,
+        personal_feeds: {
+            ...personal_feeds,
+            feeds: [...idb_offline_feeds, ...personal_feeds.feeds],
+        },
+    })
 }
 
 export const addFeedData = ({

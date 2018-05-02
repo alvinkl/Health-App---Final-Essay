@@ -79,6 +79,7 @@ export const getGeneralFeeds = async (current_user = 0, page = 1) => {
 
 export const getPersonalFeeds = async (current_user, user_id, page = 1) => {
     const offset = page * 10 - 10
+    let selected_user
 
     let queryFeeds = {
         status: FEED_AVAILABLE,
@@ -98,6 +99,8 @@ export const getPersonalFeeds = async (current_user, user_id, page = 1) => {
         queryFeeds = { ...queryFeeds, user_id: current_user }
 
         queryUser = [{ $match: { googleID: current_user } }, ...queryUser]
+
+        selected_user = current_user
     } else {
         queryFeeds = { ...queryFeeds, user_id }
 
@@ -106,6 +109,8 @@ export const getPersonalFeeds = async (current_user, user_id, page = 1) => {
             { $match: { googleID: { $in: google_ids } } },
             ...queryUser,
         ]
+
+        selected_user = user_id
     }
 
     const [err, data] = await to(
@@ -139,7 +144,12 @@ export const getPersonalFeeds = async (current_user, user_id, page = 1) => {
         create_time: moment(d.create_time).fromNow(),
     }))
 
-    return Promise.resolve(feeds_data)
+    const dt = {
+        user: users.find(u => u._id === selected_user),
+        feeds: feeds_data,
+    }
+
+    return Promise.resolve(dt)
 }
 
 export const getOneFeed = async (post_id, user_id, detail = false) => {

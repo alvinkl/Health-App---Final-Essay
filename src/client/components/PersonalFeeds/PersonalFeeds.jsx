@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
+import { isEmpty } from 'lodash'
 
 import { List, ListItem } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar'
@@ -15,12 +16,20 @@ const style = {
 }
 
 class PersonalFeeds extends Component {
+    componentDidMount() {
+        const { getPersonalFeeds } = this.props
+
+        getPersonalFeeds({ user_id: 0 })
+    }
+
     renderFeeds = () => {
         const {
             feeds: { feeds },
         } = this.props
 
-        return <Feeds data={feeds} />
+        if (!isEmpty(feeds)) return <Feeds data={feeds} />
+
+        return null
     }
 
     render() {
@@ -51,14 +60,24 @@ PersonalFeeds.propTypes = {
     muiTheme: T.object.isRequired,
     user: T.object.isRequired,
     feeds: T.object.isRequired,
+
+    getPersonalFeeds: T.func.isRequired,
 }
 
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import { connect } from 'react-redux'
+
+import { getPersonalFeeds } from '@actions/feeds'
 
 const mapStateToProps = ({ user, feeds: { personal_feeds } }) => ({
     user,
     feeds: personal_feeds,
 })
 
-export default muiThemeable()(connect(mapStateToProps)(PersonalFeeds))
+const mapDispatchToProps = dispatch => ({
+    getPersonalFeeds: event => dispatch(getPersonalFeeds(event)),
+})
+
+export default muiThemeable()(
+    connect(mapStateToProps, mapDispatchToProps)(PersonalFeeds)
+)

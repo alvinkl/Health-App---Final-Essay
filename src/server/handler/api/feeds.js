@@ -10,6 +10,7 @@ import {
 
 import {
     getGeneralFeeds,
+    getPersonalFeeds,
     getOneFeed,
     deleteFeed,
     insertNewFeed,
@@ -31,6 +32,17 @@ export const handleGetFeeds = async (req, res) => {
     }
 
     const [err, data] = await to(getOneFeed(post_id, googleID, true))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, data)
+}
+
+export const handleGetPersonalFeeds = async (req, res) => {
+    const { googleID } = req.user
+
+    const { user_id, page } = req.query
+
+    const [err, data] = await to(getPersonalFeeds(googleID, user_id))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)

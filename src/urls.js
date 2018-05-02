@@ -22,6 +22,7 @@ export const getRestaurantMapLocation = '/api/food/getRestaurantMapLocation'
 
 // feeds
 export const getFeeds = '/api/feeds/get'
+export const getPersonalFeeds = '/api/feeds/getPersonal'
 export const addFeed = '/api/feeds/add'
 export const deleteFeed = '/api/feeds/delete'
 export const getLocationName = '/api/feeds/getLocationName'

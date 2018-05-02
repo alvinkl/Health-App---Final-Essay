@@ -28,7 +28,11 @@ const style = {
     },
 }
 
-const DeleteIcon = <FontIcon className="material-icons">delete</FontIcon>
+const DeleteIcon = (
+    <FontIcon className="material-icons" color="grey">
+        delete
+    </FontIcon>
+)
 
 const linkSpecificFeed = (router, post_id) =>
     router.history.push('/feed/' + post_id)
@@ -57,7 +61,6 @@ const Feeds = (
                             <FlatButton
                                 className={styles.deleteButton}
                                 icon={DeleteIcon}
-                                secondary
                                 onClick={deleteSyncFeed.bind(null, d.post_id)}
                             />
                         )}
@@ -103,7 +106,6 @@ const Feeds = (
                         <FlatButton
                             className={styles.deleteButton}
                             icon={DeleteIcon}
-                            secondary
                             onClick={deleteFeed.bind(null, d.post_id)}
                         />
                     )}

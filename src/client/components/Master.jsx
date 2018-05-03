@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import cn from 'classnames'
 import T from 'prop-types'
 import { Helmet } from 'react-helmet'
 // import { renderRoutes } from 'react-router-config'
@@ -18,7 +19,7 @@ import Snackbar from '@components/Snackbar'
 // import CameraModule from '@components/CameraModule'
 import Loader from './Loader'
 
-import getRouteIndex from '@helper/getRouteIndex'
+import { isRouteWithHeader } from '@helper/getRouteIndex'
 
 import styles from './master.css'
 
@@ -38,22 +39,17 @@ class Master extends Component {
 
     componentDidMount() {
         const {
-            showSnackbar,
             showOnlineTheme,
             showOfflineTheme,
             user_loggedin,
+            setOffline,
+            setOnline,
         } = this.props
 
         if (user_loggedin) this.renderLoggedinComponent()
 
-        window.addEventListener('online', () => {
-            // showOnlineTheme()
-            showSnackbar("You're coming back online!")
-        })
-        window.addEventListener('offline', () => {
-            // showOfflineTheme()
-            showSnackbar("You're offline!")
-        })
+        window.addEventListener('online', setOnline)
+        window.addEventListener('offline', setOffline)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -116,10 +112,14 @@ class Master extends Component {
             hideHeader,
             loading,
             theme_color,
+            is_online,
         } = this.props
         const { Header, Navbar, Sidebar, CameraModule } = this.state
         const { router } = this.context
-        !~[0, 1, 2].indexOf(getRouteIndex(router)) ? hideHeader() : showHeader()
+
+        const noHeaderPage = !isRouteWithHeader(router.route.location.pathname)
+
+        noHeaderPage ? hideHeader() : showHeader()
 
         let muiT = {
             avatar: {
@@ -224,8 +224,16 @@ class Master extends Component {
                     <meta name="theme-color" content="#3f51b5" />
                 </Helmet>
                 <MuiThemeProvider muiTheme={getMuiTheme(theme_color, muiT)}>
+                    {!is_online && (
+                        <div className={styles.offlineBar}>You're Offline</div>
+                    )}
                     {!!Header && <Header />}
-                    <main className={styles.main}>
+                    <main
+                        className={cn(styles.main, {
+                            [styles.maxTop]: noHeaderPage,
+                            [styles.offline]: !is_online,
+                        })}
+                    >
                         {renderRoutes(route.routes)}
                     </main>
                     {!!Navbar && <Navbar />}
@@ -246,6 +254,7 @@ class Master extends Component {
 Master.propTypes = {
     route: T.object.isRequired,
     isSSR: T.bool.isRequired,
+    is_online: T.bool.isRequired,
     userAgent: T.string.isRequired,
     loading: T.bool.isRequired,
     user_loggedin: T.bool.isRequired,
@@ -253,9 +262,10 @@ Master.propTypes = {
 
     showHeader: T.func.isRequired,
     hideHeader: T.func.isRequired,
-    showSnackbar: T.func.isRequired,
     showOnlineTheme: T.func.isRequired,
     showOfflineTheme: T.func.isRequired,
+    setOffline: T.func.isRequired,
+    setOnline: T.func.isRequired,
 }
 
 Master.contextTypes = {
@@ -266,13 +276,14 @@ import { connect } from 'react-redux'
 import {
     showHeader,
     hideHeader,
-    showSnackbar,
     showOnlineTheme,
     showOfflineTheme,
+    setOnline,
+    setOffline,
 } from '@actions/common'
 
 const mapStateToProps = ({
-    common: { isSSR, userAgent, loading, theme_color },
+    common: { isSSR, userAgent, loading, theme_color, is_online },
     user,
 }) => ({
     isSSR,
@@ -280,6 +291,7 @@ const mapStateToProps = ({
     loading,
     user_loggedin: !isEmpty(user),
     theme_color,
+    is_online,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -287,7 +299,8 @@ const mapDispatchToProps = dispatch => ({
     hideHeader: () => dispatch(hideHeader()),
     showOnlineTheme: () => dispatch(showOnlineTheme()),
     showOfflineTheme: () => dispatch(showOfflineTheme()),
-    showSnackbar: event => dispatch(showSnackbar(event)),
+    setOffline: () => dispatch(setOffline()),
+    setOnline: () => dispatch(setOnline()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Master)

@@ -51,6 +51,56 @@ const route = [
                 }),
             },
             {
+                name: 'specificFeed',
+                path: '/feed/:post_id',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/* webpackChunkName: "Specific_Feed" */ '@components/Contents/Feeds/SpecificFeed'),
+                    pastDelay: 500,
+                    modules: ['@components/Contents/Feeds/SpecificFeed'],
+                    webpack: () => [
+                        require.resolveWeak(
+                            '@components/Contents/Feeds/SpecificFeed'
+                        ),
+                    ],
+                    loading: loadingComponent,
+                }),
+            },
+            {
+                name: 'personalFeed',
+                path: '/myfeed',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/* webpackChunkName: "Personal_Feeds" */ '@components/PersonalFeeds'),
+                    pastDelay: 500,
+                    modules: ['@components/PersonalFeeds'],
+                    webpack: () => [
+                        require.resolveWeak('@components/PersonalFeeds'),
+                    ],
+                    loading: loadingComponent,
+                }),
+            },
+            {
+                name: 'personalFeedOthers',
+                path: '/user/:user_id',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/* webpackChunkName: "Personal_Feeds" */ '@components/PersonalFeeds'),
+                    pastDelay: 500,
+                    modules: ['@components/PersonalFeeds'],
+                    webpack: () => [
+                        require.resolveWeak('@components/PersonalFeeds'),
+                    ],
+                    loading: loadingComponent,
+                }),
+            },
+            {
                 name: 'redirect-home',
                 path: '/home',
                 exact: true,

@@ -12,6 +12,7 @@ import getRouteIndex from '@helper/getRouteIndex'
 const homeIcon = <FontIcon className="material-icons">home</FontIcon>
 const diaryIcon = <FontIcon className="material-icons">book</FontIcon>
 const reportIcon = <FontIcon className="material-icons">timeline</FontIcon>
+const personIcon = <FontIcon className="material-icons">person</FontIcon>
 
 const paperStyle = {
     width: '100vw',
@@ -24,12 +25,22 @@ class Navbar extends Component {
         router: T.object,
     }
 
-    static propTypes = {
-        navbar: T.bool.isRequired,
+    state = {
+        selectedIndex: getRouteIndex(
+            this.context.router.route.location.pathname
+        ),
     }
 
-    state = {
-        selectedIndex: getRouteIndex(this.context.router),
+    componentWillReceiveProps(nextProps) {
+        const {
+            location: { pathname },
+        } = this.props
+        const {
+            location: { pathname: nextPath },
+        } = nextProps
+
+        if (nextPath !== pathname)
+            this.setState({ selectedIndex: getRouteIndex(nextPath) })
     }
 
     select = index => {
@@ -39,6 +50,7 @@ class Navbar extends Component {
         if (index === 0) link = '/'
         else if (index === 1) link = '/diary'
         else if (index === 2) link = '/report'
+        else if (index === 3) link = '/myfeed'
 
         return this.context.router.history.push(link)
     }
@@ -53,17 +65,22 @@ class Navbar extends Component {
                         <BottomNavigationItem
                             label="Home"
                             icon={homeIcon}
-                            onClick={() => this.select(0)}
+                            onClick={this.select.bind(null, 0)}
                         />
                         <BottomNavigationItem
                             label="Diary"
                             icon={diaryIcon}
-                            onClick={() => this.select(1)}
+                            onClick={this.select.bind(null, 1)}
                         />
                         <BottomNavigationItem
                             label="Report"
                             icon={reportIcon}
-                            onClick={() => this.select(2)}
+                            onClick={this.select.bind(null, 2)}
+                        />
+                        <BottomNavigationItem
+                            label="My Feed"
+                            icon={personIcon}
+                            onClick={this.select.bind(null, 3)}
                         />
                     </BottomNavigation>
                 </Paper>
@@ -72,10 +89,16 @@ class Navbar extends Component {
     }
 }
 
+Navbar.propTypes = {
+    navbar: T.bool.isRequired,
+    location: T.object.isRequired,
+}
+
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 
 const mapStateToProps = ({ common: { navbar } }) => ({
     navbar,
 })
 
-export default connect(mapStateToProps)(Navbar)
+export default withRouter(connect(mapStateToProps)(Navbar))

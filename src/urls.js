@@ -23,9 +23,11 @@ export const getRestaurantMapLocation = '/api/food/getRestaurantMapLocation'
 // feeds
 export const getFeeds = '/api/feeds/get'
 export const addFeed = '/api/feeds/add'
+export const deleteFeed = '/api/feeds/delete'
 export const getLocationName = '/api/feeds/getLocationName'
 export const toggleLike = '/api/feeds/toggleLike'
 export const getUserLike = '/api/feeds/getUserLike'
+export const addComment = '/api/feeds/addComment'
 
 // auth
 export const authGoogle = '/auth/google'

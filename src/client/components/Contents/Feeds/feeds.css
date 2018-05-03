@@ -6,7 +6,45 @@
     text-align: right;
 }
 
+.likesButton {
+    text-align: left;
+    padding: 0 !important;
+}
+
 .feedCards.waitingSync img {
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
+}
+
+.deleteButton {
+    position: absolute !important;
+    top: 20%;
+    right: 5%;
+    min-width: 0 !important;
+}
+
+.badgeComments {
+    padding: 0 !important;
+}
+
+.badgeComments > span {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 10px !important;
+    top: 2px !important;
+    right: 3px !important;
+    color: white !important;
+    background-color: grey !important;
+}
+
+.specificFeed {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+
+.sendButton {
+    min-width: 40px !important;
+    height: 90% !important;
+    line-height: 50% !important;
 }

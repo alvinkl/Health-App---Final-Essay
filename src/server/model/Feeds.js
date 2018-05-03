@@ -18,6 +18,27 @@ const locationSchema = m.Schema(
     { _id: 0 }
 )
 
+const commentSchema = m.Schema({
+    user_id: {
+        type: String,
+        required: true,
+    },
+    content: {
+        type: String,
+        required: true,
+    },
+    create_time: {
+        type: Date,
+        default: Date.now,
+        index: true,
+    },
+    status: {
+        type: Number,
+        required: true,
+        default: 1,
+    },
+})
+
 const feedSchema = m.Schema({
     title: {
         type: String,
@@ -36,6 +57,11 @@ const feedSchema = m.Schema({
         default: [],
     },
 
+    comments: {
+        type: [commentSchema],
+        default: [],
+    },
+
     location: locationSchema,
 
     user_id: {
@@ -48,6 +74,12 @@ const feedSchema = m.Schema({
         type: Date,
         default: Date.now,
         index: true,
+    },
+
+    status: {
+        type: Number,
+        required: true,
+        default: 1,
     },
 })
 

@@ -50,3 +50,7 @@ export const ONEDAY = 1000 * 60 * 60 * 24
 // Like status
 export const LIKE = 1
 export const UNLIKE = 0
+
+// Feed status
+export const FEED_AVAILABLE = 1
+export const FEED_REMOVED = 0

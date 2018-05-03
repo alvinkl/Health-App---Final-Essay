@@ -3,10 +3,23 @@
     overflow-y: scroll;
     overflow-x: hidden;
     margin-bottom: 55px;
+    margin-top: 60px;
+}
+
+.main.maxTop {
+    margin-top: 0;
+}
+
+.main.maxTop.offline {
+    margin-top: 20px;
+}
+
+.main.offline {
+    margin-top: 80px;
 }
 
 .loader {
-    position: absolute;
+    position: fixed;
     top: 0;
     margin: 0 auto;
     width: 100%;
@@ -18,4 +31,14 @@
 
 .loader > div {
     top: 45%;
+}
+
+.offlineBar {
+    text-align: center;
+    color: white;
+    background: black;
+    position: fixed;
+    width: 100%;
+    height: 20px;
+    z-index: 9999;
 }

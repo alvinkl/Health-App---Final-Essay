@@ -29,11 +29,13 @@ class Contents extends Component {
     }
 
     render() {
+        const { feeds } = this.props
+
         return (
             <Fragment>
                 <ContentHeader />
                 <SuggestFood />
-                <Feeds />
+                <Feeds data={feeds} />
             </Fragment>
         )
     }
@@ -42,6 +44,7 @@ class Contents extends Component {
 Contents.propTypes = {
     // from redux
     user: T.object.isRequired,
+    feeds: T.array.isRequired,
     fetchUserData: T.func.isRequired,
     fetchFeed: T.func.isRequired,
 }
@@ -49,8 +52,9 @@ Contents.propTypes = {
 // import withStyles from 'isomorphic-style-loader/lib/withStyles'
 import { connect } from 'react-redux'
 
-const mapStateToProps = state => ({
-    user: state.user,
+const mapStateToProps = ({ user, feeds: { feeds } }) => ({
+    user,
+    feeds,
 })
 
 const mapDispatchToProps = dispatch => ({

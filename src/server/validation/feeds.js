@@ -1,3 +1,5 @@
+import { escape } from 'lodash'
+
 import eq from '@helper/checkObjectStructure'
 
 const addFeedType = {
@@ -30,6 +32,23 @@ export const validateAddFeed = param => {
     ]
 }
 
+const deleteFeedType = {
+    post_id: 0,
+}
+
+export const validateDeleteFeed = param => {
+    if (!eq(param, deleteFeedType)) return ['Parameter is invalid']
+
+    const { post_id } = param
+    if (typeof post_id !== 'string') {
+        return ['post_id must be string']
+    }
+
+    if (!post_id.length) return ['post_id is invalid']
+
+    return [false, post_id]
+}
+
 const addLikeType = {
     post_id: 0,
 }
@@ -39,4 +58,26 @@ export const validateToggleLike = param => {
         return ['Parameter is invalid, post_id is required!']
 
     return [false, param.post_id]
+}
+
+const addCommentType = {
+    post_id: '',
+    content: '',
+}
+
+export const validateAddComment = param => {
+    if (!eq(param, addCommentType)) return ['Parameter is invalid']
+
+    const { post_id, content } = param
+
+    if (!post_id.length) return ['post_id is invalid']
+    if (!content.length) return ['content is invalid']
+
+    return [
+        false,
+        {
+            post_id,
+            content: escape(content),
+        },
+    ]
 }

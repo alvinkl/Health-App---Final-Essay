@@ -1,10 +1,12 @@
 import moment from 'moment'
+import { Types as mTypes } from 'mongoose'
+import { uniq } from 'lodash'
 
 import { sendPushNotification } from '@services/webpush'
 
 import { googleMaps } from '@config/urls'
 import { GoogleGeocodingAPIKey } from '@config/keys'
-import { LIKE, UNLIKE } from '@constant'
+import { LIKE, UNLIKE, FEED_AVAILABLE, FEED_REMOVED } from '@constant'
 
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
@@ -12,18 +14,34 @@ import qs from '@helper/queryString'
 import Feeds from '@model/Feeds'
 import User from '@model/User'
 
-export const getFeeds = async (current_user = 0, page = 0) => {
-    const offset = page * 10
+export const getFeeds = async (current_user = '', user_id = '', page = 1) => {
+    const offset = page * 10 - 10
+
+    let queryFeeds = {
+        status: FEED_AVAILABLE,
+    }
+
+    if (user_id) queryFeeds = { ...queryFeeds, user_id }
 
     const [err, data] = await to(
-        Feeds.find()
+        Feeds.find(queryFeeds)
             .skip(offset)
             .limit(5)
             .sort({ create_time: -1 })
     )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const google_ids = data.map(d => d.user_id)
+    const google_ids = uniq(
+        data.reduce(
+            (p, c) => [
+                ...p,
+                c.user_id,
+                ...c.comments.map(d => d.user_id),
+                ...c.likes.map(d => d.user_id),
+            ],
+            []
+        )
+    )
 
     const query = [
         { $match: { googleID: { $in: google_ids } } },
@@ -44,26 +62,106 @@ export const getFeeds = async (current_user = 0, page = 0) => {
         title: d.title,
         subtitle: d.subtitle,
         image: d.image,
-        likes: d.likes.length,
-        status: ~d.likes.indexOf(current_user) ? 1 : 0,
+        likes: d.likes.map(user_id => ({
+            ...users.find(u => u._id === user_id),
+        })),
+        total_likes: d.likes.length,
+        comments: d.comments.map(d => ({
+            content: d.content,
+            user: users.find(u => u._id === d.user_id),
+            create_time: d.create_time,
+        })),
+        like_status: ~d.likes.indexOf(current_user) ? 1 : 0,
+        own_feed: d.user_id === current_user,
         user: users.find(u => u._id === d.user_id),
         create_time: moment(d.create_time).fromNow(),
     }))
 
-    // sendPushNotification({
-    //     title: feeds_data[0].title,
-    //     content: feeds_data[0].subtitle,
-    //     image: feeds_data[0].image,
-    //     url: '/',
-    // })
-
     return Promise.resolve(feeds_data)
+}
+
+export const getOneFeed = async (post_id, user_id, detail = false) => {
+    let data = {}
+
+    let query = { _id: mTypes.ObjectId(post_id) }
+    if (user_id)
+        query = {
+            ...query,
+            user_id,
+        }
+
+    const [err, feed] = await to(Feeds.findOne(query))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    if (!feed)
+        return Promise.error({
+            code: 400,
+            message: `Feed with id=${post_id} not found!`,
+        })
+
+    data = feed
+
+    if (detail) {
+        const google_ids = uniq([
+            feed.user_id,
+            ...feed.comments.map(d => d.user_id),
+            ...feed.likes.map(d => d.user_id),
+        ])
+        const query_user = [
+            { $match: { googleID: { $in: google_ids } } },
+            {
+                $project: {
+                    _id: '$googleID',
+                    username: '$name',
+                    avatar: '$profile_img',
+                },
+            },
+        ]
+
+        const [errUser, users] = await to(User.aggregate(query_user))
+        if (errUser) return Promise.reject({ code: 500, message: err })
+
+        data = {
+            post_id: feed._id,
+            title: feed.title,
+            subtitle: feed.subtitle,
+            image: feed.image,
+            likes: feed.likes.map(user_id => ({
+                ...users.find(u => u._id === user_id),
+            })),
+            total_likes: feed.likes.length,
+            comments: feed.comments.map(d => ({
+                content: d.content,
+                user: users.find(u => u._id === feed.user_id),
+                create_time: d.create_time,
+            })),
+            like_status: ~feed.likes.indexOf(user_id) ? 1 : 0,
+            own_feed: feed.user_id === user_id,
+            user: users.find(u => u._id === feed.user_id),
+            create_time: moment(feed.create_time).fromNow(),
+        }
+    }
+
+    return Promise.resolve(data)
+}
+
+export const deleteFeed = async post_id => {
+    const [err] = await to(
+        Feeds.update(
+            { _id: mTypes.ObjectId(post_id) },
+            { $set: { status: FEED_REMOVED } }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, mesage: err })
+
+    return Promise.resolve({ success: 1 })
 }
 
 export const insertNewFeed = async (googleID, data) => {
     const newFeeds = new Feeds({
         user_id: googleID,
         ...data,
+        status: FEED_AVAILABLE,
     })
 
     const [err] = await to(newFeeds.save())
@@ -93,7 +191,10 @@ export const insertNewFeed = async (googleID, data) => {
         image: newFeeds.image,
         user: userData,
         create_time: moment(newFeeds.create_time).fromNow(),
-        likes: newFeeds.likes.length,
+        likes: [],
+        comments: [],
+        total_likes: 0,
+        own_feed: true,
     }
 
     sendPushNotification({
@@ -104,6 +205,21 @@ export const insertNewFeed = async (googleID, data) => {
     })
 
     return Promise.resolve(dt)
+}
+
+export const addComment = async (feed, { googleID, content }) => {
+    const comment = {
+        user_id: googleID,
+        content,
+        status: 1,
+    }
+
+    feed.comments.push(comment)
+
+    const [err, res] = await to(feed.save())
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve(res._id)
 }
 
 export const toggleLike = async (googleID, post_id) => {
@@ -131,11 +247,11 @@ export const toggleLike = async (googleID, post_id) => {
     const newLikes = likes.length
     feed.save()
 
-    const status = newLikes > oldLikes ? LIKE : UNLIKE
+    const like_status = newLikes > oldLikes ? LIKE : UNLIKE
 
     return Promise.resolve({
         total_likes: newLikes,
-        status,
+        like_status,
     })
 }
 

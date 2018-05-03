@@ -2,6 +2,8 @@ import {
     FETCH_FEEDS,
     FAILED_FETCH_FEEDS,
     FETCHED_FEEDS,
+    FETCHED_PERSONAL_FEEDS,
+    FETCHED_SINGLE_FEED,
     FETCHED_FEEDS_IDB,
     ADD_FEED,
     ADD_FEED_SYNCED,
@@ -11,6 +13,11 @@ import {
     FAILED_TOGGLE_LIKE_FEED,
     FEED_LIKED,
     FEED_UNLIKED,
+    FEED_SYNC_DELETED,
+    GETTING_FEED_FROM_STORE,
+    RECEIVED_FEED_FROM_STORE,
+    REMOVE_CURRENT_FEED,
+    COMMENT_ADDED,
 } from '@actions/feeds'
 import { LIKE, UNLIKE } from '@constant'
 
@@ -18,6 +25,8 @@ export const initial_state = {
     loading: false,
     error: false,
     feeds: [],
+
+    current_feed: {},
 
     new_feed: {
         loading: false,
@@ -33,7 +42,6 @@ export default (state = initial_state, action) => {
                 loading: true,
                 error: false,
             }
-
         case FAILED_FETCH_FEEDS:
             return {
                 ...state,
@@ -48,6 +56,13 @@ export default (state = initial_state, action) => {
                 loading: false,
                 error: false,
                 feeds: action.feeds,
+            }
+        case FETCHED_PERSONAL_FEEDS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                personal_feeds: action.personal_feeds,
             }
         case ADD_FEED:
             return {
@@ -93,8 +108,8 @@ export default (state = initial_state, action) => {
                             ...p,
                             {
                                 ...c,
-                                likes: action.total_likes,
-                                status: LIKE,
+                                total_likes: action.total_likes,
+                                like_status: LIKE,
                             },
                         ]
 
@@ -110,13 +125,65 @@ export default (state = initial_state, action) => {
                             ...p,
                             {
                                 ...c,
-                                likes: action.total_likes,
-                                status: UNLIKE,
+                                total_likes: action.total_likes,
+                                like_status: UNLIKE,
                             },
                         ]
 
                     return [...p, c]
                 }, []),
+            }
+        case FEED_SYNC_DELETED: {
+            const { feeds } = state
+            let index = 0
+
+            for (let feed of feeds) {
+                if (feed.post_id === action.post_id) break
+                index++
+            }
+
+            if (index <= feeds.length)
+                return {
+                    ...state,
+                    feeds: [
+                        ...feeds.slice(0, index),
+                        ...feeds.slice(index + 1),
+                    ],
+                }
+
+            return {
+                ...state,
+                feeds,
+            }
+        }
+        case GETTING_FEED_FROM_STORE:
+            return {
+                ...state,
+                loading: true,
+            }
+        case RECEIVED_FEED_FROM_STORE:
+            return {
+                ...state,
+                loading: false,
+                current_feed: action.current_feed,
+            }
+        case REMOVE_CURRENT_FEED:
+            return {
+                ...state,
+                loading: true,
+                current_feed: {},
+            }
+        case FETCHED_SINGLE_FEED:
+            return {
+                ...state,
+                loading: false,
+                current_feed: action.current_feed,
+            }
+        case COMMENT_ADDED:
+            return {
+                ...state,
+                loading: false,
+                current_feed: action.feed,
             }
         default:
             return state

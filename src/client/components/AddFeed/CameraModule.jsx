@@ -5,15 +5,16 @@ import T from 'prop-types'
 
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
+import dataURItoBlob from '@helper/dataURItoBlob'
 import { getLocationName, postImage } from '@urls'
 
-import FontIcon from 'material-ui/FontIcon'
 import IconButton from 'material-ui/IconButton'
+import FontIcon from 'material-ui/FontIcon'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 
-import styles from './cameraModule.css'
+import styles from './addFeed.css'
 
 class CameraModule extends Component {
     constructor(props) {
@@ -38,17 +39,14 @@ class CameraModule extends Component {
         error: false,
     }
 
-    componentWillReceiveProps(nextProps) {
-        const { camera_module } = nextProps
-        if (camera_module) {
-            document.querySelector('body').style.overflowY = 'hidden'
-            return this.initializeMedia()
-        }
+    componentDidMount() {
+        document.querySelector('body').style.overflowY = 'hidden'
+        return this.initializeMedia()
+    }
 
-        if (document) {
-            document.querySelector('body').style.overflowY = 'scroll'
-            this.turnOffCamera()
-        }
+    componentWillUnmount() {
+        document.querySelector('body').style.overflowY = 'scroll'
+        this.turnOffCamera()
     }
 
     fetchLocationName = async (lat, lon) => {
@@ -145,7 +143,7 @@ class CameraModule extends Component {
 
         this.turnOffCamera()
 
-        const picture = this.dataURItoBlob(canvas.toDataURL())
+        const picture = dataURItoBlob(canvas.toDataURL())
 
         this.setState({ picture })
     }
@@ -216,21 +214,6 @@ class CameraModule extends Component {
         }
     }
 
-    dataURItoBlob = dataURI => {
-        const byteString = atob(dataURI.split(',')[1])
-        const mimeString = dataURI
-            .split(',')[0]
-            .split(':')[1]
-            .split(';')[0]
-        const ab = new ArrayBuffer(byteString.length)
-        const ia = new Uint8Array(ab)
-        for (let i = 0; i < byteString.length; i++)
-            ia[i] = byteString.charCodeAt(i)
-
-        const blob = new Blob([ab], { type: mimeString })
-        return blob
-    }
-
     handleClose = () => {
         const { hideCameraModule } = this.props
 
@@ -263,11 +246,12 @@ class CameraModule extends Component {
             loading_location,
             location,
             address,
+            title,
+            subtitle,
         } = this.state
-        const { camera_module } = this.props
 
         return (
-            <div hidden={!camera_module} className={styles.cameraModule}>
+            <div>
                 {!picture && (
                     <video
                         className={styles.cmVideo}
@@ -297,10 +281,12 @@ class CameraModule extends Component {
                 <div className={styles.cmTextFields}>
                     <TextField
                         floatingLabelText="Title"
+                        value={title}
                         onChange={this.handleTitleChange}
                     />
                     <TextField
                         floatingLabelText="Subtitle"
+                        value={subtitle}
                         onChange={this.handleSubtitleChange}
                     />
                 </div>

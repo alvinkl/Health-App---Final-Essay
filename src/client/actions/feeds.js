@@ -51,7 +51,7 @@ export const ADD_COMMENT = 'ADD_COMMENT'
 export const FAILED_ADD_COMMENT = 'FAILED_ADD_COMMENT'
 export const COMMENT_ADDED = 'COMMENT_ADDED'
 
-export const fetchFeed = ({ page = 1, user_id }) => async (
+export const fetchFeed = ({ page = 1, user_id } = { page: 1 }) => async (
     dispatch,
     getState
 ) => {
@@ -228,7 +228,7 @@ export const addFeedData = ({
     return dispatch({ type: ADD_FEED_SYNCED, sync_feed })
 }
 
-export const deleteFeed = post_id => async dispatch => {
+export const deleteFeed = ({ post_id, user_id }) => async dispatch => {
     dispatch({ type: DELETE_FEED })
 
     const url = deleteFeedURL
@@ -249,7 +249,7 @@ export const deleteFeed = post_id => async dispatch => {
     }
 
     dispatch(showSnackbar('Successfully delete the feed!'))
-    dispatch(fetchFeed())
+    dispatch(fetchFeed({ user_id }))
     return dispatch({ type: FEED_DELETED, post_id })
 }
 

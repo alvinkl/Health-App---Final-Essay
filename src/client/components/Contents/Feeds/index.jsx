@@ -123,7 +123,10 @@ const Feeds = (
                             className={styles.deleteButton}
                             disabled={!is_online}
                             icon={DeleteIcon}
-                            onClick={deleteFeed.bind(null, d.post_id)}
+                            onClick={deleteFeed.bind(null, {
+                                post_id: d.post_id,
+                                user_id: d.user._id,
+                            })}
                         />
                     )}
                 </CardHeader>

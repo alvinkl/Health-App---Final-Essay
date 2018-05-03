@@ -12,11 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
 import generateAsyncComponent from '@client/routes/generateAsyncComponent'
-// import Header from '@components/Header'
-// import Navbar from '@components/Navbar'
-// import Sidebar from '@components/Sidebar'
 import Snackbar from '@components/Snackbar'
-// import CameraModule from '@components/CameraModule'
 import Loader from './Loader'
 
 import { isRouteWithHeader } from '@helper/getRouteIndex'
@@ -34,7 +30,6 @@ class Master extends Component {
         Header: null,
         Navbar: null,
         Sidebar: null,
-        CameraModule: null,
     }
 
     componentDidMount() {
@@ -57,8 +52,8 @@ class Master extends Component {
     }
 
     renderLoggedinComponent = async () => {
-        const { Header, Navbar, Sidebar, CameraModule } = this.state
-        if (!Header && !Navbar && !Sidebar && !CameraModule) {
+        const { Header, Navbar, Sidebar } = this.state
+        if (!Header && !Navbar && !Sidebar) {
             const impH = Loadable({
                 loader: () =>
                     import(/* webpackChunkName: "Header" */ '@components/Header'),
@@ -83,22 +78,11 @@ class Master extends Component {
                 webpack: () => [require.resolveWeak('@components/Sidebar')],
                 pastDelay: 500,
             })
-            const impCM = Loadable({
-                loader: () =>
-                    import(/* webpackChunkName: "Camera Module" */ '@components/CameraModule'),
-                loading: loadingComponent,
-                modules: ['@components/CameraModule'],
-                webpack: () => [
-                    require.resolveWeak('@components/CameraModule'),
-                ],
-                pastDelay: 500,
-            })
 
             this.setState({
                 Header: impH,
                 Navbar: impNB,
                 Sidebar: impSB,
-                CameraModule: impCM,
             })
         }
     }
@@ -114,7 +98,7 @@ class Master extends Component {
             theme_color,
             is_online,
         } = this.props
-        const { Header, Navbar, Sidebar, CameraModule } = this.state
+        const { Header, Navbar, Sidebar } = this.state
         const { router } = this.context
 
         const noHeaderPage = !isRouteWithHeader(router.route.location.pathname)
@@ -241,8 +225,6 @@ class Master extends Component {
                     {!!Sidebar && <Sidebar />}
 
                     <Snackbar />
-
-                    {!!CameraModule && <CameraModule />}
 
                     {loading && Loader}
                 </MuiThemeProvider>

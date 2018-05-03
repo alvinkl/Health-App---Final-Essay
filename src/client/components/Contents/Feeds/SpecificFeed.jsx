@@ -4,9 +4,9 @@ import { isEmpty, unescape } from 'lodash'
 import moment from 'moment'
 
 import AppBar from 'material-ui/AppBar'
-// Display Feed
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/arrow-back'
+// Display Feed
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors'
 import {
     Card,

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import T from 'prop-types'
 import cn from 'classnames'
 import { Link } from 'react-router-dom'
 
-import { LIKE, UNLIKE } from '@constant'
+import { LIKE } from '@constant'
 
 import styles from './feeds.css'
 
@@ -19,8 +19,9 @@ import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import IconButton from 'material-ui/IconButton'
 import Badge from 'material-ui/Badge'
+import Avatar from 'material-ui/Avatar'
 
-import AvatarStacks from './Avatar'
+// import AvatarStacks from './Avatar'
 
 const style = {
     likes: {
@@ -50,7 +51,7 @@ const Feeds = (
     },
     { router }
 ) => {
-    return data.map((d, i) => {
+    return data.map(d => {
         if (d.waiting_for_sync) {
             return (
                 <Card
@@ -94,7 +95,7 @@ const Feeds = (
             else label = 'You liked this post!'
         } else {
             if (d.total_likes > 0)
-                label = d.total_likes + ' people liked this, ' + 'Like'
+                label = d.total_likes + ' people liked this, '
         }
 
         return (
@@ -107,7 +108,13 @@ const Feeds = (
                 <CardHeader
                     title={d.user.username}
                     subtitle={d.create_time}
-                    avatar={d.user.avatar}
+                    avatar={
+                        <Link
+                            to={d.own_feed ? '/myfeed' : '/user/' + d.user._id}
+                        >
+                            <Avatar src={d.user.avatar} />
+                        </Link>
+                    }
                     showExpandableButton={false}
                     closeIcon
                 >

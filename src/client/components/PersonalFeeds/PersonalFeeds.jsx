@@ -17,9 +17,36 @@ const style = {
 
 class PersonalFeeds extends Component {
     componentDidMount() {
-        const { getPersonalFeeds } = this.props
+        const {
+            getPersonalFeeds,
+            match: { path, params },
+        } = this.props
 
-        getPersonalFeeds({ user_id: 0 })
+        if (path === '/myfeed') getPersonalFeeds({ user_id: 0 })
+        else {
+            console.log(params.user_id)
+            getPersonalFeeds({ user_id: params.user_id })
+        }
+    }
+
+    renderHeader = () => {
+        const {
+            feeds: { user },
+        } = this.props
+
+        if (!isEmpty(user))
+            return (
+                <List>
+                    <ListItem
+                        leftAvatar={<Avatar src={user.avatar} />}
+                        primaryText={
+                            <div style={style.nameColor}>{user.username}</div>
+                        }
+                    />
+                </List>
+            )
+
+        return null
     }
 
     renderFeeds = () => {
@@ -33,7 +60,7 @@ class PersonalFeeds extends Component {
     }
 
     render() {
-        const { muiTheme, user } = this.props
+        const { muiTheme } = this.props
 
         return (
             <Fragment>
@@ -41,14 +68,7 @@ class PersonalFeeds extends Component {
                     className={styles.headerContent}
                     style={{ backgroundColor: muiTheme.palette.primary1Color }}
                 >
-                    <List>
-                        <ListItem
-                            leftAvatar={<Avatar src={user.profile_img} />}
-                            primaryText={
-                                <div style={style.nameColor}>{user.name}</div>
-                            }
-                        />
-                    </List>
+                    {this.renderHeader()}
                 </div>
                 <div>{this.renderFeeds()}</div>
             </Fragment>
@@ -60,6 +80,7 @@ PersonalFeeds.propTypes = {
     muiTheme: T.object.isRequired,
     user: T.object.isRequired,
     feeds: T.object.isRequired,
+    match: T.object.isRequired,
 
     getPersonalFeeds: T.func.isRequired,
 }
@@ -69,8 +90,7 @@ import { connect } from 'react-redux'
 
 import { getPersonalFeeds } from '@actions/feeds'
 
-const mapStateToProps = ({ user, feeds: { personal_feeds } }) => ({
-    user,
+const mapStateToProps = ({ feeds: { personal_feeds } }) => ({
     feeds: personal_feeds,
 })
 

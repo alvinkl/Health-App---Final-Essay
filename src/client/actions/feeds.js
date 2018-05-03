@@ -143,6 +143,8 @@ export const getPersonalFeeds = ({ user_id }) => async dispatch => {
 
     let query = ''
 
+    if (user_id) query = qs({ user_id })
+
     // offline feeds not yet posted only show for my feed
     let idb_offline_feeds = []
     if (!user_id) {

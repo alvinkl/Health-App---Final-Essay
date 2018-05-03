@@ -26,7 +26,21 @@ class Navbar extends Component {
     }
 
     state = {
-        selectedIndex: getRouteIndex(this.context.router),
+        selectedIndex: getRouteIndex(
+            this.context.router.route.location.pathname
+        ),
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {
+            location: { pathname },
+        } = this.props
+        const {
+            location: { pathname: nextPath },
+        } = nextProps
+
+        if (nextPath !== pathname)
+            this.setState({ selectedIndex: getRouteIndex(nextPath) })
     }
 
     select = index => {
@@ -77,12 +91,14 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
     navbar: T.bool.isRequired,
+    location: T.object.isRequired,
 }
 
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 
 const mapStateToProps = ({ common: { navbar } }) => ({
     navbar,
 })
 
-export default connect(mapStateToProps)(Navbar)
+export default withRouter(connect(mapStateToProps)(Navbar))

@@ -19,7 +19,7 @@ import Snackbar from '@components/Snackbar'
 // import CameraModule from '@components/CameraModule'
 import Loader from './Loader'
 
-import getRouteIndex, { isRouteWithHeader } from '@helper/getRouteIndex'
+import { isRouteWithHeader } from '@helper/getRouteIndex'
 
 import styles from './master.css'
 
@@ -117,7 +117,7 @@ class Master extends Component {
         const { Header, Navbar, Sidebar, CameraModule } = this.state
         const { router } = this.context
 
-        const noHeaderPage = !isRouteWithHeader(router)
+        const noHeaderPage = !isRouteWithHeader(router.route.location.pathname)
 
         noHeaderPage ? hideHeader() : showHeader()
 

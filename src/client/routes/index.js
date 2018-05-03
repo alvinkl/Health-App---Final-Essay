@@ -85,6 +85,22 @@ const route = [
                 }),
             },
             {
+                name: 'personalFeedOthers',
+                path: '/user/:user_id',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/* webpackChunkName: "Personal_Feeds" */ '@components/PersonalFeeds'),
+                    pastDelay: 500,
+                    modules: ['@components/PersonalFeeds'],
+                    webpack: () => [
+                        require.resolveWeak('@components/PersonalFeeds'),
+                    ],
+                    loading: loadingComponent,
+                }),
+            },
+            {
                 name: 'redirect-home',
                 path: '/home',
                 exact: true,

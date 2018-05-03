@@ -15,21 +15,26 @@ export const validateAddFeed = param => {
 
     const { title, subtitle, image, location, address } = param
 
-    let loc = JSON.parse(location)
-    loc = {
-        ...loc,
-        address,
+    let final_param = {
+        title,
+        subtitle,
+        image,
     }
 
-    return [
-        false,
-        {
-            title,
-            subtitle,
-            image,
+    if (location) {
+        let loc = JSON.parse(location)
+        loc = {
+            ...loc,
+            address,
+        }
+
+        final_param = {
+            ...final_param,
             location: loc,
-        },
-    ]
+        }
+    }
+
+    return [false, final_param]
 }
 
 const deleteFeedType = {

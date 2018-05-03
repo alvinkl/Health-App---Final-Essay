@@ -29,7 +29,7 @@ const style = {
     },
 }
 
-const ContentHeader = ({ user, today_total_calories, showCameraModule }) => {
+const ContentHeader = ({ user, today_total_calories }) => {
     const {
         googleID,
         name,
@@ -94,7 +94,6 @@ const ContentHeader = ({ user, today_total_calories, showCameraModule }) => {
                             style={style.chip}
                             color={cyan500}
                             backgroundColor={cyan100}
-                            onClick={showCameraModule}
                         >
                             <FontIcon
                                 className="material-icons"
@@ -114,7 +113,6 @@ const ContentHeader = ({ user, today_total_calories, showCameraModule }) => {
 ContentHeader.propTypes = {
     user: T.object,
     today_total_calories: T.string.isRequired,
-    showCameraModule: T.func.isRequired,
 }
 
 ContentHeader.defaultProps = {
@@ -122,15 +120,10 @@ ContentHeader.defaultProps = {
 }
 
 import { connect } from 'react-redux'
-import { showCameraModule } from '@actions/common'
 
 const mapStateToProps = ({ user, diary }) => ({
     user,
     today_total_calories: diary.today_total_calories,
 })
 
-const mapDispatchToProps = dispatch => ({
-    showCameraModule: () => dispatch(showCameraModule()),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContentHeader)
+export default connect(mapStateToProps)(ContentHeader)

@@ -134,6 +134,20 @@ const route = [
                     loading: loadingComponent,
                 }),
             },
+            {
+                name: 'addFeed',
+                path: '/add-feed',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/*  webpackChunkName: AddFeed */ '@components/AddFeed'),
+                    pastDelay: 500,
+                    modules: ['@components/AddFeed'],
+                    webpack: () => [require.resolveWeak('@components/AddFeed')],
+                    loading: loadingComponent,
+                }),
+            },
 
             // Landing page
             {

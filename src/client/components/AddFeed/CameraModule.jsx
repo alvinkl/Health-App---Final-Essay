@@ -74,7 +74,13 @@ class CameraModule extends Component {
     }
 
     handleSubmitData = async () => {
-        const { addFeedData, user_id, showLoader, hideLoader } = this.props
+        const {
+            addFeedData,
+            user_id,
+            showLoader,
+            hideLoader,
+            handleBackButton,
+        } = this.props
         const { title, subtitle, location, address, picture } = this.state
 
         showLoader()
@@ -93,8 +99,9 @@ class CameraModule extends Component {
             address,
         })
 
-        this.handleClose()
         hideLoader()
+
+        handleBackButton()
     }
 
     initializeMedia = async () => {
@@ -214,28 +221,6 @@ class CameraModule extends Component {
         }
     }
 
-    handleClose = () => {
-        const { hideCameraModule } = this.props
-
-        this.turnOffCamera()
-        hideCameraModule()
-
-        this.setState({
-            picture: null,
-
-            title: '',
-            subtitle: '',
-
-            location: null,
-            address: '',
-
-            loading_location: false,
-            error_location: false,
-
-            error: false,
-        })
-    }
-
     handleTitleChange = e => this.setState({ title: e.target.value })
     handleSubtitleChange = e => this.setState({ subtitle: e.target.value })
 
@@ -320,13 +305,9 @@ class CameraModule extends Component {
 
                 <div className={styles.cmTextFields}>
                     <FlatButton
-                        secondary={true}
-                        label="Cancel"
-                        onClick={this.handleClose}
-                    />
-                    <FlatButton
                         primary={true}
                         onClick={this.handleSubmitData}
+                        disabled={!picture || !title || !subtitle}
                         label="Post"
                     />
                 </div>
@@ -338,6 +319,8 @@ class CameraModule extends Component {
 CameraModule.propTypes = {
     camera_module: T.bool.isRequired,
     user_id: T.string.isRequired,
+
+    handleBackButton: T.func.isRequired,
 
     hideCameraModule: T.func.isRequired,
     showLoader: T.func.isRequired,

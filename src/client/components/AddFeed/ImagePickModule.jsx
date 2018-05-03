@@ -127,7 +127,7 @@ class ImagePickModule extends Component {
     }
 
     render() {
-        const { title, subtitle } = this.state
+        const { title, subtitle, picture } = this.state
 
         return (
             <div>
@@ -173,6 +173,7 @@ class ImagePickModule extends Component {
                         primary={true}
                         onClick={this.handleSubmitData}
                         label="Post"
+                        disabled={!title || !subtitle || !picture}
                     />
                 </div>
             </div>

@@ -4,11 +4,11 @@ const locationSchema = m.Schema(
     {
         lat: {
             type: Number,
-            required: true,
+            default: 0,
         },
         lon: {
             type: Number,
-            required: true,
+            default: 0,
         },
         address: {
             type: String,

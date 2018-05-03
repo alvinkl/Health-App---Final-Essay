@@ -9,8 +9,7 @@ import {
 } from '@validation/feeds'
 
 import {
-    getGeneralFeeds,
-    getPersonalFeeds,
+    getFeeds,
     getOneFeed,
     deleteFeed,
     insertNewFeed,
@@ -22,27 +21,18 @@ import {
 export const handleGetFeeds = async (req, res) => {
     const { googleID } = req.user
 
-    const { post_id } = req.query
+    let err
+    let data
 
-    if (!post_id) {
-        const [err, data] = await to(getGeneralFeeds(googleID))
-        if (err) return responseError(res, err.code, err.message)
-
-        return responseJSON(res, data)
+    const { post_id, user_id, page } = req.query
+    if (post_id && user_id) {
+        ;[err, data] = await to(getOneFeed(post_id, user_id, true))
+    } else if (post_id) {
+        ;[err, data] = await to(getOneFeed(post_id, googleID, true))
+    } else {
+        ;[err, data] = await to(getFeeds(googleID, user_id))
     }
 
-    const [err, data] = await to(getOneFeed(post_id, googleID, true))
-    if (err) return responseError(res, err.code, err.message)
-
-    return responseJSON(res, data)
-}
-
-export const handleGetPersonalFeeds = async (req, res) => {
-    const { googleID } = req.user
-
-    const { user_id, page } = req.query
-
-    const [err, data] = await to(getPersonalFeeds(googleID, user_id))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)

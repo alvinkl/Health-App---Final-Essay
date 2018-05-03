@@ -18,23 +18,20 @@ const style = {
 class PersonalFeeds extends Component {
     componentDidMount() {
         const {
-            getPersonalFeeds,
+            fetchFeed,
             match: { path, params },
+            user: { _id: user_id },
         } = this.props
 
-        if (path === '/myfeed') getPersonalFeeds({ user_id: 0 })
-        else {
-            console.log(params.user_id)
-            getPersonalFeeds({ user_id: params.user_id })
-        }
+        if (path === '/myfeed') fetchFeed({ user_id })
+        else fetchFeed({ user_id: params.user_id })
     }
 
     renderHeader = () => {
-        const {
-            feeds: { user },
-        } = this.props
+        const { feeds } = this.props
 
-        if (!isEmpty(user))
+        if (!isEmpty(feeds)) {
+            const { user } = feeds[0]
             return (
                 <List>
                     <ListItem
@@ -45,14 +42,13 @@ class PersonalFeeds extends Component {
                     />
                 </List>
             )
+        }
 
         return null
     }
 
     renderFeeds = () => {
-        const {
-            feeds: { feeds },
-        } = this.props
+        const { feeds } = this.props
 
         if (!isEmpty(feeds)) return <Feeds data={feeds} />
 
@@ -78,24 +74,32 @@ class PersonalFeeds extends Component {
 
 PersonalFeeds.propTypes = {
     muiTheme: T.object.isRequired,
+    feeds: T.array.isRequired,
     user: T.object.isRequired,
-    feeds: T.object.isRequired,
     match: T.object.isRequired,
 
-    getPersonalFeeds: T.func.isRequired,
+    fetchFeed: T.func.isRequired,
 }
 
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import { connect } from 'react-redux'
 
-import { getPersonalFeeds } from '@actions/feeds'
+import { fetchFeed } from '@actions/feeds'
 
-const mapStateToProps = ({ feeds: { personal_feeds } }) => ({
-    feeds: personal_feeds,
+const mapStateToProps = ({
+    feeds: { feeds },
+    user: { googleID, name, profile_img },
+}) => ({
+    feeds,
+    user: {
+        _id: googleID,
+        username: name,
+        avatar: profile_img,
+    },
 })
 
 const mapDispatchToProps = dispatch => ({
-    getPersonalFeeds: event => dispatch(getPersonalFeeds(event)),
+    fetchFeed: event => dispatch(fetchFeed(event)),
 })
 
 export default muiThemeable()(

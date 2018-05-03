@@ -27,10 +27,6 @@ export const initial_state = {
     feeds: [],
 
     current_feed: {},
-    personal_feeds: {
-        user: {},
-        feeds: [],
-    },
 
     new_feed: {
         loading: false,

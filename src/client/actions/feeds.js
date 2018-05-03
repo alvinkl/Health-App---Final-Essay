@@ -5,7 +5,6 @@ import qs from '@helper/queryString'
 import { backgroundSync } from '@helper/backgroundSyncing'
 import {
     getFeeds,
-    getPersonalFeeds as getPersonalFeedsURL,
     addFeed,
     toggleLike as toggleLikeURL,
     postImage,
@@ -52,32 +51,50 @@ export const ADD_COMMENT = 'ADD_COMMENT'
 export const FAILED_ADD_COMMENT = 'FAILED_ADD_COMMENT'
 export const COMMENT_ADDED = 'COMMENT_ADDED'
 
-export const fetchFeed = (page = 1) => async dispatch => {
+export const fetchFeed = ({ page = 1, user_id }) => async (
+    dispatch,
+    getState
+) => {
     dispatch({ type: FETCH_FEEDS })
 
-    const query = qs({
-        page,
-    })
+    const { googleID, name, profile_img } = getState().user
+    let myfeed = user_id === googleID
+    let is_personal = !!user_id
+
+    let query = { page }
+    if (is_personal) query = { ...query, user_id }
 
     // offline feeds not yet posted
-    const urlCreator = window.URL || window.webkitURL
-    let idb_offline_feeds = await readAllData('sync-feeds')
-    idb_offline_feeds = idb_offline_feeds.map(dt => ({
-        post_id: dt.id,
-        waiting_for_sync: true,
-        image: urlCreator.createObjectURL(dt.picture.picture_blob),
-        ...dt,
-    }))
+    // only shows on myfeed and general feed
+    let idb_offline_feeds = []
+    if (myfeed || !is_personal) {
+        const urlCreator = window.URL || window.webkitURL
+        idb_offline_feeds = await readAllData('sync-feeds')
+        idb_offline_feeds = idb_offline_feeds.map(dt => ({
+            post_id: dt.id,
+            waiting_for_sync: true,
+            image: urlCreator.createObjectURL(dt.picture.picture_blob),
+            user: {
+                username: name,
+                id: googleID,
+                avatar: profile_img,
+            },
+            ...dt,
+        }))
+    }
 
     // fetch from indexedDB if any
-    const idb_feeds = await readAllData('feeds')
+    let idb_feeds = await readAllData('feeds')
+    if (myfeed) idb_feeds = idb_feeds.filter(d => d.own_feed)
+    else if (is_personal)
+        idb_feeds = idb_feeds.filter(d => d.user._id === user_id)
     dispatch({
         type: FETCHED_FEEDS_IDB,
         feeds: [...idb_offline_feeds, ...idb_feeds],
     })
 
     const [err, res] = await to(
-        fetch(getFeeds + query, {
+        fetch(getFeeds + qs(query), {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -136,64 +153,6 @@ export const getFeedFromStore = post_id => async (dispatch, getState) => {
     const feed = await res.json()
 
     return dispatch({ type: FETCHED_SINGLE_FEED, current_feed: feed })
-}
-
-export const getPersonalFeeds = ({ user_id }) => async dispatch => {
-    dispatch({ type: FETCH_PERSONAL_FEEDS })
-
-    let query = ''
-
-    if (user_id) query = qs({ user_id })
-
-    // offline feeds not yet posted only show for my feed
-    let idb_offline_feeds = []
-    if (!user_id) {
-        const urlCreator = window.URL || window.webkitURL
-        idb_offline_feeds = await readAllData('sync-feeds')
-        idb_offline_feeds = idb_offline_feeds.map(dt => ({
-            post_id: dt.id,
-            waiting_for_sync: true,
-            image: urlCreator.createObjectURL(dt.picture.picture_blob),
-            ...dt,
-        }))
-    }
-
-    // fetch from indexedDB if any
-    // const idb_feeds = await readAllData('feeds')
-    // dispatch({
-    //     type: FETCHED_FEEDS_IDB,
-    //     feeds: [...idb_offline_feeds, ...idb_feeds],
-    // })
-
-    const [err, res] = await to(
-        fetch(getPersonalFeedsURL + query, {
-            method: 'GET',
-            headers: {
-                'content-type': 'application/json',
-            },
-            credentials: 'same-origin',
-        })
-    )
-    if (err) return dispatch({ type: FAILED_FETCH_PERSONAL_FEEDS })
-
-    const personal_feeds = await res.json()
-
-    // Update idb - add index to post_id to sort the data from IDB
-    // clearAllData('feeds')
-    // feeds.map((feed, index) =>
-    //     writeData('feeds', {
-    //         ...feed,
-    //         id: index + feed.post_id,
-    //     })
-    // )
-
-    return dispatch({
-        type: FETCHED_PERSONAL_FEEDS,
-        personal_feeds: {
-            ...personal_feeds,
-            feeds: [...idb_offline_feeds, ...personal_feeds.feeds],
-        },
-    })
 }
 
 export const addFeedData = ({

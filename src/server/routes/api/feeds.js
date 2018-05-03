@@ -3,7 +3,6 @@ import * as url from '@urls'
 
 import {
     handleGetFeeds,
-    handleGetPersonalFeeds,
     handleAddFeed,
     handleDeleteFeed,
     handleToggleLike,
@@ -13,7 +12,6 @@ import {
 
 export default function(r) {
     r.get(url.getFeeds, handleGetFeeds)
-    r.get(url.getPersonalFeeds, handleGetPersonalFeeds)
 
     r.get(url.getLocationName, handleGetLocationName)
 

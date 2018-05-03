@@ -14,12 +14,15 @@ import qs from '@helper/queryString'
 import Feeds from '@model/Feeds'
 import User from '@model/User'
 
-export const getGeneralFeeds = async (current_user = 0, page = 1) => {
+export const getFeeds = async (current_user = '', user_id = '', page = 1) => {
     const offset = page * 10 - 10
 
-    const queryFeeds = {
+    let queryFeeds = {
         status: FEED_AVAILABLE,
     }
+
+    if (user_id) queryFeeds = { ...queryFeeds, user_id }
+
     const [err, data] = await to(
         Feeds.find(queryFeeds)
             .skip(offset)
@@ -75,81 +78,6 @@ export const getGeneralFeeds = async (current_user = 0, page = 1) => {
     }))
 
     return Promise.resolve(feeds_data)
-}
-
-export const getPersonalFeeds = async (current_user, user_id, page = 1) => {
-    const offset = page * 10 - 10
-    let selected_user
-
-    let queryFeeds = {
-        status: FEED_AVAILABLE,
-    }
-
-    let queryUser = [
-        {
-            $project: {
-                _id: '$googleID',
-                username: '$name',
-                avatar: '$profile_img',
-            },
-        },
-    ]
-
-    if (!user_id) {
-        queryFeeds = { ...queryFeeds, user_id: current_user }
-
-        queryUser = [{ $match: { googleID: current_user } }, ...queryUser]
-
-        selected_user = current_user
-    } else {
-        queryFeeds = { ...queryFeeds, user_id }
-
-        const google_ids = [user_id, current_user]
-        queryUser = [
-            { $match: { googleID: { $in: google_ids } } },
-            ...queryUser,
-        ]
-
-        selected_user = user_id
-    }
-
-    const [err, data] = await to(
-        Feeds.find(queryFeeds)
-            .skip(offset)
-            .limit(5)
-            .sort({ create_time: -1 })
-    )
-    if (err) return Promise.reject({ code: 500, message: err })
-
-    const [errUser, users] = await to(User.aggregate(queryUser))
-    if (errUser) return Promise.reject({ code: 500, message: err })
-
-    const feeds_data = data.map(d => ({
-        post_id: d._id,
-        title: d.title,
-        subtitle: d.subtitle,
-        image: d.image,
-        likes: d.likes.map(user_id => ({
-            ...users.find(u => u._id === user_id),
-        })),
-        total_likes: d.likes.length,
-        comments: d.comments.map(d => ({
-            content: d.content,
-            user: users.find(u => u._id === d.user_id),
-            create_time: d.create_time,
-        })),
-        like_status: ~d.likes.indexOf(current_user) ? 1 : 0,
-        own_feed: d.user_id === current_user,
-        user: users.find(u => u._id === d.user_id),
-        create_time: moment(d.create_time).fromNow(),
-    }))
-
-    const dt = {
-        user: users.find(u => u._id === selected_user),
-        feeds: feeds_data,
-    }
-
-    return Promise.resolve(dt)
 }
 
 export const getOneFeed = async (post_id, user_id, detail = false) => {

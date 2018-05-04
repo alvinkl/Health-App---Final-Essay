@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import T from 'prop-types'
 
-import { GOAL } from '@constant'
+import { WEIGHT_TYPE } from '@constant'
 
 import Picker from 'rmc-picker'
 import styles from './gettingStarted.css'
@@ -14,27 +14,45 @@ const style = {
     weightWrapper: { display: 'flex', padding: '5% 10%' },
 }
 
-const average_low_weight = 45
-const average_high_weight = 150
-const decimals = Array.apply(null, { length: 10 }).map((_, i) => '.' + i)
-const weight_type = ['KG']
-
 class InputWeight extends Component {
     state = {
         current_weight_items: this.getWeightItems(),
         current_weight_decimals_items: this.getDecimalItems(),
+        weight_type_items: this.getWeightType(),
 
-        current_weight: `${average_high_weight / 2}`,
+        current_weight: `${this.props.average_low_weight}`,
         current_weight_decimals: '.0',
-        weight_type: this.getWeightType(),
+        weight_type: 'KG',
+    }
+
+    componentDidMount() {
+        console.log('Component mounted')
+    }
+
+    updateParentState = () => {
+        const { onChange } = this.props
+
+        const {
+            current_weight,
+            current_weight_decimals,
+            weight_type,
+        } = this.state
+
+        onChange({
+            value: parseFloat(current_weight + current_weight_decimals),
+            tp: WEIGHT_TYPE[weight_type],
+        })
     }
 
     handleChangeCurrentWeight = current_weight =>
-        this.setState({ current_weight })
+        this.setState({ current_weight }, this.updateParentState)
     handleChangeCurrentWeightDecimal = decimal =>
-        this.setState({
-            current_weight_decimals: decimal,
-        })
+        this.setState(
+            {
+                current_weight_decimals: decimal,
+            },
+            this.updateParentState
+        )
 
     onScrollChange = value => {
         console.log('onScrollChange', value)
@@ -42,9 +60,12 @@ class InputWeight extends Component {
 
     getWeightItems(start) {
         let items = []
-        const { goal } = this.props
 
-        for (let i = average_low_weight; i <= average_high_weight; i++) {
+        for (
+            let i = this.props.average_low_weight;
+            i <= this.props.average_high_weight;
+            i++
+        ) {
             items.push(
                 <Picker.Item value={i + ''} key={i}>
                     {i}
@@ -55,7 +76,7 @@ class InputWeight extends Component {
     }
 
     getDecimalItems() {
-        return decimals.map((d, i) => (
+        return this.props.decimals.map((d, i) => (
             <Picker.Item value={d} key={i}>
                 {d}
             </Picker.Item>
@@ -63,7 +84,7 @@ class InputWeight extends Component {
     }
 
     getWeightType() {
-        return weight_type.map((w, i) => (
+        return this.props.weight_type.map((w, i) => (
             <Picker.Item value={w} key={i}>
                 {w}
             </Picker.Item>
@@ -76,6 +97,7 @@ class InputWeight extends Component {
             current_weight_decimals,
             current_weight_items,
             current_weight_decimals_items,
+            weight_type_items,
             weight_type,
         } = this.state
         return (
@@ -104,11 +126,11 @@ class InputWeight extends Component {
                     </div>
                     <div className={styles.weightPickWrapper}>
                         <Picker
-                            selectedValue={weight_type[0]}
+                            selectedValue={weight_type}
                             onValueChange={console.log}
                             onScrollChange={this.onScrollChange}
                         >
-                            {weight_type}
+                            {weight_type_items}
                         </Picker>
                     </div>
                 </div>
@@ -118,7 +140,11 @@ class InputWeight extends Component {
 }
 
 InputWeight.propTypes = {
-    goal: T.number.isRequired,
+    onChange: T.func.isRequired,
+    average_low_weight: T.number.isRequired,
+    average_high_weight: T.number.isRequired,
+    decimals: T.array.isRequired,
+    weight_type: T.array.isRequired,
 }
 
 export default InputWeight

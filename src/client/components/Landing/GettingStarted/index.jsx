@@ -10,6 +10,7 @@ import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import InputWeight from './InputWeight'
+import InputHeight from './InputHeight'
 
 import styles from './gettingStarted.css'
 
@@ -55,6 +56,11 @@ const StepL = (
 
 const formatDate = date => moment(date).format('DD MMMM YYYY')
 
+const average_low_weight = 45
+const average_high_weight = 150
+const decimals = Array.apply(null, { length: 10 }).map((_, i) => '.' + i)
+const weight_type = ['KG']
+
 export class GettingStarted extends Component {
     state = {
         step_index: 0,
@@ -87,8 +93,6 @@ export class GettingStarted extends Component {
     static propTypes = {
         success: T.bool,
         submitDietPlan: T.func.isRequired,
-        showLoader: T.func.isRequired,
-        hideLoader: T.func.isRequired,
         updateNewUserStatus: T.func.isRequired,
     }
 
@@ -96,17 +100,8 @@ export class GettingStarted extends Component {
         success: false,
     }
 
-    componentWillReceiveProps(nextProps) {
-        const { success, hideLoader, updateNewUserStatus } = nextProps
-        const { success: prevSuccess } = this.props
-        if (prevSuccess !== success && success) {
-            updateNewUserStatus()
-            hideLoader()
-            this.setState({ step_index: 7, finished: true })
-        }
-    }
-
     handleFinishGoal = () => {
+        const { submitDietPlan } = this.props
         const {
             goal,
             gender,
@@ -117,9 +112,7 @@ export class GettingStarted extends Component {
             activity,
             birth_date,
         } = this.state
-        const { submitDietPlan, showLoader } = this.props
 
-        showLoader()
         submitDietPlan({
             goal,
             gender,
@@ -136,13 +129,12 @@ export class GettingStarted extends Component {
         this.setState({ step_index: current_index - 1, finished: false })
 
     handleNextClick = (current_index = 0) => {
-        if (current_index === 6) {
-            this.handleFinishGoal()
-        } else {
-            this.setState({
-                step_index: current_index + 1,
-            })
-        }
+        if (current_index === 6) this.handleFinishGoal()
+
+        this.setState({
+            step_index: current_index + 1,
+            finished: current_index === 6,
+        })
     }
 
     handleContinue = () => this.context.router.history.push('/home')
@@ -159,31 +151,25 @@ export class GettingStarted extends Component {
             step_index: this.state.step_index + 1,
         })
 
-    handleChangeWeight = e =>
+    handleChangeWeight = ({ value, tp }) =>
         this.setState({
-            current_weight: {
-                value: parseFloat(e.target.value) || 0,
-                tp: WEIGHT_TYPE.KG,
-            },
-            step_index: this.state.step_index + 1,
+            current_weight: { value, tp },
         })
 
-    handleChangeTargetWeight = e =>
+    handleChangeTargetWeight = ({ value, tp }) =>
         this.setState({
             target_weight: {
-                value: parseFloat(e.target.value) || 0,
-                tp: WEIGHT_TYPE.KG,
+                value,
+                tp,
             },
-            step_index: this.state.step_index + 1,
         })
 
-    handleChangeHeight = e =>
+    handleChangeHeight = ({ value, tp }) =>
         this.setState({
             current_height: {
-                value: parseInt(e.target.value) || 0,
-                tp: HEIGHT_TYPE.CM,
+                value,
+                tp,
             },
-            step_index: this.state.step_index + 1,
         })
 
     handleChangeActivity = e =>
@@ -195,7 +181,6 @@ export class GettingStarted extends Component {
     handleChangeDateBirth = (e, value) =>
         this.setState({
             birth_date: value,
-            step_index: this.state.step_index + 1,
         })
 
     renderFormContent = index => {
@@ -279,35 +264,53 @@ export class GettingStarted extends Component {
                 )
             case 2:
                 return (
-                    <TextField
-                        name="weight"
-                        className={styles.inputWeight}
-                        type="number"
-                        value={this.state.current_weight.value}
-                        inputStyle={{ textAlign: 'center', color: 'white' }}
+                    <InputWeight
+                        key="current-weight"
                         onChange={this.handleChangeWeight}
+                        {...{
+                            average_high_weight,
+                            average_low_weight,
+                            decimals,
+                            weight_type,
+                            goal: this.state.goal,
+                        }}
                     />
                 )
-            case 3:
+            case 3: {
+                let high_weight
+                let low_weight
+
+                const { goal, current_weight } = this.state
+                if (goal === GOAL.WEIGHT_LOSS) {
+                    high_weight = parseInt(current_weight.value - 1)
+                    low_weight = average_low_weight
+                } else if (goal === GOAL.WEIGHT_GAIN) {
+                    low_weight = parseInt(current_weight.value + 1)
+                    high_weight = average_high_weight
+                } else if (goal === GOAL.MAINTAIN_WEIGHT) {
+                    high_weight = parseInt(current_weight.value + 1)
+                    low_weight = parseInt(current_weight.value - 1)
+                }
+
                 return (
-                    <TextField
-                        name="target-weight"
-                        className={styles.inputWeight}
-                        type="number"
-                        value={this.state.target_weight.value}
-                        inputStyle={{ textAlign: 'center', color: 'white' }}
+                    <InputWeight
+                        key="target-weight"
                         onChange={this.handleChangeTargetWeight}
+                        {...{
+                            average_high_weight: high_weight,
+                            average_low_weight: low_weight,
+                            decimals,
+                            weight_type,
+                            goal: this.state.goal,
+                        }}
                     />
                 )
+            }
             case 4:
                 return (
-                    <TextField
-                        name="height"
-                        className={styles.inputHeight}
-                        type="number"
-                        value={this.state.current_height.value}
-                        inputStyle={{ textAlign: 'center', color: 'white' }}
-                        onChange={this.handleChangeHeight}
+                    <InputHeight
+                        key="height"
+                        onChange={this.handleChangeTargetWeight}
                     />
                 )
             case 5:
@@ -395,8 +398,7 @@ export class GettingStarted extends Component {
                     </Stepper>
                 )}
                 <form className={styles.form}>
-                    {/* {this.renderFormContent(step_index)} */}
-                    <InputWeight />
+                    {this.renderFormContent(step_index)}
                 </form>
 
                 {step_index > 0 && (
@@ -420,18 +422,15 @@ export class GettingStarted extends Component {
 }
 
 import { connect } from 'react-redux'
-import { showLoader, hideLoader } from '@actions/common'
 import { updateNewUserStatus, submitDietPlan } from '@actions/user'
 
-const mapStateToProps = ({ user: { diet_plan } }) => ({
-    success: diet_plan.success,
-})
+// const mapStateToProps = ({ user: { diet_plan } }) => ({
+//     success: diet_plan.success,
+// })
 
 const mapDispatchToProps = dispatch => ({
     submitDietPlan: event => dispatch(submitDietPlan(event)),
-    showLoader: () => dispatch(showLoader()),
-    hideLoader: () => dispatch(hideLoader()),
     updateNewUserStatus: () => dispatch(updateNewUserStatus()),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(GettingStarted)
+export default connect(null, mapDispatchToProps)(GettingStarted)

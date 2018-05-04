@@ -97,6 +97,7 @@ class Master extends Component {
             loading,
             theme_color,
             is_online,
+            navbar,
         } = this.props
         const { Header, Navbar, Sidebar } = this.state
         const { router } = this.context
@@ -216,6 +217,7 @@ class Master extends Component {
                         className={cn(styles.main, {
                             [styles.maxTop]: noHeaderPage,
                             [styles.offline]: !is_online,
+                            [styles.noNavbar]: !navbar,
                         })}
                     >
                         {renderRoutes(route.routes)}
@@ -241,6 +243,7 @@ Master.propTypes = {
     loading: T.bool.isRequired,
     user_loggedin: T.bool.isRequired,
     theme_color: T.object.isRequired,
+    navbar: T.bool.isRequired,
 
     showHeader: T.func.isRequired,
     hideHeader: T.func.isRequired,
@@ -265,7 +268,7 @@ import {
 } from '@actions/common'
 
 const mapStateToProps = ({
-    common: { isSSR, userAgent, loading, theme_color, is_online },
+    common: { isSSR, userAgent, loading, theme_color, is_online, navbar },
     user,
 }) => ({
     isSSR,
@@ -274,6 +277,7 @@ const mapStateToProps = ({
     user_loggedin: !isEmpty(user),
     theme_color,
     is_online,
+    navbar,
 })
 
 const mapDispatchToProps = dispatch => ({

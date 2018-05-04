@@ -1,5 +1,6 @@
 import { getUser, insertUpdateGoal } from '@urls'
 import to from '@helper/asyncAwait'
+import { showLoader, hideLoader } from '@actions/common'
 
 export const FETCH_USER_DATA = 'FETCH_USER_DATA'
 export const ERROR_FETCH_USER_DATA = 'ERROR_FETCH_USER_DATA'
@@ -32,7 +33,8 @@ export const updateNewUserStatus = () => ({
 })
 
 export const submitDietPlan = dietplan => async dispatch => {
-    const [err, dp] = await to(
+    dispatch(showLoader())
+    const [err, res] = await to(
         fetch(insertUpdateGoal, {
             method: 'POST',
             headers: {
@@ -47,8 +49,11 @@ export const submitDietPlan = dietplan => async dispatch => {
         return dispatch({ type: FAIL_SUBMIT_DIET_PLAN })
     }
 
+    const dp = await res.json()
+
+    dispatch(hideLoader())
     return dispatch({
         type: SUBMIT_DIET_PLAN,
-        dietplan: dp,
+        diet_plan: dp,
     })
 }

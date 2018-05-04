@@ -42,3 +42,7 @@
     height: 20px;
     z-index: 9999;
 }
+
+.noNavbar {
+    margin-bottom: 0;
+}

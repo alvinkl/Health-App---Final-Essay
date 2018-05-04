@@ -2,16 +2,14 @@ import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 import moment from 'moment'
 
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-
-import TextField from 'material-ui/TextField'
-
-import DatePicker from 'material-ui/DatePicker'
-
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import TextField from 'material-ui/TextField'
+import DatePicker from 'material-ui/DatePicker'
 import FlatButton from 'material-ui/FlatButton'
-
 import RaisedButton from 'material-ui/RaisedButton'
+
+import InputWeight from './InputWeight'
 
 import styles from './gettingStarted.css'
 
@@ -49,6 +47,11 @@ const maxDate = (() => {
 
 const checkedIcon = <div className={styles.selectedRadio} />
 const uncheckedIcon = <div />
+const StepL = (
+    <Step>
+        <StepLabel />
+    </Step>
+)
 
 const formatDate = date => moment(date).format('DD MMMM YYYY')
 
@@ -144,10 +147,17 @@ export class GettingStarted extends Component {
 
     handleContinue = () => this.context.router.history.push('/home')
 
-    handleChangeGoal = e => this.setState({ goal: parseInt(e.target.value) })
+    handleChangeGoal = e =>
+        this.setState({
+            goal: parseInt(e.target.value),
+            step_index: this.state.step_index + 1,
+        })
 
     handleChangeGender = e =>
-        this.setState({ gender: parseInt(e.target.value) })
+        this.setState({
+            gender: parseInt(e.target.value),
+            step_index: this.state.step_index + 1,
+        })
 
     handleChangeWeight = e =>
         this.setState({
@@ -155,6 +165,7 @@ export class GettingStarted extends Component {
                 value: parseFloat(e.target.value) || 0,
                 tp: WEIGHT_TYPE.KG,
             },
+            step_index: this.state.step_index + 1,
         })
 
     handleChangeTargetWeight = e =>
@@ -163,6 +174,7 @@ export class GettingStarted extends Component {
                 value: parseFloat(e.target.value) || 0,
                 tp: WEIGHT_TYPE.KG,
             },
+            step_index: this.state.step_index + 1,
         })
 
     handleChangeHeight = e =>
@@ -171,12 +183,20 @@ export class GettingStarted extends Component {
                 value: parseInt(e.target.value) || 0,
                 tp: HEIGHT_TYPE.CM,
             },
+            step_index: this.state.step_index + 1,
         })
 
     handleChangeActivity = e =>
-        this.setState({ activity: parseInt(e.target.value) })
+        this.setState({
+            activity: parseInt(e.target.value),
+            step_index: this.state.step_index + 1,
+        })
 
-    handleChangeDateBirth = (e, value) => this.setState({ birth_date: value })
+    handleChangeDateBirth = (e, value) =>
+        this.setState({
+            birth_date: value,
+            step_index: this.state.step_index + 1,
+        })
 
     renderFormContent = index => {
         /* Quiestions would be
@@ -364,28 +384,19 @@ export class GettingStarted extends Component {
             <div className={styles.gettingStarted}>
                 {!finished && (
                     <Stepper activeStep={step_index}>
-                        <Step>
-                            <StepLabel />
-                        </Step>
-                        <Step>
-                            <StepLabel />
-                        </Step>
-                        <Step>
-                            <StepLabel />
-                        </Step>
-                        <Step>
-                            <StepLabel />
-                        </Step>
-                        <Step>
-                            <StepLabel />
-                        </Step>
-                        <Step>
-                            <StepLabel />
-                        </Step>
+                        {StepL}
+                        {StepL}
+                        {StepL}
+                        {StepL}
+                        {StepL}
+                        {StepL}
+                        {StepL}
+                        {StepL}
                     </Stepper>
                 )}
                 <form className={styles.form}>
-                    {this.renderFormContent(step_index)}
+                    {/* {this.renderFormContent(step_index)} */}
+                    <InputWeight />
                 </form>
 
                 {step_index > 0 && (

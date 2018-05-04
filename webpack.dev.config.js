@@ -135,7 +135,6 @@ const serverConfig = {
             ignore: ['*.js.map'],
         }),
         new webpack.HotModuleReplacementPlugin(),
-        // new CopyWebpackPlugin([{ from: 'src/server/views', to: 'views' }]),
     ],
 
     node: {
@@ -240,6 +239,12 @@ const clientConfig = {
             filename: 'style/style.css',
             allChunks: true,
         }),
+        new CopyWebpackPlugin([
+            {
+                from: 'node_modules/rmc-picker/assets/index.css',
+                to: 'style/rmc-mobile.css',
+            },
+        ]),
     ],
 
     devServer: {

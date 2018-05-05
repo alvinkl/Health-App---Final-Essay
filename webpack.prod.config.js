@@ -227,6 +227,12 @@ const clientConfig = {
             filename: 'style/style.css',
             allChunks: true,
         }),
+        new CopyWebpackPlugin([
+            {
+                from: 'node_modules/rmc-picker/assets/index.css',
+                to: 'style/rmc-mobile.css',
+            },
+        ]),
     ],
 
     devtool: 'cheap-module-source-map',

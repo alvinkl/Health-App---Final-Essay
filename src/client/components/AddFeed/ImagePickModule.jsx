@@ -148,11 +148,7 @@ class ImagePickModule extends Component {
                     labelPosition="before"
                     containerElement="label"
                 >
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={this.handleAddImage}
-                    />
+                    <input type="file" onChange={this.handleAddImage} />
                 </RaisedButton>
 
                 <div className={styles.cmTextFields}>

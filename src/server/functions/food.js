@@ -350,6 +350,9 @@ export const addFoodToDiary = async (googleID, data) => {
     const newDiary = new Diary({
         user_id: googleID,
         ...data,
+        photo: {
+            thumbnail: '',
+        },
     })
 
     const [err] = await to(newDiary.save())
@@ -723,5 +726,5 @@ export const getRestaurantMapLocation = async (lat, lon) => {
     // const buffer = map.body._readableState.buffer.head.data
 
     // return Promise.resolve({ buffer })
-    return Promise.resolve({ url: googleMaps.getDisplayMap + query})
+    return Promise.resolve({ url: googleMaps.getDisplayMap + query })
 }

@@ -17,25 +17,28 @@ const style = {
     },
 }
 
-const ContentDiary = ({ title, content }) => {
-    return (
-        <Card initiallyExpanded={true}>
-            <CardHeader title={title} showExpandableButton={true} />
-            {content.map((c, i) => (
-                <CardText key={i} expandable={true} style={style.cardContent}>
-                    <div className={styles.floatLeft}>{c.food_name}</div>
-                    <div className={styles.floatRight}>
-                        {c.nutrients.calories}
-                    </div>
-                </CardText>
-            ))}
-        </Card>
-    )
-}
+const ContentDiary = ({ title, content, handleOpen }) => (
+    <Card initiallyExpanded={true}>
+        <CardHeader title={title} showExpandableButton={true} />
+        {content.map((c, i) => (
+            <CardText
+                key={i}
+                expandable={true}
+                style={style.cardContent}
+                onClick={handleOpen.bind(null, c)}
+            >
+                <div className={styles.floatLeft}>{c.name}</div>
+                <div className={styles.floatRight}>{c.nutrients.calories}</div>
+            </CardText>
+        ))}
+    </Card>
+)
 
 ContentDiary.propTypes = {
     title: T.string.isRequired,
     content: T.arrayOf(T.object),
+
+    handleOpen: T.func.isRequired,
 }
 
 ContentDiary.defaultProps = {

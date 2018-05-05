@@ -55,14 +55,16 @@ export const fetchDiary = (startDate, endDate) => async dispatch => {
 }
 
 export const addToDiary = ({
-    food_name,
+    name,
+    unit,
     total_weight,
     quantity,
     nutrition,
     meal_type,
 }) => async dispatch => {
     const post_data = {
-        food_name,
+        name,
+        unit,
         quantity,
         total_weight,
         nutrients: JSON.stringify(nutrition),

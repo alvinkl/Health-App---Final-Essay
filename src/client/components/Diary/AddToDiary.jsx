@@ -3,17 +3,11 @@ import T from 'prop-types'
 
 import { MEAL_TYPE } from '@constant'
 
-import {
-    Card,
-    CardActions,
-    CardHeader,
-    CardTitle,
-    CardText,
-} from 'material-ui/Card'
-import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table'
 import FlatButton from 'material-ui/FlatButton'
 import Popover from 'material-ui/Popover/Popover'
 import { Menu, MenuItem } from 'material-ui/Menu'
+
+import NutritionDetail from './NutritionDetail'
 
 import styles from './diary.css'
 
@@ -41,98 +35,53 @@ class AddToDiary extends Component {
         const { food_nutrition, removeFoodFromList } = this.props
         const { addingToDiaryIndex, anchorEl } = this.state
 
-        return food_nutrition.map(
-            (
-                {
-                    name,
-                    quantity,
-                    total_weight,
-                    unit,
-                    nutrients,
-                    alternative_measure,
-                    photo: { thumbnail, highres },
-                },
-                i
-            ) => (
-                <Card className={styles.foodCard} key={name + i}>
-                    <CardHeader
-                        title={name}
-                        subtitle={quantity + ' ' + unit}
-                        avatar={thumbnail}
-                        actAsExpander={true}
-                        showExpandableButton={true}
+        return food_nutrition.map((data, i) => (
+            <NutritionDetail key={name + i} data={data}>
+                <Fragment>
+                    <FlatButton
+                        onClick={this.handleClickAddDiary.bind(this, i)}
+                        label="Add to Diary"
                     />
-
-                    <CardTitle subtitle="Nutritions" expandable={true} />
-                    <CardText expandable={true}>
-                        <Table selectable={false}>
-                            <TableBody
-                                deselectOnClickaway={false}
-                                displayRowCheckbox={false}
-                            >
-                                {Object.keys(nutrients).map((nutrient, i) => (
-                                    <TableRow key={i}>
-                                        <TableRowColumn>
-                                            {nutrient}
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            {nutrients[nutrient] || 0}
-                                        </TableRowColumn>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardText>
-                    <CardActions>
-                        <Fragment>
-                            <FlatButton
-                                onClick={this.handleClickAddDiary.bind(this, i)}
-                                label="Add to Diary"
+                    <Popover
+                        open={addingToDiaryIndex === i}
+                        anchorEl={anchorEl}
+                        onRequestClose={this.closePopover}
+                        anchorOrigin={{
+                            horizontal: 'middle',
+                            vertical: 'center',
+                        }}
+                        targetOrigin={{
+                            horizontal: 'middle',
+                            vertical: 'center',
+                        }}
+                    >
+                        <Menu onChange={this.handleAddDiary.bind(null, i)}>
+                            <MenuItem
+                                value={MEAL_TYPE.BREAKFAST}
+                                primaryText="Breakfast"
                             />
-                            <Popover
-                                open={addingToDiaryIndex === i}
-                                anchorEl={anchorEl}
-                                onRequestClose={this.closePopover}
-                                anchorOrigin={{
-                                    horizontal: 'middle',
-                                    vertical: 'center',
-                                }}
-                                targetOrigin={{
-                                    horizontal: 'middle',
-                                    vertical: 'center',
-                                }}
-                            >
-                                <Menu
-                                    onChange={this.handleAddDiary.bind(null, i)}
-                                >
-                                    <MenuItem
-                                        value={MEAL_TYPE.BREAKFAST}
-                                        primaryText="Breakfast"
-                                    />
-                                    <MenuItem
-                                        value={MEAL_TYPE.LUNCH}
-                                        primaryText="Lunch"
-                                    />
-                                    <MenuItem
-                                        value={MEAL_TYPE.DINNER}
-                                        primaryText="Dinner"
-                                    />
-                                    <MenuItem
-                                        value={MEAL_TYPE.SNACK}
-                                        primaryText="Snack"
-                                    />
-                                </Menu>
-                            </Popover>
-                            <FlatButton
-                                secondary
-                                label="Remove"
-                                onClick={removeFoodFromList.bind(null, i)}
+                            <MenuItem
+                                value={MEAL_TYPE.LUNCH}
+                                primaryText="Lunch"
                             />
-                        </Fragment>
-                    </CardActions>
-                </Card>
-            )
-        )
+                            <MenuItem
+                                value={MEAL_TYPE.DINNER}
+                                primaryText="Dinner"
+                            />
+                            <MenuItem
+                                value={MEAL_TYPE.SNACK}
+                                primaryText="Snack"
+                            />
+                        </Menu>
+                    </Popover>
+                    <FlatButton
+                        secondary
+                        label="Remove"
+                        onClick={removeFoodFromList.bind(null, i)}
+                    />
+                </Fragment>
+            </NutritionDetail>
+        ))
     }
 
     render() {

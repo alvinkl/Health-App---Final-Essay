@@ -132,6 +132,9 @@ export class SuggestFood extends Component {
         showSnackbar('Added to diary')
 
         addToDiary(data)
+
+        // reset suggest food when done
+        this.setState({ step: 0 })
     }
 
     handleBackButton = () => this.setState({ step: this.state.step - 1 })

@@ -254,26 +254,27 @@ export const getDiaryReport = async googleID => {
         (p, d) => {
             let mt = d.foods.reduce(
                 (prev, curr) => {
+                    let calories = parseInt(curr.calories)
                     switch (curr.meal_type) {
                         case MEAL_TYPE.BREAKFAST:
                             return {
                                 ...prev,
-                                breakfast: prev.breakfast + curr.calories,
+                                breakfast: prev.breakfast + calories,
                             }
                         case MEAL_TYPE.LUNCH:
                             return {
                                 ...prev,
-                                lunch: prev.lunch + curr.calories,
+                                lunch: prev.lunch + calories,
                             }
                         case MEAL_TYPE.DINNER:
                             return {
                                 ...prev,
-                                dinner: prev.dinner + curr.calories,
+                                dinner: prev.dinner + calories,
                             }
                         case MEAL_TYPE.SNACK:
                             return {
                                 ...prev,
-                                snack: prev.snack + curr.calories,
+                                snack: prev.snack + calories,
                             }
                         default:
                             return prev

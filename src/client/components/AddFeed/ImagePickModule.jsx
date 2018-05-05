@@ -130,7 +130,7 @@ class ImagePickModule extends Component {
         const { title, subtitle, picture } = this.state
 
         return (
-            <div>
+            <div className={styles.imagePickerWrapper}>
                 <canvas
                     className={styles.cmCanvas}
                     id="canvas"

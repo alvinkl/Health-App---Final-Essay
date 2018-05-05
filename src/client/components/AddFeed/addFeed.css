@@ -38,3 +38,7 @@
     width: 100%;
     opacity: 0;
 }
+
+.imagePickerWrapper {
+    min-height: 600px;
+}

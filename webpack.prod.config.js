@@ -145,6 +145,7 @@ const clientConfig = {
             'react-router-redux',
             'react-router-transition',
             'react-transition-group',
+            'material-ui',
         ],
         'client.build': [
             'react-hot-loader/patch',

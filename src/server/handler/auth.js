@@ -17,5 +17,5 @@ export const handleNotFoundRoute = (req, res) => {
 
 export const handleLogout = (req, res) => {
     req.logout()
-    return res.redirect('/landing')
+    return responseJSON({ success: 1 })
 }

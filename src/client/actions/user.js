@@ -1,4 +1,4 @@
-import { getUser, insertUpdateGoal } from '@urls'
+import { getUser, insertUpdateGoal, authLogout } from '@urls'
 import to from '@helper/asyncAwait'
 import { showLoader, hideLoader } from '@actions/common'
 
@@ -8,6 +8,8 @@ export const UPDATE_NEW_USER_STATUS = 'UPDATE_NEW_USER_STATUS'
 
 export const SUBMIT_DIET_PLAN = 'SUBMIT_DIET_PLAN'
 export const FAIL_SUBMIT_DIET_PLAN = 'FAIL_SUBMIT_DIET_PLAN'
+
+export const LOGOUT = 'LOGOUT'
 
 export const fetchUserData = () => async dispatch => {
     const [err, res] = await to(
@@ -55,5 +57,13 @@ export const submitDietPlan = dietplan => async dispatch => {
     return dispatch({
         type: SUBMIT_DIET_PLAN,
         diet_plan: dp,
+    })
+}
+
+export const logoutUser = () => async dispatch => {
+    dispatch({ type: LOGOUT })
+    await fetch(authLogout, {
+        method: 'GET',
+        credentials: 'same-origin',
     })
 }

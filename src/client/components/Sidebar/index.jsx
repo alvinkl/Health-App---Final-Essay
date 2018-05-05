@@ -6,7 +6,7 @@ import convertToUint from '@helper/convertToUint'
 
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
-import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 
 import styles from './sidebar.css'
 import SidebarHeader from './SidebarHeader'
@@ -73,6 +73,13 @@ class Sidebar extends Component {
         }
     }
 
+    handleLogout = () => {
+        const { logoutUser } = this.props
+
+        logoutUser()
+        this.context.router.history.push('/landing')
+    }
+
     handleRequestChange = (open = false) => {
         const { openSidebar, closeSidebar } = this.props
 
@@ -94,14 +101,15 @@ class Sidebar extends Component {
                     <SidebarHeader />
                     {!subscribed && (
                         <MenuItem onClick={this.handleClose}>
-                            <RaisedButton
+                            <FlatButton
                                 label="Enable Notification"
+                                fullWidth
                                 secondary
                                 onClick={this.handleEnableNotification}
                             />
                         </MenuItem>
                     )}
-                    <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>
+                    <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                 </Drawer>
             )
         )
@@ -115,10 +123,16 @@ Sidebar.propTypes = {
 
     openSidebar: T.func.isRequired,
     closeSidebar: T.func.isRequired,
+    logoutUser: T.func.isRequired,
+}
+
+Sidebar.contextTypes = {
+    router: T.object.isRequired,
 }
 
 import { connect } from 'react-redux'
 import { openSidebar, closeSidebar } from '@actions/common'
+import { logoutUser } from '@actions/user'
 
 const mapStateToProps = ({ common: { sidebar, enableSidebar } }) => ({
     sidebar,
@@ -128,6 +142,7 @@ const mapStateToProps = ({ common: { sidebar, enableSidebar } }) => ({
 const mapDispatchToProps = dispatch => ({
     openSidebar: () => dispatch(openSidebar()),
     closeSidebar: () => dispatch(closeSidebar()),
+    logoutUser: () => dispatch(logoutUser()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

@@ -8,6 +8,7 @@ import { getFood } from '@urls'
 
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
+import DatePicker from 'material-ui/DatePicker'
 
 import ContentDiary from './ContentDiary'
 import AddToDiary from './AddToDiary'
@@ -27,6 +28,9 @@ const style = {
         top: 0,
         left: '5%',
     },
+    dateTextStyle: {
+        textAlign: 'center',
+    },
 }
 
 class Diary extends Component {
@@ -34,6 +38,7 @@ class Diary extends Component {
         super(props)
 
         this.timer = undefined
+        this.today = new Date()
     }
 
     state = {
@@ -156,6 +161,8 @@ class Diary extends Component {
         this.setState({ open_nutrition_detail: false })
     }
 
+    handleChangeDate = (_, date) => this.props.fetchDiary({ startDate: date })
+
     renderBreakfast = () => {
         const { breakfast } = this.state.diary
 
@@ -226,6 +233,18 @@ class Diary extends Component {
         )
     }
 
+    renderDatePicker = () => {
+        return (
+            <DatePicker
+                hintText="Today's Diary"
+                autoOk
+                maxDate={this.today}
+                textFieldStyle={style.dateTextStyle}
+                onChange={this.handleChangeDate}
+            />
+        )
+    }
+
     render() {
         const {
             show_add_to_diary,
@@ -247,6 +266,7 @@ class Diary extends Component {
 
                 {!show_add_to_diary && (
                     <div className={styles.content}>
+                        {this.renderDatePicker()}
                         {this.renderBreakfast()}
                         {this.renderLunch()}
                         {this.renderDinner()}
@@ -289,7 +309,7 @@ const mapStateToProps = ({ diary }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchDiary: () => dispatch(fetchDiary()),
+    fetchDiary: event => dispatch(fetchDiary(event)),
     addToDiary: event => dispatch(addToDiary(event)),
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),

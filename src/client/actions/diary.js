@@ -13,20 +13,21 @@ export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
 export const SUCCESS_ADD_DIARY = 'SUCCESS_ADD_DIARY'
 export const FAILED_ADD_DIARY = 'FAILED_ADD_DIARY'
 
-export const fetchDiary = (startDate, endDate) => async dispatch => {
+export const fetchDiary = (
+    { startDate, endDate } = { startDate: null, endDate: null }
+) => async dispatch => {
     const today = new Date()
 
+    const sd = parseDate(startDate || today)
+
     const query = qs({
-        startDate: startDate || parseDate(today),
-        endDate: endDate || parseDate(today),
+        startDate: sd,
+        endDate: sd,
     })
 
     // Fetch from IDB
-    const idb_diary = await readData('diary', query)
-    dispatch({
-        type: FETCHED_DIARY_IDB,
-        diary: idb_diary ? idb_diary.data : [],
-    })
+    const idb_diary = (await readData('diary', query)) || {}
+    dispatch({ type: FETCHED_DIARY_IDB, diary: idb_diary.data })
 
     const [err, data] = await to(
         fetch(getFoodDiary + query, {

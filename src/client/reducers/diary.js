@@ -22,7 +22,7 @@ export default (state = initial_state, action) => {
         case FETCHED_DIARY_IDB:
             return {
                 ...state,
-                today_diary: action.diary,
+                today_diary: action.diary || state.today_diary,
             }
 
         case FETCHED_DIARY_REPORT:

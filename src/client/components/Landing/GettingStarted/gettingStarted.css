@@ -71,3 +71,8 @@
 .weightPickWrapper div {
     color: white;
 }
+
+.datepicker input {
+    text-align: center;
+    color: white !important;
+}

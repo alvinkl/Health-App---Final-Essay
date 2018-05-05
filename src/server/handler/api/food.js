@@ -53,7 +53,9 @@ export const handleGetDiaryFood = async (req, res) => {
 export const handleGetDiaryReport = async (req, res) => {
     const { googleID } = req.user
 
-    const [err, diary] = await to(getDiaryReport(googleID))
+    const { timestamp } = req.query
+
+    const [err, diary] = await to(getDiaryReport(googleID, parseInt(timestamp)))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, diary)

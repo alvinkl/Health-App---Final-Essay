@@ -120,11 +120,20 @@ export const getDiaryFood = async (googleID, date) => {
     return Promise.resolve(dt)
 }
 
-export const getDiaryReport = async googleID => {
-    const today = new Date()
+export const getDiaryReport = async (googleID, timestamp) => {
+    const today = new Date(timestamp || Date.now())
     today.setHours(0, 0, 0, 0)
 
     const last7days = new Date(today.valueOf() - 7 * ONEDAY)
+
+    const tomorrow = new Date(today.valueOf() + 1 * ONEDAY)
+    const yesterday = new Date(today.valueOf() - 1 * ONEDAY)
+    const _2daysAgo = new Date(today.valueOf() - 2 * ONEDAY)
+    const _3daysAgo = new Date(today.valueOf() - 3 * ONEDAY)
+    const _4daysAgo = new Date(today.valueOf() - 4 * ONEDAY)
+    const _5daysAgo = new Date(today.valueOf() - 5 * ONEDAY)
+    const _6daysAgo = new Date(today.valueOf() - 6 * ONEDAY)
+    const _7daysAgo = new Date(today.valueOf() - 7 * ONEDAY)
 
     const query = [
         {
@@ -140,81 +149,138 @@ export const getDiaryReport = async googleID => {
                 _id: {
                     $cond: [
                         {
-                            $gte: ['$created_time', today],
+                            $and: [
+                                { $lt: ['$created_time', tomorrow] },
+                                { $gte: ['$created_time', today] },
+                            ],
                         },
                         0,
                         {
                             $cond: [
                                 {
-                                    $gt: [
-                                        '$created_time',
-                                        new Date(today.valueOf() - 1 * ONEDAY),
+                                    $and: [
+                                        { $lt: ['$created_time', today] },
+                                        { $gt: ['$created_time', yesterday] },
                                     ],
                                 },
                                 1,
                                 {
                                     $cond: [
                                         {
-                                            $gt: [
-                                                '$created_time',
-                                                new Date(
-                                                    today.valueOf() - 2 * ONEDAY
-                                                ),
+                                            $and: [
+                                                {
+                                                    $lt: [
+                                                        '$created_time',
+                                                        yesterday,
+                                                    ],
+                                                },
+                                                {
+                                                    $gt: [
+                                                        '$created_time',
+                                                        _2daysAgo,
+                                                    ],
+                                                },
                                             ],
                                         },
                                         2,
                                         {
                                             $cond: [
                                                 {
-                                                    $gt: [
-                                                        '$created_time',
-                                                        new Date(
-                                                            today.valueOf() -
-                                                                3 * ONEDAY
-                                                        ),
+                                                    $and: [
+                                                        {
+                                                            $lt: [
+                                                                '$created_time',
+                                                                _2daysAgo,
+                                                            ],
+                                                        },
+                                                        {
+                                                            $gt: [
+                                                                '$created_time',
+                                                                _3daysAgo,
+                                                            ],
+                                                        },
                                                     ],
                                                 },
                                                 3,
                                                 {
                                                     $cond: [
                                                         {
-                                                            $gt: [
-                                                                '$created_time',
-                                                                new Date(
-                                                                    today.valueOf() -
-                                                                        4 *
-                                                                            ONEDAY
-                                                                ),
+                                                            $and: [
+                                                                {
+                                                                    $lt: [
+                                                                        '$created_time',
+                                                                        _3daysAgo,
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    $gt: [
+                                                                        '$created_time',
+                                                                        _4daysAgo,
+                                                                    ],
+                                                                },
                                                             ],
                                                         },
                                                         4,
                                                         {
                                                             $cond: [
                                                                 {
-                                                                    $gt: [
-                                                                        '$created_time',
-                                                                        new Date(
-                                                                            today.valueOf() -
-                                                                                5 *
-                                                                                    ONEDAY
-                                                                        ),
+                                                                    $and: [
+                                                                        {
+                                                                            $lt: [
+                                                                                '$created_time',
+                                                                                _4daysAgo,
+                                                                            ],
+                                                                        },
+                                                                        {
+                                                                            $gt: [
+                                                                                '$created_time',
+                                                                                _5daysAgo,
+                                                                            ],
+                                                                        },
                                                                     ],
                                                                 },
                                                                 5,
                                                                 {
                                                                     $cond: [
                                                                         {
-                                                                            $gt: [
-                                                                                '$created_time',
-                                                                                new Date(
-                                                                                    today.valueOf() -
-                                                                                        6 *
-                                                                                            ONEDAY
-                                                                                ),
+                                                                            $and: [
+                                                                                {
+                                                                                    $lt: [
+                                                                                        '$created_time',
+                                                                                        _5daysAgo,
+                                                                                    ],
+                                                                                },
+                                                                                {
+                                                                                    $gt: [
+                                                                                        '$created_time',
+                                                                                        _6daysAgo,
+                                                                                    ],
+                                                                                },
                                                                             ],
                                                                         },
                                                                         6,
-                                                                        7,
+                                                                        {
+                                                                            $cond: [
+                                                                                {
+                                                                                    $and: [
+                                                                                        {
+                                                                                            $lt: [
+                                                                                                '$created_time',
+                                                                                                _6daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                        {
+                                                                                            $gt: [
+                                                                                                '$created_time',
+                                                                                                _7daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                    ],
+                                                                                },
+                                                                                7,
+                                                                                8,
+                                                                            ],
+                                                                        },
                                                                     ],
                                                                 },
                                                             ],
@@ -250,7 +316,7 @@ export const getDiaryReport = async googleID => {
     const [err, data] = await to(Diary.aggregate(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const final_data = data.reduce(
+    let final_data = data.reduce(
         (p, d) => {
             let mt = d.foods.reduce(
                 (prev, curr) => {
@@ -287,6 +353,8 @@ export const getDiaryReport = async googleID => {
                     snack: 0,
                 }
             )
+            if (d.days_minus > 7) return p
+
             return {
                 ...p,
                 [d.days_minus]: mt,

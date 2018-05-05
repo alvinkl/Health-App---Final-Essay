@@ -91,9 +91,11 @@ export const addToDiary = ({
     return Promise.resolve(data)
 }
 
-export const fetchDiaryReport = today => async dispatch => {
+export const fetchDiaryReport = timestamp => async dispatch => {
+    const query = qs({ timestamp: timestamp || Date.parse(new Date()) })
+
     const [err, data] = await to(
-        fetch(getDiaryReport, {
+        fetch(getDiaryReport + query, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',

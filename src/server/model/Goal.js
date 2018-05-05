@@ -1,37 +1,46 @@
 import m from 'mongoose'
 
-const weightSchema = new m.Schema({
-    value: {
-        type: Number,
-        required: true,
+const weightSchema = new m.Schema(
+    {
+        value: {
+            type: Number,
+            required: true,
+        },
+        tp: {
+            type: Number,
+            required: true,
+        },
     },
-    tp: {
-        type: Number,
-        required: true,
-    },
-})
+    { _id: 0 }
+)
 
-const heightSchema = new m.Schema({
-    value: {
-        type: Number,
-        required: true,
+const heightSchema = new m.Schema(
+    {
+        value: {
+            type: Number,
+            required: true,
+        },
+        tp: {
+            type: Number,
+            required: true,
+        },
     },
-    tp: {
-        type: Number,
-        required: true,
-    },
-})
+    { _id: 0 }
+)
 
-const targetWeightSchema = new m.Schema({
-    value: {
-        type: Number,
-        required: true,
+const targetWeightSchema = new m.Schema(
+    {
+        value: {
+            type: Number,
+            required: true,
+        },
+        tp: {
+            type: Number,
+            required: true,
+        },
     },
-    tp: {
-        type: Number,
-        required: true,
-    },
-})
+    { _id: 0 }
+)
 
 const goalSchema = new m.Schema({
     googleID: {

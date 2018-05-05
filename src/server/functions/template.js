@@ -60,7 +60,7 @@ const setupTemplate = (
     /* End of Setting up React Router and initial actions */
 
     // React loadable
-    let modules = []
+    // let modules = []
 
     return Promise.all(initial_actions).then(() => {
         const markup = renderToString(

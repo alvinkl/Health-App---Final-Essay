@@ -21,8 +21,8 @@ export const updateDietPlan = async (googleID, dietPlan) => {
 export const insertUpdateGoal = async (googleID, goalData) => {
     const query = {
         ...goalData,
+        googleID,
         $setOnInsert: {
-            googleID,
             create_time: new Date(),
         },
         update_time: new Date(),
@@ -35,21 +35,5 @@ export const insertUpdateGoal = async (googleID, goalData) => {
     )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const {
-        goal,
-        activity,
-        current_height,
-        current_weight,
-        gender,
-        birth_date,
-    } = data
-
-    return Promise.resolve({
-        goal,
-        activity,
-        current_height,
-        current_weight,
-        gender,
-        birth_date,
-    })
+    return Promise.resolve(data)
 }

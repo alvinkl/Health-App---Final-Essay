@@ -6,6 +6,7 @@ import to from '@helper/asyncAwait'
 import { GoogleClientID, GoogleClientSecret } from '../config/keys'
 
 import User from '@model/User'
+import Goal from '@model/Goal'
 
 passport.serializeUser((user, done) => {
     done(null, user)
@@ -31,7 +32,11 @@ passport.use(
             const [err, existingUser] = await to(User.findOne({ googleID: id }))
             if (err) return done(err)
 
-            if (existingUser) return done(null, existingUser)
+            const [errGoal, goal] = await to(Goal.findOne({ googleID: id }))
+            if (errGoal) return done(err)
+
+            if (existingUser)
+                return done(null, { ...existingUser._doc, new: !goal })
 
             const newUser = new User({
                 googleID: id,

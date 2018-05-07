@@ -60,6 +60,11 @@ export const submitDietPlan = dietplan => async dispatch => {
     })
 }
 
+export const updateReduxDietplan = diet_plan => ({
+    type: SUBMIT_DIET_PLAN,
+    diet_plan,
+})
+
 export const logoutUser = () => async dispatch => {
     dispatch({ type: LOGOUT })
     await fetch(authLogout, {

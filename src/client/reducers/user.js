@@ -50,12 +50,12 @@ export default function user(state = initialState, action) {
         case SUBMIT_DIET_PLAN:
             return {
                 ...state,
-                new: false,
                 diet_plan: {
                     ...state.diet_plan,
                     ...action.diet_plan,
                     success: true,
                 },
+                new: false,
             }
         case FAIL_SUBMIT_DIET_PLAN:
             return {

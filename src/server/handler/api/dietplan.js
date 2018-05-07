@@ -1,20 +1,17 @@
 import { responseError, responseJSON } from '../response'
-import { updateDietPlan, insertUpdateGoal } from '@functions/dietplan'
 
 import to from '@helper/asyncAwait'
 
-import {
-    validateSanitizeUpdatePlan,
-    validateSanitizeInsertUpdateGoal,
-} from '@validation/dietplan'
+import * as v from '@validation/dietplan'
+import * as funcs from '@functions/dietplan'
 
 export const handleUpdateDietPlan = async (req, res) => {
     const { googleID } = req.user
 
-    const [errParam, param] = validateSanitizeUpdatePlan(req.body)
+    const [errParam, param] = v.validateSanitizeUpdatePlan(req.body)
     if (errParam) return responseError(res, 400, errParam)
 
-    const [err, user] = await to(updateDietPlan(googleID, param))
+    const [err, user] = await to(funcs.updateDietPlan(googleID, param))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, user)
@@ -26,11 +23,24 @@ export const handleInsertUpdateGoal = async (req, res) => {
 
     const { googleID } = req.user
 
-    const [errParam, param] = validateSanitizeInsertUpdateGoal(req.body)
+    const [errParam, param] = v.validateSanitizeInsertUpdateGoal(req.body)
     if (errParam) return responseError(res, 400, errParam)
 
-    const [err, goal] = await to(insertUpdateGoal(googleID, param))
+    const [err, goal] = await to(funcs.insertUpdateGoal(googleID, param))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, goal)
+}
+
+export const handleGetRecommendedCalories = async (req, res) => {
+    const { googleID } = req.user
+
+    const diet_plan = req.body
+
+    const [err, recommendation] = await to(
+        funcs.getRecommendationCalories(diet_plan)
+    )
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, recommendation)
 }

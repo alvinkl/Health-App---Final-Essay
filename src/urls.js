@@ -1,14 +1,16 @@
 // dietplan
-export const insertUpdateGoal = '/api/insertUpdateGoal'
-export const updatePlan = '/api/updatePlan'
+export const insertUpdateGoal = '/api/dietplan/insertUpdate'
+export const updatePlan = '/api/dietplan/update'
+export const getRecommendedCalories = '/api/dietplan/getRecommendedCalories'
 
 // food
 export const getFood = '/api/food'
-export const getFoodDiary = '/api/getFoodDiary'
-export const addFoodToDiary = '/api/addFoodToDiary'
+export const getFoodDiary = '/api/diary/get'
+export const addFoodToDiary = '/api/diary/add'
+export const removeFoodFromDiary = '/api/diary/remove'
 
 // Diary Report
-export const getDiaryReport = '/api/getDiaryReport'
+export const getDiaryReport = '/api/diary-report/get'
 
 // Suggest Food
 export const getSuggestion = '/api/food/suggest'

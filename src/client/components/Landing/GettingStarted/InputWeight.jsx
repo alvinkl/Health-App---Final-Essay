@@ -100,9 +100,11 @@ class InputWeight extends Component {
             weight_type_items,
             weight_type,
         } = this.state
+        const { label } = this.props
+
         return (
             <div>
-                <h4 style={style.title}>Current Weight</h4>
+                <h4 style={style.title}>{label}</h4>
                 <div style={style.weightWrapper}>
                     <div className={styles.weightPickWrapper}>
                         <Picker
@@ -140,6 +142,7 @@ class InputWeight extends Component {
 }
 
 InputWeight.propTypes = {
+    label: T.string.isRequired,
     onChange: T.func.isRequired,
     average_low_weight: T.number.isRequired,
     average_high_weight: T.number.isRequired,

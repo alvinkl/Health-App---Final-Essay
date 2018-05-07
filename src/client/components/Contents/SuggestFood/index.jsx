@@ -71,7 +71,10 @@ export class SuggestFood extends Component {
             },
             () => {
                 const { fetchSuggestRestaurant } = this.props
-                const { cuisine, food: { keywords } } = this.state
+                const {
+                    cuisine,
+                    food: { keywords },
+                } = this.state
 
                 const cs = CUISINE_TYPE[cuisine.toUpperCase()]
                 const kw = keywords.join(',')
@@ -89,11 +92,14 @@ export class SuggestFood extends Component {
     }
 
     handleAddToDiary = () => {
-        const { food: { food_name, nutrition } } = this.state
+        const {
+            food: { food_name, nutrition, unit },
+        } = this.state
         const { addToDiary, showSnackbar } = this.props
 
         const data = {
-            food_name,
+            name: food_name,
+            unit,
             nutrition,
             total_weight: 1,
             quantity: 1,
@@ -106,7 +112,9 @@ export class SuggestFood extends Component {
     }
 
     renderStep = step => {
-        const { suggestFood: { food, restaurant } } = this.props
+        const {
+            suggestFood: { food, restaurant },
+        } = this.props
         const { cuisine } = this.state
 
         switch (step) {
@@ -201,7 +209,9 @@ export class SuggestFood extends Component {
     }
 
     render() {
-        const { suggestFood: { food, loading, error } } = this.props
+        const {
+            suggestFood: { food, loading, error },
+        } = this.props
 
         const { step } = this.state
 

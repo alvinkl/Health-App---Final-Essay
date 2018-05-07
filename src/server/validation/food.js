@@ -24,7 +24,8 @@ export const validateSanitizeGetFood = param => {
 }
 
 const addFoodToDiaryType = {
-    food_name: '',
+    name: '',
+    unit: '',
     quantity: 0,
     total_weight: 0,
     nutrients: {
@@ -50,7 +51,7 @@ export const validateSanitizeAddFoodToDiary = param => {
     const checkNutrientStructure = eq(nutrients, addFoodToDiaryType.nutrients)
     if (!checkNutrientStructure) return ['Nutrient Parameter is invalid']
 
-    const { food_name, quantity, total_weight, meal_type } = param
+    const { name, unit, quantity, total_weight, meal_type } = param
 
     const {
         calories,
@@ -65,7 +66,7 @@ export const validateSanitizeAddFoodToDiary = param => {
         potassium,
     } = nutrients
 
-    if (!food_name) return ['Food Name must not empty']
+    if (!name) return ['Food Name must not empty']
     if (!parseInt(quantity) || parseInt(quantity) <= 0)
         return ['Quantity must greater than 0']
     if (!parseInt(total_weight) || parseInt(total_weight) <= 0)
@@ -81,7 +82,8 @@ export const validateSanitizeAddFoodToDiary = param => {
     return [
         false,
         {
-            food_name,
+            name,
+            unit,
             quantity,
             total_weight,
             nutrients,
@@ -113,6 +115,19 @@ export const validateGetDiaryFood = param => {
     }
 
     return [false, sanitized]
+}
+
+const removeFoodFromDiaryType = {
+    diary_id: '',
+}
+
+export const validateRemoveFoodFromDiary = param => {
+    if (!eq(param, removeFoodFromDiaryType)) return ['Parameter is invalid!']
+
+    const { diary_id } = param
+    if (!diary_id) return ['diary_id is invalid!']
+
+    return [false, diary_id]
 }
 
 const suggestQueryType = {

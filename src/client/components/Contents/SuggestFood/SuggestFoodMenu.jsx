@@ -116,16 +116,13 @@ export class SuggestFood extends Component {
 
     handleAddToDiary = meal_type => {
         const {
-            food: {
-                name: food_name,
-                nutritions: nutrition,
-                serving_size: quantity,
-            },
+            food: { name, nutritions: nutrition, serving_size: quantity, unit },
         } = this.state
         const { addToDiary, showSnackbar } = this.props
 
         const data = {
-            food_name,
+            name,
+            unit,
             nutrition,
             total_weight: 1,
             quantity,
@@ -135,6 +132,9 @@ export class SuggestFood extends Component {
         showSnackbar('Added to diary')
 
         addToDiary(data)
+
+        // reset suggest food when done
+        this.setState({ step: 0 })
     }
 
     handleBackButton = () => this.setState({ step: this.state.step - 1 })
@@ -223,7 +223,9 @@ export class SuggestFood extends Component {
     }
 
     render() {
-        const { suggestFood: { food, loading, error } } = this.props
+        const {
+            suggestFood: { food, loading, error },
+        } = this.props
 
         const { step } = this.state
 

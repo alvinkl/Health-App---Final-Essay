@@ -1,6 +1,5 @@
 import React from 'react'
 import T from 'prop-types'
-import { isEmpty } from 'lodash'
 
 import {
     BarChart,
@@ -31,12 +30,8 @@ const Chart = ({ report, today_total_calories }) => {
     return (
         <Paper className={style.paper} zDepth={2}>
             <div className={style.alignLeft}>
-                <h3>Calories</h3>
-                <h2>{today_total_calories}</h2>
-                <div>
-                    <p>Daily Average: 2267</p>
-                    <p>Goal: 2555kcal</p>
-                </div>
+                <h3>Calories: {today_total_calories}</h3>
+                <p>Goal: 2000 Calories</p>
             </div>
 
             <ResponsiveContainer width="100%" height="60%">
@@ -58,7 +53,7 @@ const Chart = ({ report, today_total_calories }) => {
 
 Chart.propTypes = {
     report: T.object.isRequired,
-    today_total_calories: T.string.isRequired,
+    today_total_calories: T.number.isRequired,
 }
 
 import { connect } from 'react-redux'

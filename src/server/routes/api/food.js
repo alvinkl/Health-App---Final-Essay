@@ -2,6 +2,7 @@ import {
     handleGetFood,
     handleAddFoodToDiary,
     handleGetDiaryFood,
+    handleRemoveFoodFromDiary,
     handleSuggestFood,
     handleSuggestRestaurant,
     handleGetDiaryReport,
@@ -38,6 +39,7 @@ export default function(r) {
     // Food Diary
     r.get(url.getFoodDiary, mustAuthenticate, handleGetDiaryFood)
     r.post(url.addFoodToDiary, mustAuthenticate, handleAddFoodToDiary)
+    r.post(url.removeFoodFromDiary, mustAuthenticate, handleRemoveFoodFromDiary)
 
     // Food Report
     r.get(url.getDiaryReport, mustAuthenticate, handleGetDiaryReport)

@@ -7,7 +7,7 @@ import {
     ZomatoAPIKey,
 } from '@config/keys'
 import { foodNutritionixAPI, googleMaps, zomatoAPI } from '@config/urls'
-import { MEAL_TYPE, ONEDAY } from '@constant'
+import * as constants from '@constant'
 
 import { restaurantNearby, zomato } from './dummy/googlemap'
 
@@ -19,7 +19,6 @@ import Restaurant from '@model/Restaurant'
 import Menu from '@model/Menu'
 
 import qs from '@helper/queryString'
-import { handleSuggestRestaurant } from '../handler/api/food'
 
 const foodHeaderKeys = {
     'x-app-id': NutritionXAppID,
@@ -79,33 +78,33 @@ export const getDiaryFood = async (googleID, date) => {
     endOfDate.setHours(23, 59, 59, 999)
     const isoEndOfDate = endOfDate.toISOString()
 
-    const [err, data] = await to(
-        Diary.find({
-            user_id: googleID,
-            created_time: { $gte: isoDate, $lt: isoEndOfDate },
-        })
-    )
+    const query = {
+        user_id: googleID,
+        created_time: { $gte: isoDate, $lt: isoEndOfDate },
+        status: constants.DIARY_AVAILABLE,
+    }
+    const [err, data] = await to(Diary.find(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
     const dt = data.reduce(
         (prev, curr) => {
             switch (curr.meal_type) {
-                case MEAL_TYPE.BREAKFAST:
+                case constants.MEAL_TYPE.BREAKFAST:
                     return {
                         ...prev,
                         breakfast: [...prev.breakfast, curr],
                     }
-                case MEAL_TYPE.LUNCH:
+                case constants.MEAL_TYPE.LUNCH:
                     return {
                         ...prev,
                         lunch: [...prev.lunch, curr],
                     }
-                case MEAL_TYPE.DINNER:
+                case constants.MEAL_TYPE.DINNER:
                     return {
                         ...prev,
                         dinner: [...prev.dinner, curr],
                     }
-                case MEAL_TYPE.SNACK:
+                case constants.MEAL_TYPE.SNACK:
                     return {
                         ...prev,
                         snack: [...prev.snack, curr],
@@ -120,16 +119,63 @@ export const getDiaryFood = async (googleID, date) => {
     return Promise.resolve(dt)
 }
 
-export const getDiaryReport = async googleID => {
-    const today = new Date()
+export const getSingleDiary = async (
+    googleID,
+    diary_id,
+    checkExistence = false
+) => {
+    let returnType
+    if (checkExistence) returnType = { _id: 1 }
+
+    const query = {
+        _id: diary_id,
+        user_id: googleID,
+    }
+
+    const [err, diary] = await to(Diary.findOne(query, returnType))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    if (!diary)
+        return Promise.reject({
+            code: 400,
+            message: 'Diary with id=' + diary_id + ' not found!',
+        })
+
+    return Promise.resolve(diary)
+}
+
+export const removeDiary = async diary_id => {
+    const [err] = await to(
+        Diary.findOneAndUpdate(
+            { _id: diary_id },
+            { $set: { status: constants.DIARY_REMOVED } }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve({ success: 1 })
+}
+
+export const getDiaryReport = async (googleID, timestamp) => {
+    const today = new Date(timestamp || Date.now())
     today.setHours(0, 0, 0, 0)
 
-    const last7days = new Date(today.valueOf() - 7 * ONEDAY)
+    const last7days = new Date(today.valueOf() - 7 * constants.ONEDAY)
+
+    const tomorrow = new Date(today.valueOf() + 1 * constants.ONEDAY)
+    const yesterday = new Date(today.valueOf() - 1 * constants.ONEDAY)
+    const _2daysAgo = new Date(today.valueOf() - 2 * constants.ONEDAY)
+    const _3daysAgo = new Date(today.valueOf() - 3 * constants.ONEDAY)
+    const _4daysAgo = new Date(today.valueOf() - 4 * constants.ONEDAY)
+    const _5daysAgo = new Date(today.valueOf() - 5 * constants.ONEDAY)
+    const _6daysAgo = new Date(today.valueOf() - 6 * constants.ONEDAY)
+    const _7daysAgo = new Date(today.valueOf() - 7 * constants.ONEDAY)
 
     const query = [
         {
             $match: {
                 user_id: googleID,
+                status: constants.DIARY_AVAILABLE,
                 created_time: {
                     $gte: last7days,
                 },
@@ -140,81 +186,138 @@ export const getDiaryReport = async googleID => {
                 _id: {
                     $cond: [
                         {
-                            $gte: ['$created_time', today],
+                            $and: [
+                                { $lt: ['$created_time', tomorrow] },
+                                { $gte: ['$created_time', today] },
+                            ],
                         },
                         0,
                         {
                             $cond: [
                                 {
-                                    $gt: [
-                                        '$created_time',
-                                        new Date(today.valueOf() - 1 * ONEDAY),
+                                    $and: [
+                                        { $lt: ['$created_time', today] },
+                                        { $gt: ['$created_time', yesterday] },
                                     ],
                                 },
                                 1,
                                 {
                                     $cond: [
                                         {
-                                            $gt: [
-                                                '$created_time',
-                                                new Date(
-                                                    today.valueOf() - 2 * ONEDAY
-                                                ),
+                                            $and: [
+                                                {
+                                                    $lt: [
+                                                        '$created_time',
+                                                        yesterday,
+                                                    ],
+                                                },
+                                                {
+                                                    $gt: [
+                                                        '$created_time',
+                                                        _2daysAgo,
+                                                    ],
+                                                },
                                             ],
                                         },
                                         2,
                                         {
                                             $cond: [
                                                 {
-                                                    $gt: [
-                                                        '$created_time',
-                                                        new Date(
-                                                            today.valueOf() -
-                                                                3 * ONEDAY
-                                                        ),
+                                                    $and: [
+                                                        {
+                                                            $lt: [
+                                                                '$created_time',
+                                                                _2daysAgo,
+                                                            ],
+                                                        },
+                                                        {
+                                                            $gt: [
+                                                                '$created_time',
+                                                                _3daysAgo,
+                                                            ],
+                                                        },
                                                     ],
                                                 },
                                                 3,
                                                 {
                                                     $cond: [
                                                         {
-                                                            $gt: [
-                                                                '$created_time',
-                                                                new Date(
-                                                                    today.valueOf() -
-                                                                        4 *
-                                                                            ONEDAY
-                                                                ),
+                                                            $and: [
+                                                                {
+                                                                    $lt: [
+                                                                        '$created_time',
+                                                                        _3daysAgo,
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    $gt: [
+                                                                        '$created_time',
+                                                                        _4daysAgo,
+                                                                    ],
+                                                                },
                                                             ],
                                                         },
                                                         4,
                                                         {
                                                             $cond: [
                                                                 {
-                                                                    $gt: [
-                                                                        '$created_time',
-                                                                        new Date(
-                                                                            today.valueOf() -
-                                                                                5 *
-                                                                                    ONEDAY
-                                                                        ),
+                                                                    $and: [
+                                                                        {
+                                                                            $lt: [
+                                                                                '$created_time',
+                                                                                _4daysAgo,
+                                                                            ],
+                                                                        },
+                                                                        {
+                                                                            $gt: [
+                                                                                '$created_time',
+                                                                                _5daysAgo,
+                                                                            ],
+                                                                        },
                                                                     ],
                                                                 },
                                                                 5,
                                                                 {
                                                                     $cond: [
                                                                         {
-                                                                            $gt: [
-                                                                                '$created_time',
-                                                                                new Date(
-                                                                                    today.valueOf() -
-                                                                                        6 *
-                                                                                            ONEDAY
-                                                                                ),
+                                                                            $and: [
+                                                                                {
+                                                                                    $lt: [
+                                                                                        '$created_time',
+                                                                                        _5daysAgo,
+                                                                                    ],
+                                                                                },
+                                                                                {
+                                                                                    $gt: [
+                                                                                        '$created_time',
+                                                                                        _6daysAgo,
+                                                                                    ],
+                                                                                },
                                                                             ],
                                                                         },
                                                                         6,
-                                                                        7,
+                                                                        {
+                                                                            $cond: [
+                                                                                {
+                                                                                    $and: [
+                                                                                        {
+                                                                                            $lt: [
+                                                                                                '$created_time',
+                                                                                                _6daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                        {
+                                                                                            $gt: [
+                                                                                                '$created_time',
+                                                                                                _7daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                    ],
+                                                                                },
+                                                                                7,
+                                                                                8,
+                                                                            ],
+                                                                        },
                                                                     ],
                                                                 },
                                                             ],
@@ -250,30 +353,31 @@ export const getDiaryReport = async googleID => {
     const [err, data] = await to(Diary.aggregate(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const final_data = data.reduce(
+    let final_data = data.reduce(
         (p, d) => {
             let mt = d.foods.reduce(
                 (prev, curr) => {
+                    let calories = parseInt(curr.calories)
                     switch (curr.meal_type) {
-                        case MEAL_TYPE.BREAKFAST:
+                        case constants.MEAL_TYPE.BREAKFAST:
                             return {
                                 ...prev,
-                                breakfast: prev.breakfast + curr.calories,
+                                breakfast: prev.breakfast + calories,
                             }
-                        case MEAL_TYPE.LUNCH:
+                        case constants.MEAL_TYPE.LUNCH:
                             return {
                                 ...prev,
-                                lunch: prev.lunch + curr.calories,
+                                lunch: prev.lunch + calories,
                             }
-                        case MEAL_TYPE.DINNER:
+                        case constants.MEAL_TYPE.DINNER:
                             return {
                                 ...prev,
-                                dinner: prev.dinner + curr.calories,
+                                dinner: prev.dinner + calories,
                             }
-                        case MEAL_TYPE.SNACK:
+                        case constants.MEAL_TYPE.SNACK:
                             return {
                                 ...prev,
-                                snack: prev.snack + curr.calories,
+                                snack: prev.snack + calories,
                             }
                         default:
                             return prev
@@ -286,6 +390,8 @@ export const getDiaryReport = async googleID => {
                     snack: 0,
                 }
             )
+            if (d.days_minus > 7) return p
+
             return {
                 ...p,
                 [d.days_minus]: mt,
@@ -350,6 +456,9 @@ export const addFoodToDiary = async (googleID, data) => {
     const newDiary = new Diary({
         user_id: googleID,
         ...data,
+        photo: {
+            thumbnail: '',
+        },
     })
 
     const [err] = await to(newDiary.save())
@@ -723,5 +832,5 @@ export const getRestaurantMapLocation = async (lat, lon) => {
     // const buffer = map.body._readableState.buffer.head.data
 
     // return Promise.resolve({ buffer })
-    return Promise.resolve({ url: googleMaps.getDisplayMap + query})
+    return Promise.resolve({ url: googleMaps.getDisplayMap + query })
 }

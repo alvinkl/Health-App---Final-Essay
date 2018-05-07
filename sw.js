@@ -4,8 +4,8 @@ self.importScripts('/static/cdnjs/idb.min.js')
 self.importScripts('/static/cdnjs/utilities.js')
 // self.importScripts('/static/build/idb-utilities.js')
 
-var STATIC_VERSION = 'Static-v4'
-var DYNAMIC_VERSION = 'Dynamic-v4'
+var STATIC_VERSION = 'Static-v5'
+var DYNAMIC_VERSION = 'Dynamic-v5'
 
 var STATIC_CACHE = [
     '/static/cdnjs/idb.min.js',

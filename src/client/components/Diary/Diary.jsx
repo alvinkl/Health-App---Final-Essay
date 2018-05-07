@@ -158,7 +158,19 @@ class Diary extends Component {
     }
 
     handleClose = () => {
-        this.setState({ open_nutrition_detail: false })
+        this.setState({
+            open_nutrition_detail: false,
+            nutrition_detail_data: {},
+        })
+    }
+
+    handleRemoveDiary = () => {
+        const { removeDiary } = this.props
+        const { nutrition_detail_data } = this.state
+        const { meal_type, _id: diary_id } = nutrition_detail_data
+
+        removeDiary({ meal_type, diary_id })
+        this.handleClose()
     }
 
     handleChangeDate = (_, date) => this.props.fetchDiary({ startDate: date })
@@ -214,9 +226,20 @@ class Diary extends Component {
     renderNutritionDetailDialog = () => {
         const { open_nutrition_detail, nutrition_detail_data } = this.state
 
-        const actions = (
-            <FlatButton label="Close" onClick={this.handleClose} primary />
-        )
+        const actions = [
+            <FlatButton
+                key="remove-btn"
+                label="Remove"
+                onClick={this.handleRemoveDiary}
+                secondary
+            />,
+            <FlatButton
+                key="close-btn"
+                label="Close"
+                onClick={this.handleRemove}
+                primary
+            />,
+        ]
 
         return (
             <Dialog
@@ -295,6 +318,7 @@ Diary.propTypes = {
 
     fetchDiary: T.func.isRequired,
     addToDiary: T.func.isRequired,
+    removeDiary: T.func.isRequired,
     showLoader: T.func.isRequired,
     hideLoader: T.func.isRequired,
     showSnackbar: T.func.isRequired,
@@ -302,7 +326,7 @@ Diary.propTypes = {
 
 import { connect } from 'react-redux'
 import { showLoader, hideLoader, showSnackbar } from '@actions/common'
-import { addToDiary } from '@actions/diary'
+import { addToDiary, removeDiary } from '@actions/diary'
 
 const mapStateToProps = ({ diary }) => ({
     diary: diary.today_diary,
@@ -311,6 +335,7 @@ const mapStateToProps = ({ diary }) => ({
 const mapDispatchToProps = dispatch => ({
     fetchDiary: event => dispatch(fetchDiary(event)),
     addToDiary: event => dispatch(addToDiary(event)),
+    removeDiary: event => dispatch(removeDiary(event)),
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),
     showSnackbar: event => dispatch(showSnackbar(event)),

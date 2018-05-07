@@ -1,8 +1,16 @@
-import { getFoodDiary, addFoodToDiary, getDiaryReport } from '@urls'
+import {
+    getFoodDiary,
+    addFoodToDiary,
+    getDiaryReport,
+    removeFoodFromDiary,
+} from '@urls'
+import { MEAL_TYPE } from '@constant'
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
 import parseDate from '@helper/parseDate'
 import { readData, readAllData, writeData } from '@helper/indexedDB-utilities'
+
+import { showSnackbar } from './common'
 
 export const FAIL_FETCH_DIARY = 'FAIL_FETCH_DIARY'
 export const FETCHED_DIARY = 'FETCHED_DIARY'
@@ -12,6 +20,10 @@ export const FETCHED_DIARY_REPORT = 'FETCHED_DIARY_REPORT'
 export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
 export const SUCCESS_ADD_DIARY = 'SUCCESS_ADD_DIARY'
 export const FAILED_ADD_DIARY = 'FAILED_ADD_DIARY'
+
+export const REMOVING_DIARY = 'REMOVING_DIARY'
+export const FAILED_REMOVING_DIARY = 'FAILED_REMOVING_DIARY'
+export const DIARY_REMOVED = 'DIARY_REMOVED'
 
 export const fetchDiary = (
     { startDate, endDate } = { startDate: null, endDate: null }
@@ -89,6 +101,35 @@ export const addToDiary = ({
 
     dispatch({ type: SUCCESS_ADD_DIARY })
     return Promise.resolve(data)
+}
+
+export const removeDiary = ({ diary_id, meal_type }) => async dispatch => {
+    dispatch({ type: REMOVING_DIARY })
+
+    const post_data = { diary_id }
+    const [err] = await to(
+        fetch(removeFoodFromDiary, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(post_data),
+        })
+    )
+    if (err) {
+        dispatch(showSnackbar(err))
+        return dispatch({ type: FAILED_REMOVING_DIARY })
+    }
+
+    dispatch(showSnackbar('Diary removed!'))
+
+    // transform MEAL_TYPE value into its string value
+    const entr = Object.entries(MEAL_TYPE)
+    let [type] = entr.filter(t => t[1] === meal_type)[0] || ['']
+    type = type.toLowerCase()
+
+    return dispatch({ type: DIARY_REMOVED, diary_id, meal_type: type })
 }
 
 export const fetchDiaryReport = timestamp => async dispatch => {

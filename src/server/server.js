@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session'
 import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
+import sslRedirect from 'heroku-ssl-redirect'
 // import Loadable from 'react-loadable'
 
 import routes from './routes'
@@ -38,6 +39,9 @@ app.set('view engine', 'ejs')
 
 // Secure HTTP Headers
 app.use(helmet())
+
+// Redirect to HTTPS heroku
+app.use(sslRedirect())
 
 // Parse POST request
 app.use(bodyParser.json())

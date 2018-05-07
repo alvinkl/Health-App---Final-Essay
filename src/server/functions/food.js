@@ -175,6 +175,7 @@ export const getDiaryReport = async (googleID, timestamp) => {
         {
             $match: {
                 user_id: googleID,
+                status: constants.DIARY_AVAILABLE,
                 created_time: {
                     $gte: last7days,
                 },

@@ -13,29 +13,37 @@ export const renderTemplate = async (req, res) => {
 
     let data = {}
 
-    if (req.user) {
-        const { googleID, new: n } = req.user
-        const [, user] = await to(getUserData(googleID))
+    try {
+        if (req.user) {
+            const { googleID, new: n } = req.user
+            const [, user] = await to(getUserData(googleID))
 
-        if (req.user.new) {
-            if (!~req.url.indexOf('getting-started'))
-                return res.redirect('/getting-started')
+            if (req.user.new) {
+                if (!~req.url.indexOf('getting-started'))
+                    return res.redirect('/getting-started')
 
-            data = await renderTemplateHome(
-                { ...user, new: !!n },
-                user_agent,
-                url
-            )
-        } else {
-            if (!~req.url.indexOf('landing')) {
                 data = await renderTemplateHome(
                     { ...user, new: !!n },
                     user_agent,
                     url
                 )
-            } else return res.redirect('/')
+            } else {
+                if (!~req.url.indexOf('landing')) {
+                    data = await renderTemplateHome(
+                        { ...user, new: !!n },
+                        user_agent,
+                        url
+                    )
+                } else return res.redirect('/')
+            }
+        } else {
+            if (!~req.url.indexOf('landing')) return res.redirect('/landing')
+
+            data = await renderTemplateHome({}, user_agent, url)
         }
-    } else {
+    } catch (err) {
+        req.logout()
+
         if (!~req.url.indexOf('landing')) return res.redirect('/landing')
 
         data = await renderTemplateHome({}, user_agent, url)

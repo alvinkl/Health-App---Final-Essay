@@ -243,7 +243,6 @@ class Diary extends Component {
 
         return (
             <Dialog
-                title="Dialog With Actions"
                 modal={false}
                 open={open_nutrition_detail}
                 onRequestClose={this.handleClose}

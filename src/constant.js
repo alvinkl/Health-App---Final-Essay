@@ -54,3 +54,7 @@ export const UNLIKE = 0
 // Feed status
 export const FEED_AVAILABLE = 1
 export const FEED_REMOVED = 0
+
+// Diary status
+export const DIARY_AVAILABLE = 1
+export const DIARY_REMOVED = 0

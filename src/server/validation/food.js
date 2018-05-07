@@ -117,6 +117,19 @@ export const validateGetDiaryFood = param => {
     return [false, sanitized]
 }
 
+const removeFoodFromDiaryType = {
+    diary_id: '',
+}
+
+export const validateRemoveFoodFromDiary = param => {
+    if (!eq(param, removeFoodFromDiaryType)) return ['Parameter is invalid!']
+
+    const { diary_id } = param
+    if (!diary_id) return ['diary_id is invalid!']
+
+    return [false, diary_id]
+}
+
 const suggestQueryType = {
     cuisine: '',
     keywords: '',

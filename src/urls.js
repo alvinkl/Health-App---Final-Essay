@@ -4,11 +4,12 @@ export const updatePlan = '/api/updatePlan'
 
 // food
 export const getFood = '/api/food'
-export const getFoodDiary = '/api/getFoodDiary'
-export const addFoodToDiary = '/api/addFoodToDiary'
+export const getFoodDiary = '/api/diary/get'
+export const addFoodToDiary = '/api/diary/add'
+export const removeFoodFromDiary = '/api/diary/remove'
 
 // Diary Report
-export const getDiaryReport = '/api/getDiaryReport'
+export const getDiaryReport = '/api/diary-report/get'
 
 // Suggest Food
 export const getSuggestion = '/api/food/suggest'

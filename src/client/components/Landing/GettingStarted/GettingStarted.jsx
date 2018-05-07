@@ -2,6 +2,10 @@ import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 import moment from 'moment'
 
+import qs from '@helper/queryString'
+import to from '@helper/asyncAwait'
+import { getRecommendedCalories } from '@urls'
+
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import TextField from 'material-ui/TextField'
@@ -11,6 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 import InputWeight from './InputWeight'
 import InputHeight from './InputHeight'
+import InputCalories from './InputCalories'
 
 import styles from './gettingStarted.css'
 
@@ -65,6 +70,11 @@ export class GettingStarted extends Component {
     state = {
         step_index: 0,
         finished: false,
+        input_calories: {
+            rec_low: 0,
+            rec_high: 2000,
+            calories_recommended: 2000,
+        },
 
         // form
         goal: 0,
@@ -77,20 +87,73 @@ export class GettingStarted extends Component {
             value: 0,
             tp: WEIGHT_TYPE.KG,
         },
-        target_calories: 2000,
+        target_calories: 0,
         current_height: {
             value: 0,
             tp: HEIGHT_TYPE.CM,
         },
         activity: 0,
         birth_date: null,
+
+        success: false,
     }
 
     componentWillReceiveProps = nextProps => {
         const { success } = nextProps
-        if (success) return this.handleContinue()
+        this.setState({ success })
     }
 
+    fetchRecommendedCalories = async () => {
+        const {
+            goal,
+            gender,
+            current_weight,
+            target_weight,
+            current_height,
+            target_calories,
+            activity,
+            birth_date,
+            step_index,
+        } = this.state
+
+        const post_data = JSON.stringify({
+            goal,
+            gender,
+            current_weight,
+            target_weight,
+            target_calories,
+            current_height,
+            activity,
+            birth_date: birth_date.toISOString(),
+        })
+
+        const [err, res] = await to(
+            fetch(getRecommendedCalories, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: post_data,
+            })
+        )
+
+        const data = await res.json()
+
+        const { rec_low, rec_high, calories_recommended } = data
+
+        this.setState({
+            input_calories: {
+                rec_low,
+                rec_high,
+                calories_recommended,
+            },
+
+            step_index: step_index + 1,
+        })
+    }
+
+    // TODO: if redis already implemented, use redis instead of calling twice
     handleFinishGoal = () => {
         const { submitDietPlan } = this.props
         const {
@@ -118,44 +181,63 @@ export class GettingStarted extends Component {
         submitDietPlan(dietplan)
     }
 
-    handlePrevClick = (current_index = 0) =>
-        this.setState({ step_index: current_index - 1, finished: false })
-
-    handleNextClick = (current_index = 0) => {
-        if (current_index === 6) this.handleFinishGoal()
-
+    handlePrevClick = () =>
         this.setState({
-            step_index: current_index + 1,
-            finished: current_index === 6,
+            step_index: this.state.step_index - 1,
+            finished: false,
         })
+
+    handleNext = () => {
+        const { step_index: current_index } = this.state
+        const { success } = this.props
+
+        if (current_index === 6) return this.fetchRecommendedCalories()
+
+        if (current_index === 7) this.handleFinishGoal()
+
+        this.setState(
+            {
+                step_index: current_index + 1,
+                finished: current_index === 8,
+            },
+            () => {
+                const { finished, success } = this.state
+                if (finished && success) this.handleContinue()
+            }
+        )
     }
 
     handleContinue = () => this.context.router.history.push('/home')
 
     handleChangeGoal = e =>
-        this.setState({
-            goal: parseInt(e.target.value),
-            step_index: this.state.step_index + 1,
-        })
+        this.setState(
+            {
+                goal: parseInt(e.target.value),
+            },
+            this.handleNext
+        )
 
     handleChangeGender = e =>
-        this.setState({
-            gender: parseInt(e.target.value),
-            step_index: this.state.step_index + 1,
-        })
+        this.setState(
+            {
+                gender: parseInt(e.target.value),
+            },
+            this.handleNext
+        )
 
     handleChangeWeight = ({ value, tp }) =>
         this.setState({
             current_weight: { value, tp },
         })
 
-    handleChangeTargetWeight = ({ value, tp }) =>
+    handleChangeTargetWeight = ({ value, tp }) => {
         this.setState({
             target_weight: {
                 value,
                 tp,
             },
         })
+    }
 
     handleChangeHeight = ({ value, tp }) =>
         this.setState({
@@ -166,15 +248,19 @@ export class GettingStarted extends Component {
         })
 
     handleChangeActivity = e =>
-        this.setState({
-            activity: parseInt(e.target.value),
-            step_index: this.state.step_index + 1,
-        })
+        this.setState(
+            {
+                activity: parseInt(e.target.value),
+            },
+            this.handleNext
+        )
 
     handleChangeDateBirth = (e, value) =>
         this.setState({
             birth_date: value,
         })
+
+    handleChangeCalories = target_calories => this.setState({ target_calories })
 
     renderFormContent = index => {
         /* Quiestions would be
@@ -259,6 +345,7 @@ export class GettingStarted extends Component {
                 return (
                     <InputWeight
                         key="current-weight"
+                        label="Current Weight"
                         onChange={this.handleChangeWeight}
                         {...{
                             average_high_weight,
@@ -288,6 +375,7 @@ export class GettingStarted extends Component {
                 return (
                     <InputWeight
                         key="target-weight"
+                        label="Target Weight"
                         onChange={this.handleChangeTargetWeight}
                         {...{
                             average_high_weight: high_weight,
@@ -303,7 +391,7 @@ export class GettingStarted extends Component {
                 return (
                     <InputHeight
                         key="height"
-                        onChange={this.handleChangeTargetWeight}
+                        onChange={this.handleChangeHeight}
                     />
                 )
             case 5:
@@ -361,6 +449,14 @@ export class GettingStarted extends Component {
                 )
             case 7:
                 return (
+                    <InputCalories
+                        key="input-calories"
+                        {...this.state.input_calories}
+                        onChange={this.handleChangeCalories}
+                    />
+                )
+            case 8:
+                return (
                     <Fragment>
                         <img src="/static/images/icons/icon-96x96.png" alt="" />
                     </Fragment>
@@ -384,6 +480,8 @@ export class GettingStarted extends Component {
                         {StepL}
                         {StepL}
                         {StepL}
+                        {StepL}
+                        {StepL}
                     </Stepper>
                 )}
                 <form className={styles.form}>
@@ -394,7 +492,7 @@ export class GettingStarted extends Component {
                     <FlatButton
                         className={styles.prevButton}
                         label="Back"
-                        onClick={this.handlePrevClick.bind(null, step_index)}
+                        onClick={this.handlePrevClick}
                     />
                 )}
 
@@ -402,7 +500,7 @@ export class GettingStarted extends Component {
                     <FlatButton
                         className={styles.nextButton}
                         label="Next"
-                        onClick={this.handleNextClick.bind(null, step_index)}
+                        onClick={this.handleNext}
                     />
                 )}
             </div>

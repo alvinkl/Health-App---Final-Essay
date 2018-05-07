@@ -27,6 +27,10 @@ class InputHeight extends Component {
         height_type: 'CM',
     }
 
+    componentDidMount() {
+        this.updateParentState()
+    }
+
     updateParentState = () => {
         const { onChange } = this.props
 

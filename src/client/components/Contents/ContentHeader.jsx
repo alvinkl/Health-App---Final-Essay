@@ -112,7 +112,7 @@ const ContentHeader = ({ user, today_total_calories }) => {
 
 ContentHeader.propTypes = {
     user: T.object,
-    today_total_calories: T.string.isRequired,
+    today_total_calories: T.number.isRequired,
 }
 
 ContentHeader.defaultProps = {

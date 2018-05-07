@@ -236,7 +236,7 @@ class Diary extends Component {
             <FlatButton
                 key="close-btn"
                 label="Close"
-                onClick={this.handleRemove}
+                onClick={this.handleClose}
                 primary
             />,
         ]

@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
+import T from 'prop-types'
 
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
@@ -13,6 +14,7 @@ import { List, ListItem } from 'material-ui/List'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import { GridList, GridTile } from 'material-ui/GridList'
 
 import styles from './workout.css'
 
@@ -20,19 +22,46 @@ const style = {
     paper: {
         height: '100%',
         width: '90%%',
-        margin: '0 auto',
+        margin: '20px auto',
         textAlign: 'center',
+    },
+    inputText: {
+        textAlign: 'center',
+    },
+    dateTimeTile: {
+        padding: 10,
     },
 }
 
 const generateUnique = () => Date.parse(new Date())
 
 class Workout extends Component {
+    constructor() {
+        super()
+
+        this.today = new Date()
+    }
+
     state = {
         workout: [{ value: '', key: generateUnique() }],
+        date: null,
     }
 
     handleBackButton = () => this.context.router.history.push('/')
+
+    handleChangeDate = (_, date) => this.setState({ date })
+
+    handleChangeTime = (_, date) => {
+        const { date: old_date } = this.state
+
+        const hour = date.getHours()
+        const minutes = date.getMinutes()
+
+        const new_date = new Date(old_date)
+        new_date.setHours(hour, minutes)
+
+        this.setState({ date: new_date })
+    }
 
     handleAddWorkoutClick = () =>
         this.setState({
@@ -42,12 +71,24 @@ class Workout extends Component {
             ],
         })
 
-    handleRemoveWorkoutClick = index => {
-        console.log(index)
+    handleRemoveWorkoutClick = index =>
         this.setState({
             workout: [
                 ...this.state.workout.slice(0, index),
                 ...this.state.workout.slice(index + 1),
+            ],
+        })
+
+    handleChangeWorkout = (index, e) => {
+        const { workout } = this.state
+
+        const { value } = e.target
+
+        this.setState({
+            workout: [
+                ...workout.slice(0, index),
+                { ...workout[index], value },
+                ...workout.slice(index + 1),
             ],
         })
     }
@@ -61,7 +102,15 @@ class Workout extends Component {
                     <ListItem
                         key={key}
                         value={value}
-                        primaryText={<TextField hintText="Workout Name" />}
+                        primaryText={
+                            <TextField
+                                hintText="Workout Name"
+                                onChange={this.handleChangeWorkout.bind(
+                                    null,
+                                    i
+                                )}
+                            />
+                        }
                         rightIcon={
                             workout.length > 1 && (
                                 <DeleteIcon
@@ -87,17 +136,44 @@ class Workout extends Component {
     }
 
     renderForm = () => {
+        const { date } = this.state
+
         return (
-            <div className={styles.workouFormtWrapper}>
-                <DatePicker hintText="date" />
-                <TimePicker hintText="time" />
-                <Divider />
-                {this.renderInputWorkoutList()}
+            <div className={styles.workoutFormWrapper}>
+                <Paper zDepth={3} style={style.paper}>
+                    <GridList cellHeight={50} padding={10}>
+                        <GridTile>
+                            <DatePicker
+                                hintText="date"
+                                value={date}
+                                maxDate={this.today}
+                                onChange={this.handleChangeDate}
+                                textFieldStyle={style.inputText}
+                                autoOk
+                            />
+                        </GridTile>
+                        <GridTile>
+                            <TimePicker
+                                hintText="time"
+                                value={date}
+                                textFieldStyle={style.inputText}
+                                onChange={this.handleChangeTime}
+                                autoOk
+                            />
+                        </GridTile>
+                    </GridList>
+                    <Divider />
+                    {this.renderInputWorkoutList()}
+                </Paper>
             </div>
         )
     }
 
     render() {
+        const { date, workout } = this.state
+        const disable_button =
+            !date || workout.reduce((p, c) => p || !c.value, false)
+
         return (
             <div>
                 <AppBar
@@ -108,12 +184,23 @@ class Workout extends Component {
                         </IconButton>
                     }
                 />
-                <Paper zDepth={3} style={style.paper}>
-                    {this.renderForm()}
-                </Paper>
+
+                {this.renderForm()}
+
+                <RaisedButton
+                    className={styles.submitButton}
+                    primary
+                    fullWidth
+                    label="Submit"
+                    disabled={disable_button}
+                />
             </div>
         )
     }
+}
+
+Workout.contextTypes = {
+    router: T.object.isRequired,
 }
 
 export default Workout

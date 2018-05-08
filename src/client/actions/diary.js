@@ -3,6 +3,7 @@ import {
     addFoodToDiary,
     getDiaryReport,
     removeFoodFromDiary,
+    getTodayCalories,
 } from '@urls'
 import { MEAL_TYPE } from '@constant'
 import to from '@helper/asyncAwait'
@@ -16,6 +17,10 @@ export const FAIL_FETCH_DIARY = 'FAIL_FETCH_DIARY'
 export const FETCHED_DIARY = 'FETCHED_DIARY'
 export const FETCHED_DIARY_IDB = 'FETCHED_DIARY_IDB'
 export const FETCHED_DIARY_REPORT = 'FETCHED_DIARY_REPORT'
+
+export const FETCHING_DAILY_CALORIES = 'FETCHING_DAILY_CALORIES'
+export const DAILY_CALORIES_FETCHED = 'DAILY_CALORIES_FETCHED'
+export const FAIL_FETCH_DAILY_CALORIES = 'FAIL_FETCH_DAILY_CALORIES'
 
 export const ADD_NEW_DIARY = 'ADD_NEW_DIARY'
 export const SUCCESS_ADD_DIARY = 'SUCCESS_ADD_DIARY'
@@ -65,6 +70,29 @@ export const fetchDiary = (
             type: FETCHED_DIARY,
         })
     )
+}
+
+export const fetchDailyCalories = () => async dispatch => {
+    dispatch({ type: FETCHING_DAILY_CALORIES })
+
+    const [err, res] = await to(
+        fetch(getTodayCalories, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+    if (err) return dispatch({ type: FAIL_FETCH_DAILY_CALORIES })
+
+    const data = await res.json()
+    const { total_calories } = data
+
+    return dispatch({
+        type: DAILY_CALORIES_FETCHED,
+        total_calories,
+    })
 }
 
 export const addToDiary = ({

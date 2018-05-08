@@ -8,6 +8,7 @@ import Feeds from './Feeds'
 
 import { fetchUserData } from '@actions/user'
 import { fetchFeed } from '@actions/feeds'
+import { fetchDailyCalories } from '@actions/diary'
 // import styles from './contents.css'
 
 class Contents extends Component {
@@ -20,12 +21,18 @@ class Contents extends Component {
     }
 
     componentDidMount() {
-        const { user, fetchUserData, fetchFeed } = this.props
+        const {
+            user,
+            fetchUserData,
+            fetchFeed,
+            fetchDailyCalories,
+        } = this.props
         const { page } = this.state
 
         if (!user.googleID) fetchUserData()
 
         fetchFeed(page)
+        fetchDailyCalories()
     }
 
     render() {
@@ -47,6 +54,7 @@ Contents.propTypes = {
     feeds: T.array.isRequired,
     fetchUserData: T.func.isRequired,
     fetchFeed: T.func.isRequired,
+    fetchDailyCalories: T.func.isRequired,
 }
 
 // import withStyles from 'isomorphic-style-loader/lib/withStyles'
@@ -60,6 +68,7 @@ const mapStateToProps = ({ user, feeds: { feeds } }) => ({
 const mapDispatchToProps = dispatch => ({
     fetchUserData: event => dispatch(fetchUserData(event)),
     fetchFeed: event => dispatch(fetchFeed(event)),
+    fetchDailyCalories: () => dispatch(fetchDailyCalories()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Contents)

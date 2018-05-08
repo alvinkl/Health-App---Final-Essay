@@ -5,6 +5,7 @@ import {
     REMOVING_DIARY,
     FAILED_REMOVING_DIARY,
     DIARY_REMOVED,
+    DAILY_CALORIES_FETCHED,
 } from '@actions/diary'
 
 export const initial_state = {
@@ -51,6 +52,11 @@ export default (state = initial_state, action) => {
                 },
             }
         }
+        case DAILY_CALORIES_FETCHED:
+            return {
+                ...state,
+                today_total_calories: action.total_calories,
+            }
         default:
             return state
     }

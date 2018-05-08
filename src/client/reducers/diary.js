@@ -33,7 +33,7 @@ export default (state = initial_state, action) => {
             return {
                 ...state,
                 report: action.report,
-                today_total_calories: action.today_total_calories,
+                today_total_calories: parseInt(action.today_total_calories),
             }
         case DIARY_REMOVED: {
             const current_diary = state.today_diary[action.meal_type]
@@ -55,7 +55,7 @@ export default (state = initial_state, action) => {
         case DAILY_CALORIES_FETCHED:
             return {
                 ...state,
-                today_total_calories: action.total_calories,
+                today_total_calories: parseInt(action.total_calories),
             }
         default:
             return state

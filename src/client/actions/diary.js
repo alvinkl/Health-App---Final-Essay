@@ -127,6 +127,8 @@ export const addToDiary = ({
         return Promise.reject(err)
     }
 
+    dispatch(fetchDailyCalories())
+
     dispatch({ type: SUCCESS_ADD_DIARY })
     return Promise.resolve(data)
 }

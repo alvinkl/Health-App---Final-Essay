@@ -1,5 +1,6 @@
 export const foodNutritionixAPI = {
     getNatural: 'https://trackapi.nutritionix.com/v2/natural/nutrients',
+    getExerciseNatural: 'https://trackapi.nutritionix.com/v2/natural/exercise',
 }
 
 export const googleMaps = {

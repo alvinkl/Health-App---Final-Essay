@@ -36,7 +36,10 @@ import Subscription from '@model/Subscription'
 export default function(r) {
     r.post('/notification/subscribe', mustAuthenticate, async (req, res) => {
         const { googleID } = req.user
-        const { endpoint, keys: { auth, p256dh } } = req.body
+        const {
+            endpoint,
+            keys: { auth, p256dh },
+        } = req.body
 
         const subscription = new Subscription({
             user_id: googleID,

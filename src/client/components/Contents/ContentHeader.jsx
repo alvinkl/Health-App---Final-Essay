@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper'
 import { GridList, GridTile } from 'material-ui/GridList'
 import Chip from 'material-ui/Chip'
 import FontIcon from 'material-ui/FontIcon'
-import { cyan100, cyan500 } from 'material-ui/styles/colors'
+import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
 import styles from './contents.css'
 
@@ -70,13 +70,14 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             &nbsp;{today_total_calories} / {target_calories}
                             &nbsp;calories
                         </Chip>
-                        <Chip style={style.smallChip}>
+                        <Chip style={style.smallChip} color={cyan700}>
                             <FontIcon
                                 className="material-icons"
                                 style={style.fontIconSize}
                             >
-                                &#xE56C;
+                                fitness_center
                             </FontIcon>
+                            &nbsp; +
                         </Chip>
                     </div>
 

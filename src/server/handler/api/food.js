@@ -29,6 +29,15 @@ export const handleGetDiaryFood = async (req, res) => {
     return responseJSON(res, diary)
 }
 
+export const handleGetDailyCalories = async (req, res) => {
+    const { googleID } = req.user
+
+    const [err, total_calories] = await to(funcs.getTodayCalories(googleID))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, total_calories)
+}
+
 export const handleRemoveFoodFromDiary = async (req, res) => {
     const { googleID } = req.user
 

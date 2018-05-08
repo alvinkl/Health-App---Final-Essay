@@ -8,6 +8,7 @@ export const getFood = '/api/food'
 export const getFoodDiary = '/api/diary/get'
 export const addFoodToDiary = '/api/diary/add'
 export const removeFoodFromDiary = '/api/diary/remove'
+export const getTodayCalories = '/api/diary/today-calories'
 
 // Diary Report
 export const getDiaryReport = '/api/diary-report/get'

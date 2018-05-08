@@ -19,16 +19,14 @@ import { Provider } from 'react-redux'
 import configureStore from '@client/store'
 import appReducer from '@client/reducers'
 import { initial_state as common_state } from '@client/reducers/common'
+import { initial_state as diary_state } from '@client/reducers/diary'
 import { VapidPublicKeys } from '@config/keys'
 
-export const renderTemplateHome = async (user, userAgent, url) => {
-    const render = setupTemplate({ userAgent, url }, { user })
-
-    return render
-}
-
-export const renderTemplateLanding = (user, userAgent, url) => {
-    const render = setupTemplate({ userAgent, url }, { user })
+export default async ({ user = {}, diary = {} }, userAgent, url) => {
+    const render = setupTemplate(
+        { userAgent, url },
+        { user, diary: { ...diary_state, ...diary } }
+    )
 
     return render
 }
@@ -47,7 +45,10 @@ const setupTemplate = (
     }
 
     /* REDUX init state */
-    const store = configureStore(appReducer, { ...initial_state, common })
+    const store = configureStore(appReducer, {
+        common,
+        ...initial_state,
+    })
     /* END OF REDUX init state */
 
     /* Start of Setting up React Router and initial actions */

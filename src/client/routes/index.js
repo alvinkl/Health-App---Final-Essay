@@ -148,6 +148,20 @@ const route = [
                     loading: loadingComponent,
                 }),
             },
+            {
+                name: 'addWorkout',
+                path: '/add-workout',
+                exact: true,
+                protected: true,
+                component: Loadable({
+                    loader: () =>
+                        import(/*  webpackChunkName: Workout */ '@components/Workout'),
+                    pastDelay: 500,
+                    modules: ['@components/Workout'],
+                    webpack: () => [require.resolveWeak('@components/Workout')],
+                    loading: loadingComponent,
+                }),
+            },
 
             // Landing page
             {

@@ -1,5 +1,6 @@
 import React from 'react'
 import T from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
@@ -70,15 +71,17 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             &nbsp;{today_total_calories} / {target_calories}
                             &nbsp;calories
                         </Chip>
-                        <Chip style={style.smallChip} color={cyan700}>
-                            <FontIcon
-                                className="material-icons"
-                                style={style.fontIconSize}
-                            >
-                                fitness_center
-                            </FontIcon>
-                            &nbsp; +
-                        </Chip>
+                        <Link to="/add-workout">
+                            <Chip style={style.smallChip} color={cyan700}>
+                                <FontIcon
+                                    className="material-icons"
+                                    style={style.fontIconSize}
+                                >
+                                    fitness_center
+                                </FontIcon>
+                                &nbsp; +
+                            </Chip>
+                        </Link>
                     </div>
 
                     <div className={styles.wrapper}>
@@ -90,19 +93,6 @@ const ContentHeader = ({ user, today_total_calories }) => {
                                 accessibility
                             </FontIcon>
                             &nbsp;{current_weight} / {target_weight} kg
-                        </Chip>
-                        <Chip
-                            style={style.chip}
-                            color={cyan500}
-                            backgroundColor={cyan100}
-                        >
-                            <FontIcon
-                                className="material-icons"
-                                style={style.fontIconSize}
-                            >
-                                add_a_photo
-                            </FontIcon>
-                            &nbsp; Add Photo
                         </Chip>
                     </div>
                 </GridTile>

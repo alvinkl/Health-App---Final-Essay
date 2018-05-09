@@ -144,9 +144,9 @@ export const getTodayCalories = async googleID => {
     const [err, data] = await to(Diary.aggregate(query))
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const total_calories = data.reduce((p, c) => p + c.calories, 0)
+    const calories = data.reduce((p, c) => p + c.calories, 0)
 
-    return Promise.resolve({ total_calories })
+    return Promise.resolve({ calories })
 }
 
 export const getSingleDiary = async (

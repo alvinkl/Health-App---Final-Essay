@@ -4,6 +4,7 @@ import * as funcs from '@functions/food'
 
 import to from '@helper/asyncAwait'
 import { getNearbyRestaurantCuisine } from '../../functions/food'
+import { getWorkoutCalories } from '@functions/workout'
 
 // Food API
 export const handleGetFood = async (req, res) => {
@@ -32,10 +33,17 @@ export const handleGetDiaryFood = async (req, res) => {
 export const handleGetDailyCalories = async (req, res) => {
     const { googleID } = req.user
 
-    const [err, total_calories] = await to(funcs.getTodayCalories(googleID))
+    const [err, food] = await to(funcs.getTodayCalories(googleID))
     if (err) return responseError(res, err.code, err.message)
 
-    return responseJSON(res, total_calories)
+    const [errWorkout, workout] = await to(getWorkoutCalories(googleID))
+    if (errWorkout)
+        return responseJSON(res, {
+            total_calories: food.calories,
+        })
+
+    const total_calories = food.calories - workout.calories
+    return responseJSON(res, { total_calories: parseInt(total_calories) })
 }
 
 export const handleRemoveFoodFromDiary = async (req, res) => {

@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 import { foodNutritionixAPI } from '@config/urls'
-import { GENDER } from '@constant'
+import { GENDER, WORKOUT_AVAILABLE, WORKOUT_REMOVED } from '@constant'
 import { NutritionXAppID, NutritionXAppKeys } from '@config/keys'
 
 import to from '@helper/asyncAwait'
@@ -94,6 +94,7 @@ export const insertWorkout = async (
         user_id: googleID,
         ...w,
         workout_time,
+        status: WORKOUT_AVAILABLE,
     }))
 
     Workout.insertMany(insert_workout, (err, docs) => {
@@ -110,4 +111,69 @@ export const insertWorkout = async (
     })
 
     return Promise.resolve(insert_workout)
+}
+
+export const getWorkoutDiaries = async (googleID, date) => {
+    const { startDate, endDate } = date
+
+    startDate.setHours(0, 0, 0, 0)
+    const isoStartDate = startDate.toISOString()
+
+    // set end of the date
+    const endOfDate = endDate || startDate
+    endOfDate.setHours(23, 59, 59, 999)
+    const isoEndOfDate = endOfDate.toISOString()
+
+    const query = {
+        user_id: googleID,
+        create_time: { $gte: isoStartDate, $lt: isoEndOfDate },
+        status: WORKOUT_AVAILABLE,
+    }
+
+    let data_type = {
+        _id: 1,
+        name: 1,
+        description: 1,
+        benefits: 1,
+        duration: 1,
+        calories_burned: 1,
+        photo: 1,
+        workout_time: 1,
+    }
+
+    const [err, data] = await to(Workout.find(query, data_type))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve(data)
+}
+
+export const getWorkoutCalories = async (googleID, date) => {
+    const dt = date || new Date()
+
+    const startDate = dt
+    startDate.setHours(0, 0, 0, 0)
+    const isoStartDate = startDate.toISOString()
+
+    // set end of the date
+    const endOfDate = dt
+    endOfDate.setHours(23, 59, 59, 999)
+    const isoEndOfDate = endOfDate.toISOString()
+
+    const query = {
+        user_id: googleID,
+        create_time: { $gte: isoStartDate, $lt: isoEndOfDate },
+        status: WORKOUT_AVAILABLE,
+    }
+
+    const data_type = {
+        _id: 0,
+        calories_burned: 1,
+    }
+
+    const [err, data] = await to(Workout.find(query, data_type))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    const calories = data.reduce((p, c) => p + c.calories_burned, 0)
+
+    return Promise.resolve({ calories })
 }

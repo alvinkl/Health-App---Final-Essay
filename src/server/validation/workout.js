@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import eq from '@helper/checkObjectStructure'
 
 const insertWorkoutType = {
@@ -47,4 +49,29 @@ export const validateInsertWorkoutG = param => {
             date_time,
         },
     ]
+}
+
+export const validateGetDiary = param => {
+    let sanitized = {
+        startDate: null,
+        endDate: null,
+    }
+    const { startDate, endDate } = param
+
+    const date_format = 'YYYY-MM-DD'
+    const mDate = moment(startDate, date_format, true)
+    if (!mDate.isValid())
+        return ['Start date format is invalid, must be YYYY-MM-DD']
+
+    sanitized.startDate = new Date(startDate)
+
+    if (endDate) {
+        const endmDate = moment(endDate, date_format, true)
+        if (!endmDate.isValid())
+            return ['End date format is invalid, must be YYYY-MM-DD']
+
+        sanitized.endDate = new Date(endDate)
+    }
+
+    return [false, sanitized]
 }

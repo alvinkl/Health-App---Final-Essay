@@ -33,3 +33,17 @@ export const handleInsertWorkout = async (req, res) => {
 
     return responseJSON(res, data)
 }
+
+export const handleGetWorkoutDiaries = async (req, res) => {
+    const { googleID } = req.user
+
+    const [paramErr, date] = v.validateGetDiary(req.query)
+    if (paramErr) return responseError(res, 400, paramErr)
+
+    const [err, diary] = await to(
+        funcs.getWorkoutDiaries(googleID, date, false)
+    )
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, diary)
+}

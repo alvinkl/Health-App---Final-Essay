@@ -141,10 +141,17 @@ export const getWorkoutDiaries = async (googleID, date) => {
         workout_time: 1,
     }
 
-    const [err, data] = await to(Workout.find(query, data_type))
+    const [err, data] = await to(
+        Workout.find(query, data_type).sort({ workout_time: 1 })
+    )
     if (err) return Promise.reject({ code: 500, message: err })
 
-    return Promise.resolve(data)
+    const final_data = data.reduce((p, c) => {
+        const key = moment(c.workout_time).format('HH:mm A')
+        return { ...p, [key]: [...(p[key] || []), c] }
+    }, {})
+
+    return Promise.resolve(final_data)
 }
 
 export const getWorkoutCalories = async (googleID, date) => {

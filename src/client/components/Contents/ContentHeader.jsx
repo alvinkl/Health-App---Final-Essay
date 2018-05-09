@@ -103,11 +103,12 @@ const ContentHeader = ({ user, today_total_calories }) => {
 
 ContentHeader.propTypes = {
     user: T.object,
-    today_total_calories: T.number.isRequired,
+    today_total_calories: T.number,
 }
 
 ContentHeader.defaultProps = {
     user: {},
+    today_total_calories: 0,
 }
 
 import { connect } from 'react-redux'

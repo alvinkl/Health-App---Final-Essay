@@ -60,10 +60,13 @@ class Diary extends Component {
     }
 
     componentDidMount() {
-        const { fetchDiary } = this.props
+        const { fetchDiary, fetchWorkoutDiary } = this.props
         const { loading } = this.state
 
-        if (!loading) fetchDiary()
+        if (!loading) {
+            fetchDiary()
+            fetchWorkoutDiary()
+        }
     }
 
     fetchFoodNutrition = async food_name => {
@@ -244,6 +247,8 @@ class Diary extends Component {
                 key={k}
                 title={k}
                 content={diary[k]}
+                keyLeft={['name']}
+                keyRight={['nutrients', 'calories']}
                 handleOpen={this.handleOpen}
             />
         ))
@@ -264,13 +269,17 @@ class Diary extends Component {
 
         if (show_add_to_diary) return null
 
-        const { diary } = this.props
+        const {
+            workout: { workout_diary },
+        } = this.props
 
-        const content = Object.keys(diary).map(k => (
+        const content = Object.keys(workout_diary).map(k => (
             <ContentDiary
                 key={k}
                 title={k}
-                content={diary[k]}
+                content={workout_diary[k]}
+                keyLeft={['name']}
+                keyRight={['calories_burned']}
                 handleOpen={this.handleOpen}
             />
         ))
@@ -279,7 +288,6 @@ class Diary extends Component {
             <div className={cn(styles.content, styles.workoutContent)}>
                 <Paper zDepth={2}>
                     <Subheader style={style.textLeft}>Workout Diary</Subheader>
-                    {this.renderSearchFood()}
                     {content}
                 </Paper>
             </div>
@@ -321,8 +329,10 @@ class Diary extends Component {
 
 Diary.propTypes = {
     diary: T.object.isRequired,
+    workout: T.object.isRequired,
 
     fetchDiary: T.func.isRequired,
+    fetchWorkoutDiary: T.func.isRequired,
     addToDiary: T.func.isRequired,
     removeDiary: T.func.isRequired,
     showLoader: T.func.isRequired,
@@ -333,9 +343,11 @@ Diary.propTypes = {
 import { connect } from 'react-redux'
 import { showLoader, hideLoader, showSnackbar } from '@actions/common'
 import { addToDiary, removeDiary } from '@actions/diary'
+import { fetchWorkoutDiary } from '@actions/workout'
 
-const mapStateToProps = ({ diary }) => ({
+const mapStateToProps = ({ diary, workout }) => ({
     diary: diary.today_diary,
+    workout,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -345,6 +357,7 @@ const mapDispatchToProps = dispatch => ({
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),
     showSnackbar: event => dispatch(showSnackbar(event)),
+    fetchWorkoutDiary: (event, cb) => dispatch(fetchWorkoutDiary(event, cb)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary)

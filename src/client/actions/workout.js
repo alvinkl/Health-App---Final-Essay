@@ -1,7 +1,12 @@
 import to from '@helper/asyncAwait'
 import qs from '@helper/queryString'
+import parseDate from '@helper/parseDate'
 
-import { insertWorkout as insertWorkoutURL, getWorkoutInfo } from '@urls'
+import {
+    insertWorkout as insertWorkoutURL,
+    getWorkoutInfo,
+    getWorkoutDiary,
+} from '@urls'
 import { showSnackbar } from '@actions/common'
 
 export const FETCH_WORKOUT_INFO = 'FETCH_WORKOUT_INFO'
@@ -11,6 +16,10 @@ export const WORKOUT_INFO_FETCHED = 'WORKOUT_INFO_FETCHED'
 export const INSERT_WORKOUT = 'INSERT_WORKOUT'
 export const FAIL_INSERT_WORKOUT = 'FAIL_INSERT_WORKOUT'
 export const WORKOUT_INSERTED = 'WORKOUT_INSERTED'
+
+export const FETCH_WORKOUT_DIARY = 'FETCH_WORKOUT_DIARY'
+export const FAIL_FETCH_WORKOUT_DIARY = 'FAIL_FETCH_WORKOUT_DIARY'
+export const WORKOUT_DIARY_FETCHED = 'WORKOUT_DIARY_FETCHED'
 
 export const fetchWorkoutInfo = (
     workouts = [],
@@ -82,4 +91,35 @@ export const insertWorkout = (
     })
 
     cb()
+}
+
+export const fetchWorkoutDiary = (
+    { startDate, endDate } = { startDate: null, endDate: null },
+    cb = () => {}
+) => async dispatch => {
+    const today = new Date()
+
+    const sd = parseDate(startDate || today)
+
+    const query = qs({
+        startDate: sd,
+        endDate: sd,
+    })
+
+    const [err, res] = await to(
+        fetch(getWorkoutDiary + query, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+    if (err) return Promise.reject(dispatch({ type: FAIL_FETCH_WORKOUT_DIARY }))
+
+    const workout_diary = await res.json()
+
+    await dispatch({ type: WORKOUT_DIARY_FETCHED, workout_diary })
+
+    return cb()
 }

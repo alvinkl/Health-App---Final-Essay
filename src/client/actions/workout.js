@@ -47,14 +47,15 @@ export const fetchWorkoutInfo = (
 }
 
 export const insertWorkout = (
-    workout = {},
+    { workouts, date_time },
     cb = () => {}
 ) => async dispatch => {
     dispatch({ type: INSERT_WORKOUT })
+    const w_name = workouts.join(',')
 
     const param = JSON.stringify({
-        ...workout,
-        photo: JSON.stringify(workout.photo),
+        workouts: w_name,
+        date_time,
     })
 
     const [err, res] = await to(
@@ -74,7 +75,7 @@ export const insertWorkout = (
 
     const data = await res.json()
 
-    dispatch(showSnackbar('Workout ' + workout.name + ' saved!'))
+    dispatch(showSnackbar('Workout ' + w_name + ' saved!'))
     await dispatch({
         type: WORKOUT_INSERTED,
         workout: data,

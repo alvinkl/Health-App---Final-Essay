@@ -85,44 +85,29 @@ export const getWorkoutInfo = async (googleID = '', workouts = '') => {
     return Promise.resolve({ exercises: final_data })
 }
 
-export const insertWorkout = async (googleID = '', workout = {}) => {
-    const {
-        user_input,
-        duration,
-        calories_burned,
-        photo,
-        name,
-        description,
-        benefits,
-    } = workout
-
-    const query = {
+export const insertWorkout = async (
+    googleID = '',
+    workout = [],
+    workout_time
+) => {
+    const insert_workout = workout.map(w => ({
         user_id: googleID,
+        ...w,
+        workout_time,
+    }))
 
-        user_input,
-        duration,
-        calories_burned,
-        photo,
-        name,
-        description,
-        benefits,
+    Workout.insertMany(insert_workout, (err, docs) => {
+        if (err) {
+            console.error('[Functions][insertWorkout] Failed to insert - ', err)
+            return Promise.reject({ code: 500, message: err })
+        }
 
-        $setOnInsert: {
-            create_time: new Date(),
-        },
-        update_time: new Date(),
-    }
+        return console.log(
+            '[Functions][insertWorkout] ',
+            docs.length,
+            ' workouts are inserted to DB'
+        )
+    })
 
-    const [err, data] = await to(
-        Workout.findOneAndUpdate({ user_id: googleID }, query, {
-            upsert: true,
-            new: true,
-        })
-    )
-    if (err) {
-        console.error('[Mongo][insertWorkout] Failed to insert - ', err)
-        return Promise.reject({ code: 500, message: err })
-    }
-
-    return Promise.resolve(data)
+    return Promise.resolve(insert_workout)
 }

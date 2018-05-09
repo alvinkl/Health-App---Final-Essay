@@ -18,10 +18,17 @@ export const handleGetWorkoutInfo = async (req, res) => {
 export const handleInsertWorkout = async (req, res) => {
     const { googleID } = req.user
 
-    const [err, param] = v.validateInsertWorkout(req.body)
+    const [err, param] = v.validateInsertWorkoutG(req.body)
     if (err) return responseError(res, 400, err)
 
-    const [errInsert, data] = await to(funcs.insertWorkout(googleID, param))
+    const [errGet, dt] = await to(
+        funcs.getWorkoutInfo(googleID, param.workouts)
+    )
+    if (errGet) return responseError(res, errGet.code, errGet.message)
+
+    const [errInsert, data] = await to(
+        funcs.insertWorkout(googleID, dt.exercises, param.date_time)
+    )
     if (errInsert) return responseError(res, errInsert.code, errInsert.message)
 
     return responseJSON(res, data)

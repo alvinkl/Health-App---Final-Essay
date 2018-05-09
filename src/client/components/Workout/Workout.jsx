@@ -44,16 +44,17 @@ class Workout extends Component {
 
     state = {
         workout: [{ value: '', key: generateUnique() }],
-        date: null,
+        date: new Date(),
     }
 
     handleSubmit = () => {
-        const { fetchWorkoutInfo, insertWorkout } = this.props
+        const { insertWorkout } = this.props
 
-        const { workout } = this.state
+        const { workout, date } = this.state
+        const date_time = Date.parse(date)
         const workouts = workout.map(w => w.value)
 
-        fetchWorkoutInfo(workouts, data => data.map(w => insertWorkout(w)))
+        insertWorkout({ workouts, date_time }, this.handleBackButton)
     }
 
     handleBackButton = () => this.context.router.history.push('/')
@@ -150,7 +151,8 @@ class Workout extends Component {
         return (
             <div className={styles.workoutFormWrapper}>
                 <Paper zDepth={3} style={style.paper}>
-                    <GridList cellHeight={50} padding={10}>
+                    <GridList cellHeight={50} padding={10} cols={4}>
+                        <GridTile />
                         <GridTile>
                             <DatePicker
                                 hintText="date"
@@ -170,6 +172,7 @@ class Workout extends Component {
                                 autoOk
                             />
                         </GridTile>
+                        <GridTile />
                     </GridList>
                     <Divider />
                     {this.renderInputWorkoutList()}

@@ -21,13 +21,11 @@ const workoutSchema = new m.Schema({
     },
     description: {
         type: String,
-        required: true,
         default: '',
     },
     benefits: {
         type: String,
         default: '',
-        required: true,
     },
     duration: {
         type: Number,
@@ -39,10 +37,15 @@ const workoutSchema = new m.Schema({
     },
     photo: photoSchema,
 
-    create_time: {
+    workout_time: {
         type: Date,
         required: true,
         index: true,
+    },
+
+    create_time: {
+        type: Date,
+        required: true,
         default: Date.now,
     },
 

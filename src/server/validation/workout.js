@@ -8,6 +8,7 @@ const insertWorkoutType = {
     name: '',
     description: '',
     benefits: '',
+    date_time: 0,
 }
 
 export const validateInsertWorkout = param => {
@@ -25,6 +26,25 @@ export const validateInsertWorkout = param => {
             photo: p,
             duration: d,
             calories_burned: cb,
+        },
+    ]
+}
+
+const insertWorkoutGType = {
+    workouts: '',
+    date_time: 0,
+}
+
+export const validateInsertWorkoutG = param => {
+    if (!eq(param, insertWorkoutGType)) return ['Parameter is invalid!']
+
+    const { date_time, workouts } = param
+
+    return [
+        false,
+        {
+            workouts,
+            date_time,
         },
     ]
 }

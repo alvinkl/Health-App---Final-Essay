@@ -213,12 +213,6 @@ class Workout extends Component {
 }
 
 Workout.propTypes = {
-    workout_log: T.array.isRequired,
-    workout_info: T.array.isRequired,
-
-    loading: T.bool.isRequired,
-    error: T.bool.isRequired,
-
     fetchWorkoutInfo: T.func.isRequired,
     insertWorkout: T.func.isRequired,
 }
@@ -230,13 +224,13 @@ Workout.contextTypes = {
 import { connect } from 'react-redux'
 import { fetchWorkoutInfo, insertWorkout } from '@actions/workout'
 
-const mapStateToProps = ({ workout }) => ({
-    ...workout,
-})
+// const mapStateToProps = ({ workout }) => ({
+//     ...workout,
+// })
 
 const mapDispatchToProps = dispatch => ({
     fetchWorkoutInfo: (event, cb) => dispatch(fetchWorkoutInfo(event, cb)),
     insertWorkout: (event, cb) => dispatch(insertWorkout(event, cb)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Workout)
+export default connect(null, mapDispatchToProps)(Workout)

@@ -37,7 +37,6 @@ export default function(state = initial_state, action) {
                 ...state,
                 loading: false,
                 error: false,
-                workout_log: [action.workout, ...state.workout_log],
             }
 
         case FETCH_WORKOUT_INFO:

@@ -8,4 +8,5 @@ export default function(r) {
     r.get(url.getWorkoutDiary, mustAuthenticate, h.handleGetWorkoutDiaries)
 
     r.post(url.insertWorkout, mustAuthenticate, h.handleInsertWorkout)
+    r.post(url.deleteWorkout, mustAuthenticate, h.handleDeleteWorkout)
 }

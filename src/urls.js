@@ -44,4 +44,5 @@ export const postImage =
 // workout
 export const getWorkoutInfo = '/api/workout/info'
 export const insertWorkout = '/api/workout/insert'
+export const deleteWorkout = '/api/workout/delete'
 export const getWorkoutDiary = '/api/workout/diary/get'

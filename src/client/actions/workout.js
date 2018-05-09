@@ -6,6 +6,7 @@ import {
     insertWorkout as insertWorkoutURL,
     getWorkoutInfo,
     getWorkoutDiary,
+    deleteWorkout as deleteWorkoutURL,
 } from '@urls'
 import { showSnackbar } from '@actions/common'
 
@@ -16,6 +17,10 @@ export const WORKOUT_INFO_FETCHED = 'WORKOUT_INFO_FETCHED'
 export const INSERT_WORKOUT = 'INSERT_WORKOUT'
 export const FAIL_INSERT_WORKOUT = 'FAIL_INSERT_WORKOUT'
 export const WORKOUT_INSERTED = 'WORKOUT_INSERTED'
+
+export const DELETE_WORKOUT = 'DELETE_WORKOUT'
+export const FAIL_DELETE_WORKOUT = 'FAIL_DELETE_WORKOUT'
+export const WORKOUT_DELETED = 'WORKOUT_DELETED'
 
 export const FETCH_WORKOUT_DIARY = 'FETCH_WORKOUT_DIARY'
 export const FAIL_FETCH_WORKOUT_DIARY = 'FAIL_FETCH_WORKOUT_DIARY'
@@ -82,15 +87,37 @@ export const insertWorkout = (
         return dispatch({ type: FAIL_INSERT_WORKOUT })
     }
 
-    const data = await res.json()
-
     dispatch(showSnackbar('Workout ' + w_name + ' saved!'))
     await dispatch({
         type: WORKOUT_INSERTED,
-        workout: data,
     })
 
     cb()
+}
+
+export const deleteWorkout = (workout_id, cb = () => {}) => async dispatch => {
+    dispatch({ type: DELETE_WORKOUT })
+
+    const param = JSON.stringify({ workout_id })
+    const [err] = await to(
+        fetch(deleteWorkoutURL, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: param,
+        })
+    )
+    if (err) {
+        dispatch(showSnackbar('Failed to remove workout!'))
+        return dispatch({ type: FAIL_DELETE_WORKOUT })
+    }
+
+    await dispatch({ type: WORKOUT_DELETED })
+    dispatch(fetchWorkoutDiary())
+
+    return cb()
 }
 
 export const fetchWorkoutDiary = (

@@ -169,7 +169,7 @@ class Diary extends Component {
             open_nutrition_detail: false,
             nutrition_detail_data: {},
             open_workout_detail: false,
-            nutrition_detail_data: {},
+            workout_detail_data: {},
         })
     }
 
@@ -182,7 +182,20 @@ class Diary extends Component {
         this.handleClose()
     }
 
-    handleChangeDate = (_, date) => this.props.fetchDiary({ startDate: date })
+    handleRemoveWorkout = () => {
+        const { deleteWorkout } = this.props
+        const { workout_detail_data } = this.state
+        const { _id: workout_id } = workout_detail_data
+
+        deleteWorkout(workout_id)
+        this.handleClose()
+    }
+
+    handleChangeDate = (_, date) => {
+        const { fetchDiary, fetchWorkoutDiary } = this.props
+        fetchDiary({ startDate: date })
+        fetchWorkoutDiary({ startDate: date })
+    }
 
     renderNutritionDetailDialog = () => {
         const { open_nutrition_detail, nutrition_detail_data } = this.state
@@ -223,7 +236,7 @@ class Diary extends Component {
             <FlatButton
                 key="remove-btn"
                 label="Remove"
-                onClick={console.log}
+                onClick={this.handleRemoveWorkout}
                 secondary
             />,
             <FlatButton
@@ -380,12 +393,13 @@ Diary.propTypes = {
     showLoader: T.func.isRequired,
     hideLoader: T.func.isRequired,
     showSnackbar: T.func.isRequired,
+    deleteWorkout: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
 import { showLoader, hideLoader, showSnackbar } from '@actions/common'
 import { addToDiary, removeDiary } from '@actions/diary'
-import { fetchWorkoutDiary } from '@actions/workout'
+import { fetchWorkoutDiary, deleteWorkout } from '@actions/workout'
 
 const mapStateToProps = ({ diary, workout }) => ({
     diary: diary.today_diary,
@@ -400,6 +414,7 @@ const mapDispatchToProps = dispatch => ({
     hideLoader: () => dispatch(hideLoader()),
     showSnackbar: event => dispatch(showSnackbar(event)),
     fetchWorkoutDiary: (event, cb) => dispatch(fetchWorkoutDiary(event, cb)),
+    deleteWorkout: (event, cb) => dispatch(deleteWorkout(event, cb)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary)

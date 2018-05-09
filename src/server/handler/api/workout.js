@@ -47,3 +47,15 @@ export const handleGetWorkoutDiaries = async (req, res) => {
 
     return responseJSON(res, diary)
 }
+
+export const handleDeleteWorkout = async (req, res) => {
+    const { googleID } = req.user
+
+    const [errParam, workout_id] = v.validateDeleteWorkout(req.body)
+    if (errParam) return responseError(res, 400, errParam)
+
+    const [err, success] = await to(funcs.deleteWorkout(googleID, workout_id))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, success)
+}

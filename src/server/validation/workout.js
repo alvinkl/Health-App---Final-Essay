@@ -75,3 +75,15 @@ export const validateGetDiary = param => {
 
     return [false, sanitized]
 }
+
+const deleteWorkoutType = {
+    workout_id: '',
+}
+
+export const validateDeleteWorkout = param => {
+    if (!eq(param, deleteWorkoutType)) return ['Paramter is invalid!']
+
+    const { workout_id } = param
+
+    return [false, workout_id]
+}

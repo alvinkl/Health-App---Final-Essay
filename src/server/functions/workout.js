@@ -9,6 +9,7 @@ import qs from '@helper/queryString'
 
 import Goal from '@model/Goal'
 import Workout from '@model/Workout'
+import { WORKOUT_DIARY_FETCHED } from '@client/actions/workout'
 
 const nutritionxHeader = {
     'x-app-id': NutritionXAppID,
@@ -113,7 +114,7 @@ export const insertWorkout = async (
     return Promise.resolve(insert_workout)
 }
 
-export const getWorkoutDiaries = async (googleID, date) => {
+export const getWorkoutDiaries = async (googleID, date, single = false) => {
     const { startDate, endDate } = date
 
     startDate.setHours(0, 0, 0, 0)
@@ -141,17 +142,28 @@ export const getWorkoutDiaries = async (googleID, date) => {
         workout_time: 1,
     }
 
-    const [err, data] = await to(
-        Workout.find(query, data_type).sort({ workout_time: 1 })
-    )
+    let err
+    let data
+
+    if (single) {
+        ;[err, data] = await to(
+            Workout.findOne(query, data_type).sort({ workout_time: 1 })
+        )
+    } else {
+        ;[err, data] = await to(
+            Workout.find(query, data_type).sort({ workout_time: 1 })
+        )
+    }
     if (err) return Promise.reject({ code: 500, message: err })
 
-    const final_data = data.reduce((p, c) => {
+    if (single) return Promise.resolve(data)
+
+    data = data.reduce((p, c) => {
         const key = moment(c.workout_time).format('HH:mm A')
         return { ...p, [key]: [...(p[key] || []), c] }
     }, {})
 
-    return Promise.resolve(final_data)
+    return Promise.resolve(data)
 }
 
 export const getWorkoutCalories = async (googleID, date) => {
@@ -183,4 +195,16 @@ export const getWorkoutCalories = async (googleID, date) => {
     const calories = data.reduce((p, c) => p + c.calories_burned, 0)
 
     return Promise.resolve({ calories })
+}
+
+export const deleteWorkout = async (googleID, workout_id) => {
+    const [err] = await to(
+        Workout.findOneAndUpdate(
+            { user_id: googleID, _id: workout_id },
+            { $set: { status: WORKOUT_REMOVED } }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    return Promise.resolve({ success: 1 })
 }

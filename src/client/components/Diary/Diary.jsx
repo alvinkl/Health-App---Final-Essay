@@ -16,6 +16,7 @@ import Subheader from 'material-ui/Subheader'
 import ContentDiary from './ContentDiary'
 import AddToDiary from './AddToDiary'
 import NutritionDetail from './NutritionDetail'
+import WorkoutDetail from './WorkoutDetail'
 
 import styles from './diary.css'
 
@@ -48,6 +49,9 @@ class Diary extends Component {
         food_nutrition: [],
         open_nutrition_detail: false,
         nutrition_detail_data: {},
+
+        open_workout_detail: false,
+        workout_detail_data: {},
 
         show_add_to_diary: false,
 
@@ -157,9 +161,14 @@ class Diary extends Component {
         this.setState({ open_nutrition_detail: true, nutrition_detail_data })
     }
 
+    handleOpenWorkout = workout_detail_data =>
+        this.setState({ open_workout_detail: true, workout_detail_data })
+
     handleClose = () => {
         this.setState({
             open_nutrition_detail: false,
+            nutrition_detail_data: {},
+            open_workout_detail: false,
             nutrition_detail_data: {},
         })
     }
@@ -203,6 +212,38 @@ class Diary extends Component {
                 actions={actions}
             >
                 <NutritionDetail data={nutrition_detail_data} expand />
+            </Dialog>
+        )
+    }
+
+    renderWorkoutDetailDialog = () => {
+        const { open_workout_detail, workout_detail_data } = this.state
+
+        const actions = [
+            <FlatButton
+                key="remove-btn"
+                label="Remove"
+                onClick={console.log}
+                secondary
+            />,
+            <FlatButton
+                key="close-btn"
+                label="Close"
+                onClick={this.handleClose}
+                primary
+            />,
+        ]
+
+        return (
+            <Dialog
+                modal={false}
+                open={open_workout_detail}
+                onRequestClose={this.handleClose}
+                contentStyle={style.nutrition_detail_dialog}
+                autoScrollBodyContent
+                actions={actions}
+            >
+                <WorkoutDetail data={workout_detail_data} expand />
             </Dialog>
         )
     }
@@ -280,7 +321,7 @@ class Diary extends Component {
                 content={workout_diary[k]}
                 keyLeft={['name']}
                 keyRight={['calories_burned']}
-                handleOpen={this.handleOpen}
+                handleOpen={this.handleOpenWorkout}
             />
         ))
 
@@ -322,6 +363,7 @@ class Diary extends Component {
                 {this.renderAddDiary()}
 
                 {this.renderNutritionDetailDialog()}
+                {this.renderWorkoutDetailDialog()}
             </div>
         )
     }

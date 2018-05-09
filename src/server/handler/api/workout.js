@@ -7,7 +7,9 @@ import * as v from '@validation/workout'
 export const handleGetWorkoutInfo = async (req, res) => {
     const { googleID } = req.user
 
-    const [err, data] = await to(funcs.getWorkoutInfo(googleID))
+    const { workouts } = req.query
+
+    const [err, data] = await to(funcs.getWorkoutInfo(googleID, workouts))
     if (err) return responseError(res, err.code, err.message)
 
     return responseJSON(res, data)

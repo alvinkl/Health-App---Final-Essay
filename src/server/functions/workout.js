@@ -15,7 +15,7 @@ const nutritionxHeader = {
     'x-app-key': NutritionXAppKeys,
 }
 
-export const getWorkoutInfo = async (googleID = '', workouts = []) => {
+export const getWorkoutInfo = async (googleID = '', workouts = '') => {
     const query = [
         {
             $match: { googleID },
@@ -42,7 +42,7 @@ export const getWorkoutInfo = async (googleID = '', workouts = []) => {
 
     const { gender, height, current_weight, birth_date } = goal
     let queryNutritionix = {
-        query: 'run 10 minutes',
+        query: workouts,
         height_cm: height,
         weight_kg: current_weight,
         gender: gender === GENDER.MALE ? 'male' : 'female',

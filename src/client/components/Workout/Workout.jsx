@@ -47,6 +47,15 @@ class Workout extends Component {
         date: null,
     }
 
+    handleSubmit = () => {
+        const { fetchWorkoutInfo, insertWorkout } = this.props
+
+        const { workout } = this.state
+        const workouts = workout.map(w => w.value)
+
+        fetchWorkoutInfo(workouts, data => data.map(w => insertWorkout(w)))
+    }
+
     handleBackButton = () => this.context.router.history.push('/')
 
     handleChangeDate = (_, date) => this.setState({ date })
@@ -192,6 +201,7 @@ class Workout extends Component {
                     primary
                     fullWidth
                     label="Submit"
+                    onClick={this.handleSubmit}
                     disabled={disable_button}
                 />
             </div>
@@ -199,8 +209,31 @@ class Workout extends Component {
     }
 }
 
+Workout.propTypes = {
+    workout_log: T.array.isRequired,
+    workout_info: T.array.isRequired,
+
+    loading: T.bool.isRequired,
+    error: T.bool.isRequired,
+
+    fetchWorkoutInfo: T.func.isRequired,
+    insertWorkout: T.func.isRequired,
+}
+
 Workout.contextTypes = {
     router: T.object.isRequired,
 }
 
-export default Workout
+import { connect } from 'react-redux'
+import { fetchWorkoutInfo, insertWorkout } from '@actions/workout'
+
+const mapStateToProps = ({ workout }) => ({
+    ...workout,
+})
+
+const mapDispatchToProps = dispatch => ({
+    fetchWorkoutInfo: (event, cb) => dispatch(fetchWorkoutInfo(event, cb)),
+    insertWorkout: (event, cb) => dispatch(insertWorkout(event, cb)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Workout)

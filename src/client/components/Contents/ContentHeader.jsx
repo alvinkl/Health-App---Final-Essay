@@ -28,6 +28,9 @@ const style = {
     fontIconSize: {
         fontSize: '14px',
     },
+    noUnderline: {
+        textDecoration: 'none',
+    },
 }
 
 const ContentHeader = ({ user, today_total_calories }) => {
@@ -71,15 +74,22 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             &nbsp;{today_total_calories} / {target_calories}
                             &nbsp;calories
                         </Chip>
-                        <Link to="/add-workout">
-                            <Chip style={style.smallChip} color={cyan700}>
+                        <Link to="/add-workout" style={style.noUnderline}>
+                            <Chip
+                                style={{
+                                    ...style.smallChip,
+                                    backgroundColor: cyan700,
+                                    color: 'white',
+                                }}
+                            >
                                 <FontIcon
                                     className="material-icons"
                                     style={style.fontIconSize}
+                                    color="white"
                                 >
                                     fitness_center
                                 </FontIcon>
-                                &nbsp; +
+                                &nbsp; <span style={{ color: 'white' }}>+</span>
                             </Chip>
                         </Link>
                     </div>

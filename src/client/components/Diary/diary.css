@@ -10,9 +10,17 @@
     margin: 5% auto;
 }
 
+.dateField {
+    padding-top: 5%;
+}
+
 .content {
     padding: 5%;
     text-align: center;
+}
+
+.workoutContent {
+    margin-bottom: 50px;
 }
 
 .floatLeft {

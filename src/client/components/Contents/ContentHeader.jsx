@@ -1,12 +1,13 @@
 import React from 'react'
 import T from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import Avatar from 'material-ui/Avatar'
 import Paper from 'material-ui/Paper'
 import { GridList, GridTile } from 'material-ui/GridList'
 import Chip from 'material-ui/Chip'
 import FontIcon from 'material-ui/FontIcon'
-import { cyan100, cyan500 } from 'material-ui/styles/colors'
+import { cyan100, cyan500, cyan700 } from 'material-ui/styles/colors'
 
 import styles from './contents.css'
 
@@ -26,6 +27,9 @@ const style = {
     },
     fontIconSize: {
         fontSize: '14px',
+    },
+    noUnderline: {
+        textDecoration: 'none',
     },
 }
 
@@ -70,14 +74,24 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             &nbsp;{today_total_calories} / {target_calories}
                             &nbsp;calories
                         </Chip>
-                        <Chip style={style.smallChip}>
-                            <FontIcon
-                                className="material-icons"
-                                style={style.fontIconSize}
+                        <Link to="/add-workout" style={style.noUnderline}>
+                            <Chip
+                                style={{
+                                    ...style.smallChip,
+                                    backgroundColor: cyan700,
+                                    color: 'white',
+                                }}
                             >
-                                &#xE56C;
-                            </FontIcon>
-                        </Chip>
+                                <FontIcon
+                                    className="material-icons"
+                                    style={style.fontIconSize}
+                                    color="white"
+                                >
+                                    fitness_center
+                                </FontIcon>
+                                &nbsp; <span style={{ color: 'white' }}>+</span>
+                            </Chip>
+                        </Link>
                     </div>
 
                     <div className={styles.wrapper}>
@@ -90,19 +104,6 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             </FontIcon>
                             &nbsp;{current_weight} / {target_weight} kg
                         </Chip>
-                        <Chip
-                            style={style.chip}
-                            color={cyan500}
-                            backgroundColor={cyan100}
-                        >
-                            <FontIcon
-                                className="material-icons"
-                                style={style.fontIconSize}
-                            >
-                                add_a_photo
-                            </FontIcon>
-                            &nbsp; Add Photo
-                        </Chip>
                     </div>
                 </GridTile>
             </GridList>
@@ -112,11 +113,12 @@ const ContentHeader = ({ user, today_total_calories }) => {
 
 ContentHeader.propTypes = {
     user: T.object,
-    today_total_calories: T.number.isRequired,
+    today_total_calories: T.number,
 }
 
 ContentHeader.defaultProps = {
     user: {},
+    today_total_calories: 0,
 }
 
 import { connect } from 'react-redux'

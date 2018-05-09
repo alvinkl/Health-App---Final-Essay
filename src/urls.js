@@ -5,9 +5,10 @@ export const getRecommendedCalories = '/api/dietplan/getRecommendedCalories'
 
 // food
 export const getFood = '/api/food'
-export const getFoodDiary = '/api/diary/get'
-export const addFoodToDiary = '/api/diary/add'
-export const removeFoodFromDiary = '/api/diary/remove'
+export const getFoodDiary = '/api/food/diary/get'
+export const addFoodToDiary = '/api/food/diary/add'
+export const removeFoodFromDiary = '/api/food/diary/remove'
+export const getTodayCalories = '/api/food/diary/today-calories'
 
 // Diary Report
 export const getDiaryReport = '/api/diary-report/get'
@@ -39,3 +40,9 @@ export const getUser = '/auth/current_user'
 // post image
 export const postImage =
     'https://us-central1-final-essay-dev.cloudfunctions.net/storeImage'
+
+// workout
+export const getWorkoutInfo = '/api/workout/info'
+export const insertWorkout = '/api/workout/insert'
+export const deleteWorkout = '/api/workout/delete'
+export const getWorkoutDiary = '/api/workout/diary/get'

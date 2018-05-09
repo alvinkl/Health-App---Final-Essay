@@ -119,6 +119,36 @@ export const getDiaryFood = async (googleID, date) => {
     return Promise.resolve(dt)
 }
 
+export const getTodayCalories = async googleID => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const query = [
+        {
+            $match: {
+                $and: [
+                    { user_id: googleID },
+                    { created_time: { $gte: today } },
+                    { status: 1 },
+                ],
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                calories: '$nutrients.calories',
+            },
+        },
+    ]
+
+    const [err, data] = await to(Diary.aggregate(query))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    const calories = data.reduce((p, c) => p + c.calories, 0)
+
+    return Promise.resolve({ calories })
+}
+
 export const getSingleDiary = async (
     googleID,
     diary_id,

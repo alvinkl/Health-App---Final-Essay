@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
+import cn from 'classnames'
 import { isEmpty } from 'lodash'
-import { TransitionGroup } from 'react-transition-group'
 
 import to from '@helper/asyncAwait'
 import { getFood } from '@urls'
@@ -9,13 +9,14 @@ import { getFood } from '@urls'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
 import DatePicker from 'material-ui/DatePicker'
+import Dialog from 'material-ui/Dialog'
+import Paper from 'material-ui/Paper'
+import Subheader from 'material-ui/Subheader'
 
 import ContentDiary from './ContentDiary'
 import AddToDiary from './AddToDiary'
-import Dialog from 'material-ui/Dialog'
 import NutritionDetail from './NutritionDetail'
-
-import { Fade } from '@components/Transitions'
+import WorkoutDetail from './WorkoutDetail'
 
 import styles from './diary.css'
 
@@ -28,8 +29,11 @@ const style = {
         top: 0,
         left: '5%',
     },
-    dateTextStyle: {
+    textCenter: {
         textAlign: 'center',
+    },
+    textLeft: {
+        textAlign: 'left',
     },
 }
 
@@ -42,10 +46,12 @@ class Diary extends Component {
     }
 
     state = {
-        diary: {},
         food_nutrition: [],
         open_nutrition_detail: false,
         nutrition_detail_data: {},
+
+        open_workout_detail: false,
+        workout_detail_data: {},
 
         show_add_to_diary: false,
 
@@ -58,15 +64,13 @@ class Diary extends Component {
     }
 
     componentDidMount() {
-        const { fetchDiary } = this.props
+        const { fetchDiary, fetchWorkoutDiary } = this.props
         const { loading } = this.state
 
-        if (!loading) fetchDiary()
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const { diary } = nextProps
-        if (!isEmpty(diary)) this.setState({ diary })
+        if (!loading) {
+            fetchDiary()
+            fetchWorkoutDiary()
+        }
     }
 
     fetchFoodNutrition = async food_name => {
@@ -157,10 +161,15 @@ class Diary extends Component {
         this.setState({ open_nutrition_detail: true, nutrition_detail_data })
     }
 
+    handleOpenWorkout = workout_detail_data =>
+        this.setState({ open_workout_detail: true, workout_detail_data })
+
     handleClose = () => {
         this.setState({
             open_nutrition_detail: false,
             nutrition_detail_data: {},
+            open_workout_detail: false,
+            workout_detail_data: {},
         })
     }
 
@@ -173,54 +182,19 @@ class Diary extends Component {
         this.handleClose()
     }
 
-    handleChangeDate = (_, date) => this.props.fetchDiary({ startDate: date })
+    handleRemoveWorkout = () => {
+        const { deleteWorkout } = this.props
+        const { workout_detail_data } = this.state
+        const { _id: workout_id } = workout_detail_data
 
-    renderBreakfast = () => {
-        const { breakfast } = this.state.diary
-
-        return (
-            <ContentDiary
-                title="Breakfast"
-                content={breakfast}
-                handleOpen={this.handleOpen}
-            />
-        )
+        deleteWorkout(workout_id)
+        this.handleClose()
     }
 
-    renderLunch = () => {
-        const { lunch } = this.state.diary
-
-        return (
-            <ContentDiary
-                title="Lunch"
-                content={lunch}
-                handleOpen={this.handleOpen}
-            />
-        )
-    }
-
-    renderDinner = () => {
-        const { dinner } = this.state.diary
-
-        return (
-            <ContentDiary
-                title="Dinner"
-                content={dinner}
-                handleOpen={this.handleOpen}
-            />
-        )
-    }
-
-    renderSnack = () => {
-        const { snack } = this.state.diary
-
-        return (
-            <ContentDiary
-                title="Snack"
-                content={snack}
-                handleOpen={this.handleOpen}
-            />
-        )
+    handleChangeDate = (_, date) => {
+        const { fetchDiary, fetchWorkoutDiary } = this.props
+        fetchDiary({ startDate: date })
+        fetchWorkoutDiary({ startDate: date })
     }
 
     renderNutritionDetailDialog = () => {
@@ -243,7 +217,6 @@ class Diary extends Component {
 
         return (
             <Dialog
-                title="Dialog With Actions"
                 modal={false}
                 open={open_nutrition_detail}
                 onRequestClose={this.handleClose}
@@ -256,58 +229,154 @@ class Diary extends Component {
         )
     }
 
-    renderDatePicker = () => {
+    renderWorkoutDetailDialog = () => {
+        const { open_workout_detail, workout_detail_data } = this.state
+
+        const actions = [
+            <FlatButton
+                key="remove-btn"
+                label="Remove"
+                onClick={this.handleRemoveWorkout}
+                secondary
+            />,
+            <FlatButton
+                key="close-btn"
+                label="Close"
+                onClick={this.handleClose}
+                primary
+            />,
+        ]
+
         return (
-            <DatePicker
-                hintText="Today's Diary"
-                autoOk
-                maxDate={this.today}
-                textFieldStyle={style.dateTextStyle}
-                onChange={this.handleChangeDate}
+            <Dialog
+                modal={false}
+                open={open_workout_detail}
+                onRequestClose={this.handleClose}
+                contentStyle={style.nutrition_detail_dialog}
+                autoScrollBodyContent
+                actions={actions}
+            >
+                <WorkoutDetail data={workout_detail_data} expand />
+            </Dialog>
+        )
+    }
+
+    renderDatePick = () => {
+        return (
+            <div className={styles.headerInput}>
+                <DatePicker
+                    className={styles.dateField}
+                    hintText="Today's Diary"
+                    autoOk
+                    maxDate={this.today}
+                    onChange={this.handleChangeDate}
+                />
+            </div>
+        )
+    }
+
+    renderSearchFood = () => {
+        const { error_nutrition } = this.state
+        return (
+            <TextField
+                className={styles.searchField}
+                id="food-search"
+                hintText="What have you eat?"
+                errorText={error_nutrition ? 'Food not found!' : ''}
+                style={style.textCenter}
+                onChange={this.handleChangeSearch}
+            />
+        )
+    }
+
+    renderFoodContent = () => {
+        const { show_add_to_diary } = this.state
+
+        if (show_add_to_diary) return null
+
+        const { diary } = this.props
+
+        const content = Object.keys(diary).map(k => (
+            <ContentDiary
+                key={k}
+                title={k}
+                content={diary[k]}
+                keyLeft={['name']}
+                keyRight={['nutrients', 'calories']}
+                handleOpen={this.handleOpen}
+            />
+        ))
+
+        return (
+            <div className={styles.content}>
+                <Paper zDepth={2}>
+                    <Subheader style={style.textLeft}>Food Diary</Subheader>
+                    {this.renderSearchFood()}
+                    {content}
+                </Paper>
+            </div>
+        )
+    }
+
+    renderWorkoutContent = () => {
+        const { show_add_to_diary } = this.state
+
+        if (show_add_to_diary) return null
+
+        const {
+            workout: { workout_diary },
+        } = this.props
+
+        const content = Object.keys(workout_diary).map(k => (
+            <ContentDiary
+                key={k}
+                title={k}
+                content={workout_diary[k]}
+                keyLeft={['name']}
+                keyRight={['calories_burned']}
+                handleOpen={this.handleOpenWorkout}
+            />
+        ))
+
+        return (
+            <div className={cn(styles.content, styles.workoutContent)}>
+                <Paper zDepth={2}>
+                    <Subheader style={style.textLeft}>Workout Diary</Subheader>
+                    {content}
+                </Paper>
+            </div>
+        )
+    }
+
+    renderAddDiary = () => {
+        const { show_add_to_diary, food_nutrition } = this.state
+
+        if (!show_add_to_diary) return null
+
+        return (
+            <AddToDiary
+                key="addtodiary"
+                {...{
+                    food_nutrition,
+                    removeFoodFromList: this.removeFoodFromList,
+                    addFoodToDiary: this.addFoodToDiary,
+                }}
             />
         )
     }
 
     render() {
-        const {
-            show_add_to_diary,
-            food_nutrition,
-            error_nutrition,
-        } = this.state
-
         return (
             <div>
-                <div className={styles.headerInput}>
-                    <TextField
-                        className={styles.searchField}
-                        id="food-search"
-                        hintText="What have you eat?"
-                        errorText={error_nutrition ? 'Food not found!' : ''}
-                        onChange={this.handleChangeSearch}
-                    />
-                </div>
+                {this.renderDatePick()}
 
-                {!show_add_to_diary && (
-                    <div className={styles.content}>
-                        {this.renderDatePicker()}
-                        {this.renderBreakfast()}
-                        {this.renderLunch()}
-                        {this.renderDinner()}
-                        {this.renderSnack()}
-                    </div>
-                )}
+                {this.renderFoodContent()}
+                {this.renderWorkoutContent()}
 
-                {show_add_to_diary && (
-                    <AddToDiary
-                        key="addtodiary"
-                        {...{
-                            food_nutrition,
-                            removeFoodFromList: this.removeFoodFromList,
-                            addFoodToDiary: this.addFoodToDiary,
-                        }}
-                    />
-                )}
+                {this.renderAddDiary()}
+
                 {this.renderNutritionDetailDialog()}
+                {this.renderWorkoutDetailDialog()}
             </div>
         )
     }
@@ -315,21 +384,26 @@ class Diary extends Component {
 
 Diary.propTypes = {
     diary: T.object.isRequired,
+    workout: T.object.isRequired,
 
     fetchDiary: T.func.isRequired,
+    fetchWorkoutDiary: T.func.isRequired,
     addToDiary: T.func.isRequired,
     removeDiary: T.func.isRequired,
     showLoader: T.func.isRequired,
     hideLoader: T.func.isRequired,
     showSnackbar: T.func.isRequired,
+    deleteWorkout: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
 import { showLoader, hideLoader, showSnackbar } from '@actions/common'
 import { addToDiary, removeDiary } from '@actions/diary'
+import { fetchWorkoutDiary, deleteWorkout } from '@actions/workout'
 
-const mapStateToProps = ({ diary }) => ({
+const mapStateToProps = ({ diary, workout }) => ({
     diary: diary.today_diary,
+    workout,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -339,6 +413,8 @@ const mapDispatchToProps = dispatch => ({
     showLoader: () => dispatch(showLoader()),
     hideLoader: () => dispatch(hideLoader()),
     showSnackbar: event => dispatch(showSnackbar(event)),
+    fetchWorkoutDiary: (event, cb) => dispatch(fetchWorkoutDiary(event, cb)),
+    deleteWorkout: (event, cb) => dispatch(deleteWorkout(event, cb)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary)

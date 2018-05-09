@@ -1,0 +1,13 @@
+.workoutFormWrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.workoutFormWrapper placeholder {
+    text-align: center;
+}
+
+.submitButton {
+    position: fixed;
+    bottom: 0;
+}

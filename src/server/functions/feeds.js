@@ -132,7 +132,7 @@ export const getOneFeed = async (post_id, user_id, detail = false) => {
             total_likes: feed.likes.length,
             comments: feed.comments.map(d => ({
                 content: d.content,
-                user: users.find(u => u._id === feed.user_id),
+                user: users.find(u => u._id === d.user_id),
                 create_time: d.create_time,
             })),
             like_status: ~feed.likes.indexOf(user_id) ? 1 : 0,

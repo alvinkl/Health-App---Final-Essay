@@ -4,8 +4,8 @@ self.importScripts('/static/cdnjs/idb.min.js')
 self.importScripts('/static/cdnjs/utilities.js')
 // self.importScripts('/static/build/idb-utilities.js')
 
-var STATIC_VERSION = 'Static-v6'
-var DYNAMIC_VERSION = 'Dynamic-v6'
+var STATIC_VERSION = 'Static-v7'
+var DYNAMIC_VERSION = 'Dynamic-v7'
 
 var STATIC_CACHE = [
     '/static/cdnjs/idb.min.js',
@@ -13,14 +13,11 @@ var STATIC_CACHE = [
 
     '/static/favicon.ico',
     '/static/manifest.json',
-    // '/report',
-    // '/diary',
-    // '/landing',
-    // '/getting-started',
 
     '/static/build/client.build.js',
     '/static/build/vendor.js',
     '/static/build/style/style.css',
+    '/static/build/style/rmc-mobile.css',
 
     'https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
     'https://fonts.googleapis.com/icon?family=Material+Icons',

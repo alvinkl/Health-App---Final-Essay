@@ -3,6 +3,7 @@ import {
     UPDATE_NEW_USER_STATUS,
     SUBMIT_DIET_PLAN,
     FAIL_SUBMIT_DIET_PLAN,
+    LOGOUT,
 } from '@actions/user'
 
 export const initialState = {
@@ -65,6 +66,8 @@ export default function user(state = initialState, action) {
                     success: false,
                 },
             }
+        case LOGOUT:
+            return {}
         default:
             return state
     }

@@ -91,7 +91,10 @@ const Feeds = (
 
         if (d.like_status === LIKE) {
             if (d.total_likes - 1 > 0)
-                label = 'You and ' + d.total_likes - 1 + ' people like this!'
+                label =
+                    'You and ' +
+                    (d.total_likes - 1) +
+                    ' other people liked this!'
             else label = 'You liked this post!'
         } else {
             if (d.total_likes > 0)

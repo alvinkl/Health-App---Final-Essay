@@ -8,8 +8,8 @@
 .paper {
     height: 70vh;
     width: 90vw;
-    text-align: center;
     margin: 0 auto;
+    margin-top: 20px;
 }
 
 .barChart {

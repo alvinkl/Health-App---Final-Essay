@@ -10,13 +10,15 @@ import {
     Tooltip,
     Legend,
     ResponsiveContainer,
+    ReferenceLine,
 } from 'recharts'
 
 import Paper from 'material-ui/Paper'
+import Subheader from 'material-ui/Subheader'
 
-import style from './charts.css'
+import styles from './charts.css'
 
-const Chart = ({ report, today_total_calories }) => {
+const Chart = ({ report, today_total_calories, target_calories }) => {
     const data = Object.keys(report)
         .sort((a, b) => b - a)
         .map(r => ({
@@ -28,23 +30,32 @@ const Chart = ({ report, today_total_calories }) => {
         }))
 
     return (
-        <Paper className={style.paper} zDepth={2}>
-            <div className={style.alignLeft}>
+        <Paper className={styles.paper} zDepth={2}>
+            <Subheader>Food Calories Intake</Subheader>
+            <div className={styles.alignLeft}>
                 <h3>Calories: {today_total_calories}</h3>
-                <p>Goal: 2000 Calories</p>
+                <p>Goal: {target_calories} Calories</p>
             </div>
 
             <ResponsiveContainer width="100%" height="60%">
-                <BarChart data={data} className={style.barChart}>
+                <BarChart
+                    data={data}
+                    className={styles.barChart}
+                    maxBarSize={1000}
+                >
                     <XAxis dataKey="name" />
                     <YAxis hide />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Tooltip />
+                    <ReferenceLine y={target_calories} stroke="#8BC34A" />
+                    <ReferenceLine y={target_calories - 200} stroke="#FF9800" />
+                    <ReferenceLine y={target_calories / 2} stroke="#03A9F4" />
+                    <ReferenceLine y={target_calories / 4} stroke="#FFCA28" />
                     <Legend />
                     <Bar dataKey="breakfast" stackId="a" fill="#FFCA28" />
                     <Bar dataKey="lunch" stackId="a" fill="#03A9F4" />
                     <Bar dataKey="dinner" stackId="a" fill="#FF9800" />
-                    <Bar dataKey="snacks" stackId="a" fill="#8BC34A" />
+                    <Bar dataKey="snack" stackId="a" fill="#8BC34A" />
                 </BarChart>
             </ResponsiveContainer>
         </Paper>
@@ -54,13 +65,25 @@ const Chart = ({ report, today_total_calories }) => {
 Chart.propTypes = {
     report: T.object.isRequired,
     today_total_calories: T.number.isRequired,
+    target_calories: T.number.isRequired,
+}
+
+Chart.defaultProps = {
+    today_total_calories: 0,
+    target_calories: 0,
 }
 
 import { connect } from 'react-redux'
 
-const mapStateToProps = ({ diary }) => ({
-    report: diary.report,
-    today_total_calories: diary.today_total_calories,
+const mapStateToProps = ({
+    diary: { report, today_total_calories },
+    user: {
+        diet_plan: { target_calories },
+    },
+}) => ({
+    report: report,
+    today_total_calories: today_total_calories,
+    target_calories,
 })
 
 export default connect(mapStateToProps)(Chart)

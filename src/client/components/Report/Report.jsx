@@ -3,7 +3,7 @@ import T from 'prop-types'
 
 import DatePicker from 'material-ui/DatePicker'
 
-import Charts from './Charts'
+import FoodCharts from './FoodCharts'
 
 import { fetchDiaryReport } from '@actions/diary'
 
@@ -59,7 +59,7 @@ class Report extends Component {
                 >
                     {this.renderDatePicker()}
                 </div>
-                <Charts />
+                <FoodCharts />
             </Fragment>
         )
     }

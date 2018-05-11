@@ -49,3 +49,12 @@
     height: 90% !important;
     line-height: 50% !important;
 }
+
+.imageWrapper {
+    overflow: hidden;
+}
+
+.imageWrapper > img {
+    display: block;
+    margin: 0 auto;
+}

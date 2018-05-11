@@ -17,11 +17,37 @@ delete window.__INITIAL_STATE__
 
 const store = configureStore({}, preloadedState, [])
 
+const scrollToElement = (element, target, duration) => {
+    const scrollTo = (element, target, duration) => {
+        if (duration <= 0) return
+
+        const targetOffset = target.offsetTop - target.offsetHeight
+        const difference = targetOffset - element.scrollTop
+        const perTick = difference / duration * 10
+
+        setTimeout(function() {
+            element.scrollTop = element.scrollTop + perTick
+            if (element.scrollTop === targetOffset) return
+            scrollTo(element, target, duration - 10)
+        }, 10)
+    }
+
+    scrollTo(element, target, duration)
+}
+
 // Loadable.preloadReady().then(() => {
 hydrate(
     <AppContainer>
         <Provider store={store}>
-            <BrowserRouter>
+            <BrowserRouter
+                onUpdate={() =>
+                    scrollToElement(
+                        document.documentElement,
+                        document.querySelector('body'),
+                        600
+                    )
+                }
+            >
                 <App />
             </BrowserRouter>
         </Provider>
@@ -36,7 +62,15 @@ if (module.hot) {
         render(
             <AppContainer>
                 <Provider store={store}>
-                    <BrowserRouter>
+                    <BrowserRouter
+                        onUpdate={() =>
+                            scrollToElement(
+                                document.documentElement,
+                                document.querySelector('body'),
+                                600
+                            )
+                        }
+                    >
                         <NextApp />
                     </BrowserRouter>
                 </Provider>

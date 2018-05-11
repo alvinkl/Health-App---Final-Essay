@@ -217,7 +217,7 @@ class Master extends Component {
                         className={cn(styles.main, {
                             [styles.maxTop]: noHeaderPage,
                             [styles.offline]: !is_online,
-                            [styles.noNavbar]: !navbar,
+                            [styles.noNavbar]: noHeaderPage,
                         })}
                     >
                         {renderRoutes(route.routes)}

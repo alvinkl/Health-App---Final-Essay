@@ -138,8 +138,14 @@ const Feeds = (
                     overlay={
                         <CardTitle title={d.title} subtitle={d.subtitle} />
                     }
+                    onClick={linkSpecificFeed.bind(null, router, d.post_id)}
                 >
-                    <img src={d.image} alt="" />
+                    <img
+                        src={d.image}
+                        alt=""
+                        height={309}
+                        onLoadStart={() => console.log('loading')}
+                    />
                 </CardMedia>
                 <CardActions className={cn(styles.likesButton)}>
                     <IconButton

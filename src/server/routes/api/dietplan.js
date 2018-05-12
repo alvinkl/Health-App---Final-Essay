@@ -11,4 +11,10 @@ export default function(r) {
 
     r.post(url.updatePlan, mustAuthenticate, funcs.handleUpdateDietPlan)
     r.post(url.insertUpdateGoal, mustAuthenticate, funcs.handleInsertUpdateGoal)
+    r.post(
+        url.updateTargetCalories,
+        mustAuthenticate,
+        funcs.handleUpdateTargetCalories
+    )
+    r.post(url.updateWeight, mustAuthenticate, funcs.handleUpdateWeight)
 }

@@ -44,3 +44,31 @@ export const handleGetRecommendedCalories = async (req, res) => {
 
     return responseJSON(res, recommendation)
 }
+
+export const handleUpdateTargetCalories = async (req, res) => {
+    const { googleID } = req.user
+
+    const [errParam, target_calories] = v.validateSanitizeTargetCalories(
+        req.body
+    )
+    if (errParam) return responseError(res, 400, errParam)
+
+    const [err, result] = await to(
+        funcs.updateTargetCalories(googleID, target_calories)
+    )
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, result)
+}
+
+export const handleUpdateWeight = async (req, res) => {
+    const { googleID } = req.user
+
+    const [errParam, weight] = v.validateSanitizeUpdateWeight(req.body)
+    if (errParam) return responseError(res, 400, errParam)
+
+    const [err, result] = await to(funcs.updateWeight(googleID, weight))
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, result)
+}

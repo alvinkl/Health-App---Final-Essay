@@ -2,6 +2,8 @@
 export const insertUpdateGoal = '/api/dietplan/insertUpdate'
 export const updatePlan = '/api/dietplan/update'
 export const getRecommendedCalories = '/api/dietplan/getRecommendedCalories'
+export const updateTargetCalories = '/api/dietplan/update/target-calories'
+export const updateWeight = '/api/dietplan/update/weight'
 
 // food
 export const getFood = '/api/food'

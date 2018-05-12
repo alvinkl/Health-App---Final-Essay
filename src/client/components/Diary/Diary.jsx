@@ -202,13 +202,13 @@ class Diary extends Component {
 
         const actions = [
             <FlatButton
-                key="remove-btn"
+                key="remove-nutrition-btn"
                 label="Remove"
                 onClick={this.handleRemoveDiary}
                 secondary
             />,
             <FlatButton
-                key="close-btn"
+                key="close-nutrition-btn"
                 label="Close"
                 onClick={this.handleClose}
                 primary
@@ -217,6 +217,7 @@ class Diary extends Component {
 
         return (
             <Dialog
+                key="nutrition-dialog"
                 modal={false}
                 open={open_nutrition_detail}
                 onRequestClose={this.handleClose}
@@ -249,6 +250,7 @@ class Diary extends Component {
 
         return (
             <Dialog
+                key="workout-dialog"
                 modal={false}
                 open={open_workout_detail}
                 onRequestClose={this.handleClose}

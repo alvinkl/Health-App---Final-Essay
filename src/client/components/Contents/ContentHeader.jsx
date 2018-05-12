@@ -33,7 +33,7 @@ const style = {
     },
 }
 
-const ContentHeader = ({ user, today_total_calories }) => {
+const ContentHeader = ({ user, today_total_calories, handleOpenDialog }) => {
     const {
         googleID,
         name,
@@ -64,7 +64,17 @@ const ContentHeader = ({ user, today_total_calories }) => {
                 <GridTile cols={0.7}>{$avatar}</GridTile>
                 <GridTile cols={2.3}>
                     <div className={styles.wrapper}>
-                        <Chip style={style.majorChip}>
+                        <Chip
+                            style={style.majorChip}
+                            onClick={handleOpenDialog.bind(
+                                null,
+                                {
+                                    title: 'Update Target Calories',
+                                    value: target_calories,
+                                },
+                                'calories'
+                            )}
+                        >
                             <FontIcon
                                 className="material-icons"
                                 style={style.fontIconSize}
@@ -102,7 +112,31 @@ const ContentHeader = ({ user, today_total_calories }) => {
                             >
                                 accessibility
                             </FontIcon>
-                            &nbsp;{current_weight} / {target_weight} kg
+                            &nbsp;
+                            <span
+                                onClick={handleOpenDialog.bind(
+                                    null,
+                                    {
+                                        title: 'Update Current Weight',
+                                        value: current_weight,
+                                    },
+                                    'weight'
+                                )}
+                            >
+                                {current_weight}
+                            </span>&nbsp; / &nbsp;
+                            <span
+                                onClick={handleOpenDialog.bind(
+                                    null,
+                                    {
+                                        title: 'Update Target Weight',
+                                        value: target_weight,
+                                    },
+                                    'weight'
+                                )}
+                            >
+                                {target_weight}
+                            </span>&nbsp; kg
                         </Chip>
                     </div>
                 </GridTile>
@@ -114,6 +148,8 @@ const ContentHeader = ({ user, today_total_calories }) => {
 ContentHeader.propTypes = {
     user: T.object,
     today_total_calories: T.number,
+
+    handleOpenDialog: T.func.isRequired,
 }
 
 ContentHeader.defaultProps = {

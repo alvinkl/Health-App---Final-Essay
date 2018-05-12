@@ -72,3 +72,11 @@ export const logoutUser = () => async dispatch => {
         credentials: 'same-origin',
     })
 }
+
+export const updateUserWeight = () => async dispatch => {
+    console.log('Update Weight')
+}
+
+export const updateUserTargetCalories = () => async dispatch => {
+    console.log('Update User Target Calories')
+}

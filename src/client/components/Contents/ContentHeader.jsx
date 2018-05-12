@@ -120,7 +120,7 @@ const ContentHeader = ({ user, today_total_calories, handleOpenDialog }) => {
                                         title: 'Update Current Weight',
                                         value: current_weight,
                                     },
-                                    'weight'
+                                    'current weight'
                                 )}
                             >
                                 {current_weight}
@@ -132,7 +132,7 @@ const ContentHeader = ({ user, today_total_calories, handleOpenDialog }) => {
                                         title: 'Update Target Weight',
                                         value: target_weight,
                                     },
-                                    'weight'
+                                    'target weight'
                                 )}
                             >
                                 {target_weight}

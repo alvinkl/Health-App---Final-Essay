@@ -63,14 +63,17 @@ class Contents extends Component {
 
     handleSubmitWeightChange = value => {
         const { updateUserWeight } = this.props
+        const { dialog_type } = this.state
 
-        updateUserWeight()
+        updateUserWeight({ type: dialog_type, value })
+        this.handleCloseDialog()
     }
 
-    handleSubmitCaloriesChange = value => {
+    handleSubmitCaloriesChange = target_calories => {
         const { updateUserTargetCalories } = this.props
 
-        updateUserTargetCalories()
+        updateUserTargetCalories(target_calories)
+        this.handleCloseDialog()
     }
 
     render() {
@@ -95,14 +98,14 @@ class Contents extends Component {
                             open_dialog,
                             dialog_data,
                             handleCloseDialog: this.handleCloseDialog,
-                            increment_decrement_value:
-                                dialog_type === 'weight'
-                                    ? increment_decrement_weight
-                                    : increment_decrement_calories,
-                            handleSubmit:
-                                dialog_type === 'weight'
-                                    ? this.handleSubmitWeightChange
-                                    : this.handleSubmitCaloriesChange,
+                            increment_decrement_value: ~dialog_type.indexOf(
+                                'weight'
+                            )
+                                ? increment_decrement_weight
+                                : increment_decrement_calories,
+                            handleSubmit: ~dialog_type.indexOf('weight')
+                                ? this.handleSubmitWeightChange
+                                : this.handleSubmitCaloriesChange,
                             type: dialog_type,
                         }}
                     />

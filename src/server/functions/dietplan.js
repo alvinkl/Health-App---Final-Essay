@@ -171,8 +171,6 @@ export const updateTargetCalories = async (googleID, target_calories) => {
 
     if (!result) return Promise.reject({ code: 400, message: 'Fail to update' })
 
-    console.log('Update Calories', result)
-
     return Promise.resolve({ success: 1 })
 }
 
@@ -203,8 +201,6 @@ export const updateWeight = async (googleID, weight = {}) => {
 
     if (!result)
         return Promise.reject({ code: 400, message: 'Failed to update weight' })
-
-    console.log('Update Weight', result)
 
     return Promise.resolve({ success: 1 })
 }

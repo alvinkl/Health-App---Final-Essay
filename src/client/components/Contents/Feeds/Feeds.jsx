@@ -91,7 +91,10 @@ const Feeds = (
 
         if (d.like_status === LIKE) {
             if (d.total_likes - 1 > 0)
-                label = 'You and ' + d.total_likes - 1 + ' people like this!'
+                label =
+                    'You and ' +
+                    (d.total_likes - 1) +
+                    ' other people liked this!'
             else label = 'You liked this post!'
         } else {
             if (d.total_likes > 0)
@@ -135,8 +138,17 @@ const Feeds = (
                     overlay={
                         <CardTitle title={d.title} subtitle={d.subtitle} />
                     }
+                    onClick={linkSpecificFeed.bind(null, router, d.post_id)}
                 >
-                    <img src={d.image} alt="" />
+                    <div className={styles.imageWrapper}>
+                        <img
+                            src={d.image}
+                            alt=""
+                            height={309}
+                            width={400}
+                            onLoadStart={() => console.log('loading')}
+                        />
+                    </div>
                 </CardMedia>
                 <CardActions className={cn(styles.likesButton)}>
                     <IconButton

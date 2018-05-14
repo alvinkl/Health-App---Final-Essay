@@ -1,5 +1,6 @@
 .feedCards {
-    margin: 1.5vh 0;
+    margin: 1.5vh auto;
+    width: 95vw;
 }
 
 .buttonsAlignRight {
@@ -47,4 +48,13 @@
     min-width: 40px !important;
     height: 90% !important;
     line-height: 50% !important;
+}
+
+.imageWrapper {
+    overflow: hidden;
+}
+
+.imageWrapper > img {
+    display: block;
+    margin: 0 auto;
 }

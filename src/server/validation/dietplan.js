@@ -122,3 +122,42 @@ export const validateSanitizeInsertUpdateGoal = param => {
         },
     ]
 }
+
+const updateTargetCaloriesType = {
+    target_calories: '',
+}
+
+export const validateSanitizeTargetCalories = param => {
+    if (!eq(param, updateTargetCaloriesType)) return ['Parameter is invalid!']
+
+    const { target_calories } = param
+
+    if (target_calories === 0) return ['target_calories is invalid!']
+
+    return [false, target_calories]
+}
+
+const updateWeightType = {
+    current_weight: {
+        value: 0,
+        tp: 0,
+    },
+    target_weight: {
+        value: 0,
+        tp: 0,
+    },
+}
+
+export const validateSanitizeUpdateWeight = param => {
+    if (!eq(param, updateWeightType)) return ['Parameter is invalid!']
+
+    const { current_weight, target_weight } = param
+
+    return [
+        false,
+        {
+            current: current_weight,
+            target: target_weight,
+        },
+    ]
+}

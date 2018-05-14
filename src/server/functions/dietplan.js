@@ -155,3 +155,52 @@ export const getRecommendationCalories = async params => {
 
     return Promise.resolve({ rec_low, rec_high, calories_recommended })
 }
+
+export const updateTargetCalories = async (googleID, target_calories) => {
+    const [err, result] = await to(
+        Goal.findOneAndUpdate(
+            { googleID },
+            {
+                $set: {
+                    target_calories,
+                },
+            }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    if (!result) return Promise.reject({ code: 400, message: 'Fail to update' })
+
+    return Promise.resolve({ success: 1 })
+}
+
+export const updateWeight = async (googleID, weight = {}) => {
+    const {
+        current: { value: current_value, tp: current_tp },
+        target: { value: target_value, tp: target_tp },
+    } = weight
+
+    const [err, result] = await to(
+        Goal.findOneAndUpdate(
+            { googleID },
+            {
+                $set: {
+                    current_weight: {
+                        value: current_value,
+                        tp: current_tp,
+                    },
+                    target_weight: {
+                        value: target_value,
+                        tp: target_tp,
+                    },
+                },
+            }
+        )
+    )
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    if (!result)
+        return Promise.reject({ code: 400, message: 'Failed to update weight' })
+
+    return Promise.resolve({ success: 1 })
+}

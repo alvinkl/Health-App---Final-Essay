@@ -4,6 +4,9 @@ import {
     SUBMIT_DIET_PLAN,
     FAIL_SUBMIT_DIET_PLAN,
     LOGOUT,
+    TARGET_CALORIES_UPDATED,
+    TARGET_WEIGHT_UPDATED,
+    CURRENT_WEIGHT_UPDATED,
 } from '@actions/user'
 
 export const initialState = {
@@ -29,6 +32,7 @@ export const initialState = {
             value: 0,
             tp: 1,
         },
+        target_calories: 0,
         activity: 0,
         dateBirth: null,
 
@@ -68,6 +72,36 @@ export default function user(state = initialState, action) {
             }
         case LOGOUT:
             return {}
+        case TARGET_CALORIES_UPDATED:
+            return {
+                ...state,
+                diet_plan: {
+                    ...state.diet_plan,
+                    target_calories: action.target_calories,
+                },
+            }
+        case TARGET_WEIGHT_UPDATED:
+            return {
+                ...state,
+                diet_plan: {
+                    ...state.diet_plan,
+                    target_weight: {
+                        ...state.target_weight,
+                        value: action.value,
+                    },
+                },
+            }
+        case CURRENT_WEIGHT_UPDATED:
+            return {
+                ...state,
+                diet_plan: {
+                    ...state.diet_plan,
+                    current_weight: {
+                        ...state.current_weight,
+                        value: action.value,
+                    },
+                },
+            }
         default:
             return state
     }

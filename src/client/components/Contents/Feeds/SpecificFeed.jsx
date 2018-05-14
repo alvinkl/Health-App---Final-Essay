@@ -171,7 +171,10 @@ class SpecificFeed extends Component {
         let label
         if (feed.like_status === LIKE) {
             if (feed.total_likes - 1 > 0)
-                label = 'You and ' + feed.total_likes + ' people like this!'
+                label =
+                    'You and ' +
+                    (feed.total_likes - 1) +
+                    ' other people liked this!'
             else label = 'You liked this post!'
         } else {
             if (feed.total_likes > 0)

@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cookieSession from 'cookie-session'
+import compression from 'compression'
 import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
@@ -36,6 +37,19 @@ const app = express()
 // Use EJS as templating Engine
 app.set('views', path.join(__dirname, '../../build/views'))
 app.set('view engine', 'ejs')
+
+// Set compression
+app.use(
+    compression({
+        filter: (req, res) => {
+            // don't compress responses with this request header
+            if (req.headers['x-no-compression']) return false
+
+            // fallback to standard filter function
+            return compression.filter(req, res)
+        },
+    })
+)
 
 // Secure HTTP Headers
 app.use(helmet())

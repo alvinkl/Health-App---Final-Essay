@@ -57,6 +57,10 @@ class Diary extends Component {
 
         loading: false,
         error_nutrition: false,
+
+        DeleteConfirmationComp: null,
+        open_delete_dialog: false,
+        delete_event: null,
     }
 
     static initialAction = store => {
@@ -174,21 +178,25 @@ class Diary extends Component {
     }
 
     handleRemoveDiary = () => {
-        const { removeDiary } = this.props
-        const { nutrition_detail_data } = this.state
-        const { meal_type, _id: diary_id } = nutrition_detail_data
+        this.handleOpenDeleteConfirmation(() => {
+            const { removeDiary } = this.props
+            const { nutrition_detail_data } = this.state
+            const { meal_type, _id: diary_id } = nutrition_detail_data
 
-        removeDiary({ meal_type, diary_id })
-        this.handleClose()
+            removeDiary({ meal_type, diary_id })
+            this.handleClose()
+        })
     }
 
     handleRemoveWorkout = () => {
-        const { deleteWorkout } = this.props
-        const { workout_detail_data } = this.state
-        const { _id: workout_id } = workout_detail_data
+        this.handleOpenDeleteConfirmation(() => {
+            const { deleteWorkout } = this.props
+            const { workout_detail_data } = this.state
+            const { _id: workout_id } = workout_detail_data
 
-        deleteWorkout(workout_id)
-        this.handleClose()
+            deleteWorkout(workout_id)
+            this.handleClose()
+        })
     }
 
     handleChangeDate = (_, date) => {
@@ -196,6 +204,26 @@ class Diary extends Component {
         fetchDiary({ startDate: date })
         fetchWorkoutDiary({ startDate: date })
     }
+
+    handleOpenDeleteConfirmation = delete_event => {
+        const { DeleteConfirmationComp } = this.state
+
+        let newState = {
+            open_delete_dialog: true,
+            delete_event,
+        }
+
+        if (!DeleteConfirmationComp)
+            newState = {
+                ...newState,
+                DeleteConfirmationComp: require('@components/Dialogs/DeleteConfirmation')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseDeleteConfirmation = () =>
+        this.setState({ open_delete_dialog: false, delete_event: null })
 
     renderNutritionDetailDialog = () => {
         const { open_nutrition_detail, nutrition_detail_data } = this.state
@@ -367,6 +395,27 @@ class Diary extends Component {
         )
     }
 
+    renderDeleteConfirmation = () => {
+        const {
+            DeleteConfirmationComp,
+            open_delete_dialog,
+            delete_event,
+        } = this.state
+
+        return (
+            !!DeleteConfirmationComp && (
+                <DeleteConfirmationComp
+                    key="delete-confirmation-diary"
+                    {...{
+                        open: open_delete_dialog,
+                        deleteEvent: delete_event,
+                        handleClose: this.handleCloseDeleteConfirmation,
+                    }}
+                />
+            )
+        )
+    }
+
     render() {
         return (
             <div>
@@ -379,6 +428,8 @@ class Diary extends Component {
 
                 {this.renderNutritionDetailDialog()}
                 {this.renderWorkoutDetailDialog()}
+
+                {this.renderDeleteConfirmation()}
             </div>
         )
     }

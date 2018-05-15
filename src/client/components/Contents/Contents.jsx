@@ -20,6 +20,10 @@ class Contents extends Component {
         open_dialog: false,
         dialog_data: {},
         DialogComp: null,
+
+        open_delete_dialog: false,
+        delete_event: null,
+        DeleteConfirmationComp: null,
     }
 
     static initialAction = store => {
@@ -52,7 +56,7 @@ class Contents extends Component {
         if (!DialogComp) {
             newState = {
                 ...newState,
-                DialogComp: require('./DialogContent').default,
+                DialogComp: require('@components/Dialogs/Content').default,
             }
         }
 
@@ -76,9 +80,37 @@ class Contents extends Component {
         this.handleCloseDialog()
     }
 
+    handleOpenDeleteConfirmation = delete_event => {
+        const { DeleteConfirmationComp } = this.state
+
+        let newState = {
+            open_delete_dialog: true,
+            delete_event,
+        }
+
+        if (!DeleteConfirmationComp)
+            newState = {
+                ...newState,
+                DeleteConfirmationComp: require('@components/Dialogs/DeleteConfirmation')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseDeleteConfirmation = () =>
+        this.setState({ open_delete_dialog: false, delete_event: null })
+
     render() {
         const { feeds } = this.props
-        const { DialogComp, open_dialog, dialog_data, dialog_type } = this.state
+        const {
+            DialogComp,
+            open_dialog,
+            dialog_data,
+            dialog_type,
+            DeleteConfirmationComp,
+            open_delete_dialog,
+            delete_event,
+        } = this.state
 
         return (
             <Fragment>
@@ -89,7 +121,12 @@ class Contents extends Component {
                     }}
                 />
                 <SuggestFood />
-                <Feeds data={feeds} />
+                <Feeds
+                    data={feeds}
+                    handleOpenDeleteConfirmation={
+                        this.handleOpenDeleteConfirmation
+                    }
+                />
 
                 {!!DialogComp && (
                     <DialogComp
@@ -107,6 +144,17 @@ class Contents extends Component {
                                 ? this.handleSubmitWeightChange
                                 : this.handleSubmitCaloriesChange,
                             type: dialog_type,
+                        }}
+                    />
+                )}
+
+                {!!DeleteConfirmationComp && (
+                    <DeleteConfirmationComp
+                        key="delete-confirmation-content"
+                        {...{
+                            open: open_delete_dialog,
+                            deleteEvent: delete_event,
+                            handleClose: this.handleCloseDeleteConfirmation,
                         }}
                     />
                 )}

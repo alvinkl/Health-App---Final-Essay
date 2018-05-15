@@ -48,6 +48,7 @@ const Feeds = (
         toggleLike,
         deleteFeed,
         deleteSyncFeed,
+        handleOpenDeleteConfirmation,
     },
     { router }
 ) => {
@@ -71,7 +72,10 @@ const Feeds = (
                             <FlatButton
                                 className={styles.deleteButton}
                                 icon={DeleteIcon}
-                                onClick={deleteSyncFeed.bind(null, d.post_id)}
+                                onClick={handleOpenDeleteConfirmation.bind(
+                                    null,
+                                    deleteSyncFeed.bind(null, d.post_id)
+                                )}
                             />
                         )}
                     </CardHeader>
@@ -126,10 +130,13 @@ const Feeds = (
                             className={styles.deleteButton}
                             disabled={!is_online}
                             icon={DeleteIcon}
-                            onClick={deleteFeed.bind(null, {
-                                post_id: d.post_id,
-                                user_id: d.user._id,
-                            })}
+                            onClick={handleOpenDeleteConfirmation.bind(
+                                null,
+                                deleteFeed.bind(null, {
+                                    post_id: d.post_id,
+                                    user_id: d.user._id,
+                                })
+                            )}
                         />
                     )}
                 </CardHeader>
@@ -209,6 +216,7 @@ Feeds.propTypes = {
     data: T.array.isRequired,
     user: T.object.isRequired,
 
+    handleOpenDeleteConfirmation: T.func.isRequired,
     toggleLike: T.func.isRequired,
     deleteFeed: T.func.isRequired,
     deleteSyncFeed: T.func.isRequired,

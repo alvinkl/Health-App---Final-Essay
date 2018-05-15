@@ -14,7 +14,7 @@ const style = {
     },
 }
 
-class DialogContent extends Component {
+class Content extends Component {
     state = {
         value: 0,
     }
@@ -120,7 +120,7 @@ class DialogContent extends Component {
     }
 }
 
-DialogContent.propTypes = {
+Content.propTypes = {
     open_dialog: T.bool.isRequired,
     dialog_data: T.object.isRequired,
     increment_decrement_value: T.number.isRequired,
@@ -130,4 +130,4 @@ DialogContent.propTypes = {
     handleSubmit: T.func.isRequired,
 }
 
-export default DialogContent
+export default Content

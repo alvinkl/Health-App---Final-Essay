@@ -26,7 +26,7 @@ export const getFeeds = async (current_user = '', user_id = '', page = 1) => {
     const [err, data] = await to(
         Feeds.find(queryFeeds)
             .skip(offset)
-            .limit(5)
+            .limit(10)
             .sort({ create_time: -1 })
     )
     if (err) return Promise.reject({ code: 500, message: err })

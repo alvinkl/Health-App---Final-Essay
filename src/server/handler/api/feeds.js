@@ -19,7 +19,8 @@ import {
 } from '@functions/feeds'
 
 export const handleGetFeeds = async (req, res) => {
-    const { googleID } = req.user
+    let googleID = 0
+    if (req.user) googleID = req.user.googleID
 
     let err
     let data

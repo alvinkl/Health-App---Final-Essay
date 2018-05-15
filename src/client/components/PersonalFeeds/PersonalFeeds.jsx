@@ -16,6 +16,12 @@ const style = {
 }
 
 class PersonalFeeds extends Component {
+    state = {
+        open_delete_dialog: false,
+        delete_event: null,
+        DeleteConfirmationComp: null,
+    }
+
     componentDidMount() {
         const {
             fetchFeed,
@@ -26,6 +32,26 @@ class PersonalFeeds extends Component {
         if (path === '/myfeed') fetchFeed({ user_id })
         else fetchFeed({ user_id: params.user_id })
     }
+
+    handleOpenDeleteConfirmation = delete_event => {
+        const { DeleteConfirmationComp } = this.state
+
+        let newState = {
+            open_delete_dialog: true,
+            delete_event,
+        }
+
+        if (!DeleteConfirmationComp)
+            newState = {
+                ...newState,
+                DeleteConfirmationComp: require('@components/Dialogs/DeleteConfirmation')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseDeleteConfirmation = () =>
+        this.setState({ open_delete_dialog: false, delete_event: null })
 
     renderHeader = () => {
         const { feeds } = this.props
@@ -50,9 +76,38 @@ class PersonalFeeds extends Component {
     renderFeeds = () => {
         const { feeds } = this.props
 
-        if (!isEmpty(feeds)) return <Feeds data={feeds} />
+        if (!isEmpty(feeds))
+            return (
+                <Feeds
+                    data={feeds}
+                    handleOpenDeleteConfirmation={
+                        this.handleOpenDeleteConfirmation
+                    }
+                />
+            )
 
         return null
+    }
+
+    renderDeleteConfirmation = () => {
+        const {
+            DeleteConfirmationComp,
+            open_delete_dialog,
+            delete_event,
+        } = this.state
+
+        return (
+            !!DeleteConfirmationComp && (
+                <DeleteConfirmationComp
+                    key="delete-confirmation-content"
+                    {...{
+                        open: open_delete_dialog,
+                        deleteEvent: delete_event,
+                        handleClose: this.handleCloseDeleteConfirmation,
+                    }}
+                />
+            )
+        )
     }
 
     render() {
@@ -67,6 +122,7 @@ class PersonalFeeds extends Component {
                     {this.renderHeader()}
                 </div>
                 <div>{this.renderFeeds()}</div>
+                {this.renderDeleteConfirmation()}
             </Fragment>
         )
     }

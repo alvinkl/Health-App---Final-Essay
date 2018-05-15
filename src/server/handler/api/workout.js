@@ -59,3 +59,16 @@ export const handleDeleteWorkout = async (req, res) => {
 
     return responseJSON(res, success)
 }
+
+export const handleGetWorkoutReport = async (req, res) => {
+    const { googleID } = req.user
+
+    const { timestamp } = req.query
+
+    const [err, data] = await to(
+        funcs.getWorkoutReport(googleID, parseInt(timestamp))
+    )
+    if (err) return responseError(res, err.code, err.message)
+
+    return responseJSON(res, data)
+}

@@ -14,24 +14,39 @@ import {
 } from 'recharts'
 
 import Paper from 'material-ui/Paper'
-import Subheader from 'material-ui/Subheader'
 
 import styles from './charts.css'
 
-const Chart = ({ report, today_total_calories, target_calories }) => {
+const Chart = ({
+    report,
+    workout_report,
+    today_total_calories,
+    target_calories,
+}) => {
     const data = Object.keys(report)
         .sort((a, b) => b - a)
-        .map(r => ({
-            name: r > 0 ? r + ' days ago' : 'today',
-            breakfast: report[r].breakfast,
-            lunch: report[r].lunch,
-            dinner: report[r].dinner,
-            snack: report[r].snack,
-        }))
+        .map(r => {
+            let rt = {
+                name: r > 0 ? r + ' days ago' : 'today',
+                breakfast: report[r].breakfast,
+                lunch: report[r].lunch,
+                dinner: report[r].dinner,
+                snack: report[r].snack,
+            }
+
+            if (workout_report[r])
+                rt = {
+                    ...rt,
+                    workouts: workout_report[r].workouts,
+                    total_calories_burned:
+                        workout_report[r].total_calories_burned,
+                }
+
+            return rt
+        })
 
     return (
         <Paper className={styles.paper} zDepth={2}>
-            <Subheader>Food Calories Intake</Subheader>
             <div className={styles.alignLeft}>
                 <h3>Calories: {today_total_calories}</h3>
                 <p>Goal: {target_calories} Calories</p>
@@ -56,6 +71,11 @@ const Chart = ({ report, today_total_calories, target_calories }) => {
                     <Bar dataKey="lunch" stackId="a" fill="#03A9F4" />
                     <Bar dataKey="dinner" stackId="a" fill="#FF9800" />
                     <Bar dataKey="snack" stackId="a" fill="#8BC34A" />
+                    <Bar
+                        dataKey="total_calories_burned"
+                        stackId="b"
+                        fill="red"
+                    />
                 </BarChart>
             </ResponsiveContainer>
         </Paper>
@@ -64,6 +84,7 @@ const Chart = ({ report, today_total_calories, target_calories }) => {
 
 Chart.propTypes = {
     report: T.object.isRequired,
+    workout_report: T.object.isRequired,
     today_total_calories: T.number.isRequired,
     target_calories: T.number.isRequired,
 }
@@ -80,10 +101,12 @@ const mapStateToProps = ({
     user: {
         diet_plan: { target_calories },
     },
+    workout: { workout_report },
 }) => ({
-    report: report,
+    report,
     today_total_calories: today_total_calories,
     target_calories,
+    workout_report,
 })
 
 export default connect(mapStateToProps)(Chart)

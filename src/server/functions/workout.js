@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 import { foodNutritionixAPI } from '@config/urls'
-import { GENDER, WORKOUT_AVAILABLE, WORKOUT_REMOVED } from '@constant'
+import { GENDER, WORKOUT_AVAILABLE, WORKOUT_REMOVED, ONEDAY } from '@constant'
 import { NutritionXAppID, NutritionXAppKeys } from '@config/keys'
 
 import to from '@helper/asyncAwait'
@@ -207,4 +207,230 @@ export const deleteWorkout = async (googleID, workout_id) => {
     if (err) return Promise.reject({ code: 500, message: err })
 
     return Promise.resolve({ success: 1 })
+}
+
+export const getWorkoutReport = async (googleID, timestamp) => {
+    const today = new Date(timestamp || Date.now())
+    today.setHours(0, 0, 0, 0)
+
+    const last7days = new Date(today.valueOf() - 7 * ONEDAY)
+
+    const tomorrow = new Date(today.valueOf() + 1 * ONEDAY)
+    const yesterday = new Date(today.valueOf() - 1 * ONEDAY)
+    const _2daysAgo = new Date(today.valueOf() - 2 * ONEDAY)
+    const _3daysAgo = new Date(today.valueOf() - 3 * ONEDAY)
+    const _4daysAgo = new Date(today.valueOf() - 4 * ONEDAY)
+    const _5daysAgo = new Date(today.valueOf() - 5 * ONEDAY)
+    const _6daysAgo = new Date(today.valueOf() - 6 * ONEDAY)
+    const _7daysAgo = new Date(today.valueOf() - 7 * ONEDAY)
+
+    const query = [
+        {
+            $match: {
+                user_id: googleID,
+                status: WORKOUT_AVAILABLE,
+                create_time: {
+                    $gte: last7days,
+                },
+            },
+        },
+        {
+            $group: {
+                _id: {
+                    $cond: [
+                        {
+                            $and: [
+                                { $lt: ['$create_time', tomorrow] },
+                                { $gte: ['$create_time', today] },
+                            ],
+                        },
+                        0,
+                        {
+                            $cond: [
+                                {
+                                    $and: [
+                                        { $lt: ['$create_time', today] },
+                                        { $gt: ['$create_time', yesterday] },
+                                    ],
+                                },
+                                1,
+                                {
+                                    $cond: [
+                                        {
+                                            $and: [
+                                                {
+                                                    $lt: [
+                                                        '$create_time',
+                                                        yesterday,
+                                                    ],
+                                                },
+                                                {
+                                                    $gt: [
+                                                        '$create_time',
+                                                        _2daysAgo,
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                        2,
+                                        {
+                                            $cond: [
+                                                {
+                                                    $and: [
+                                                        {
+                                                            $lt: [
+                                                                '$create_time',
+                                                                _2daysAgo,
+                                                            ],
+                                                        },
+                                                        {
+                                                            $gt: [
+                                                                '$create_time',
+                                                                _3daysAgo,
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                                3,
+                                                {
+                                                    $cond: [
+                                                        {
+                                                            $and: [
+                                                                {
+                                                                    $lt: [
+                                                                        '$create_time',
+                                                                        _3daysAgo,
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    $gt: [
+                                                                        '$create_time',
+                                                                        _4daysAgo,
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                        4,
+                                                        {
+                                                            $cond: [
+                                                                {
+                                                                    $and: [
+                                                                        {
+                                                                            $lt: [
+                                                                                '$create_time',
+                                                                                _4daysAgo,
+                                                                            ],
+                                                                        },
+                                                                        {
+                                                                            $gt: [
+                                                                                '$create_time',
+                                                                                _5daysAgo,
+                                                                            ],
+                                                                        },
+                                                                    ],
+                                                                },
+                                                                5,
+                                                                {
+                                                                    $cond: [
+                                                                        {
+                                                                            $and: [
+                                                                                {
+                                                                                    $lt: [
+                                                                                        '$create_time',
+                                                                                        _5daysAgo,
+                                                                                    ],
+                                                                                },
+                                                                                {
+                                                                                    $gt: [
+                                                                                        '$create_time',
+                                                                                        _6daysAgo,
+                                                                                    ],
+                                                                                },
+                                                                            ],
+                                                                        },
+                                                                        6,
+                                                                        {
+                                                                            $cond: [
+                                                                                {
+                                                                                    $and: [
+                                                                                        {
+                                                                                            $lt: [
+                                                                                                '$create_time',
+                                                                                                _6daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                        {
+                                                                                            $gt: [
+                                                                                                '$create_time',
+                                                                                                _7daysAgo,
+                                                                                            ],
+                                                                                        },
+                                                                                    ],
+                                                                                },
+                                                                                7,
+                                                                                8,
+                                                                            ],
+                                                                        },
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                workouts: {
+                    $push: {
+                        calories_burned: '$calories_burned',
+                        workout_time: '$workout_time',
+                    },
+                },
+            },
+        },
+        {
+            $project: {
+                days_minus: '$_id',
+                workouts: '$workouts',
+                _id: 0,
+            },
+        },
+    ]
+
+    const [err, data] = await to(Workout.aggregate(query))
+    if (err) return Promise.reject({ code: 500, message: err })
+
+    const final_data = data.reduce(
+        (p, d) => {
+            if (d.days_minus > 7) return p
+
+            return {
+                ...p,
+                [d.days_minus]: {
+                    workouts: d.workouts,
+                    total_calories_burned: d.workouts.reduce(
+                        (v, c) => v + c.calories_burned,
+                        0
+                    ),
+                },
+            }
+        },
+        {
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+        }
+    )
+
+    return Promise.resolve(final_data)
 }

@@ -7,6 +7,7 @@ import {
     getWorkoutInfo,
     getWorkoutDiary,
     deleteWorkout as deleteWorkoutURL,
+    getWorkoutReport,
 } from '@urls'
 import { showSnackbar } from '@actions/common'
 
@@ -25,6 +26,10 @@ export const WORKOUT_DELETED = 'WORKOUT_DELETED'
 export const FETCH_WORKOUT_DIARY = 'FETCH_WORKOUT_DIARY'
 export const FAIL_FETCH_WORKOUT_DIARY = 'FAIL_FETCH_WORKOUT_DIARY'
 export const WORKOUT_DIARY_FETCHED = 'WORKOUT_DIARY_FETCHED'
+
+export const FETCH_WORKOUT_REPORT = 'FETCH_WORKOUT_REPORT'
+export const FAIL_FETCH_WORKOUT_REPORT = 'FAIL_FETCH_WORKOUT_REPORT'
+export const WORKOUT_REPORT_FETCHED = 'WORKOUT_REPORT_FETCHED'
 
 export const fetchWorkoutInfo = (
     workouts = [],
@@ -149,4 +154,29 @@ export const fetchWorkoutDiary = (
     await dispatch({ type: WORKOUT_DIARY_FETCHED, workout_diary })
 
     return cb()
+}
+
+export const fetchWorkoutReport = timestamp => async dispatch => {
+    dispatch({ type: FETCH_WORKOUT_REPORT })
+
+    const query = qs({ timestamp: timestamp || Date.parse(new Date()) })
+    const [err, res] = await to(
+        fetch(getWorkoutReport + query, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+    if (err) {
+        return dispatch({ type: FAIL_FETCH_WORKOUT_REPORT })
+    }
+
+    const report = await res.json()
+
+    return dispatch({
+        type: WORKOUT_REPORT_FETCHED,
+        report,
+    })
 }

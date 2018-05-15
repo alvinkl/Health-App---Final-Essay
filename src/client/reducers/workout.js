@@ -8,11 +8,15 @@ import {
     FETCH_WORKOUT_DIARY,
     FAIL_FETCH_WORKOUT_DIARY,
     WORKOUT_DIARY_FETCHED,
+    FETCH_WORKOUT_REPORT,
+    FAIL_FETCH_WORKOUT_REPORT,
+    WORKOUT_REPORT_FETCHED,
 } from '@actions/workout'
 
 export const initial_state = {
     workout_diary: [],
     workout_info: [],
+    workout_report: {},
 
     loading: false,
     error: false,
@@ -77,6 +81,25 @@ export default function(state = initial_state, action) {
                 loading: false,
                 error: false,
                 workout_diary: action.workout_diary,
+            }
+        case FETCH_WORKOUT_REPORT:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+        case FAIL_FETCH_WORKOUT_REPORT:
+            return {
+                ...state,
+                loading: false,
+                error: true,
+            }
+        case WORKOUT_REPORT_FETCHED:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                workout_report: action.report,
             }
         default:
             return state

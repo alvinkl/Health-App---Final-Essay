@@ -6,10 +6,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 166.5,
+                "fat": 0.1,
+                "carbohydrate": 38.5,
+                "protein": 2.9
             }
         },
         {
@@ -17,10 +17,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 380,
+                "fat": 25,
+                "carbohydrate": 60,
+                "protein": 18
             }
         },
         {
@@ -28,10 +28,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 620,
+                "fat": 8.3,
+                "carbohydrate": 48,
+                "protein": 13
             }
         },
         {
@@ -39,10 +39,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
+                "calories": 650,
+                "fat": 25,
                 "carbohydrate": 50,
-                "protein": 10
+                "protein": 35
             }
         },
         {
@@ -50,10 +50,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 808,
+                "fat": 33.2,
+                "carbohydrate": 93.4,
+                "protein": 33.7
             }
         },
         {
@@ -61,10 +61,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 808,
+                "fat": 33.2,
+                "carbohydrate": 93.4,
+                "protein": 33.7
             }
         },
         {
@@ -72,10 +72,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 401.5,
+                "fat": 3.1,
+                "carbohydrate": 83,
+                "protein": 15.4
             }
         },
         {
@@ -83,10 +83,10 @@
             "serving_size": 1,
             "unit": "piece",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 232,
+                "fat": 12,
+                "carbohydrate": 9,
+                "protein": 22
             }
         },
         {
@@ -94,10 +94,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 300,
+                "fat": 14.3,
+                "carbohydrate": 18,
+                "protein": 25.3
             }
         },
         {
@@ -105,21 +105,10 @@
             "serving_size": 1,
             "unit": "piece",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
-            }
-        },
-        {
-            "name": "Kerupuk",
-            "serving_size": 1,
-            "unit": "serving",
-            "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 70,
+                "fat": 5,
+                "carbohydrate": 0.4,
+                "protein": 6.3
             }
         },
         {
@@ -127,10 +116,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
             }
         },
         {
@@ -138,10 +127,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
             }
         },
         {
@@ -149,10 +138,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
             }
         },
         {
@@ -160,10 +149,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
             }
         },
         {
@@ -171,10 +160,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
             }
         },
         {
@@ -182,10 +171,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
             }
         },
         {
@@ -193,10 +182,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
             }
         },
         {
@@ -204,10 +193,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
             }
         },
         {
@@ -215,10 +204,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
             }
         },
         {
@@ -226,10 +215,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 197.2,
+                "fat": 11.1,
+                "carbohydrate": 22.5,
+                "protein": 2
             }
         },
         {
@@ -237,10 +226,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
             }
         },
         {
@@ -248,10 +237,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
             }
         },
         {
@@ -259,10 +248,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
             }
         },
         {
@@ -270,10 +259,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 203,
+                "fat": 4.1,
+                "carbohydrate": 29.4,
+                "protein": 12.3
             }
         },
         {
@@ -281,10 +270,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 203,
+                "fat": 4.1,
+                "carbohydrate": 29.4,
+                "protein": 12.3
             }
         },
         {
@@ -292,10 +281,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 160,
+                "fat": 7,
+                "carbohydrate": 13,
+                "protein": 12
             }
         },
         {
@@ -303,10 +292,10 @@
             "serving_size": 1,
             "unit": "serving",
             "nutritions": {
-                "calories": 500,
-                "fat": 0,
-                "carbohydrate": 50,
-                "protein": 10
+                "calories": 268.4,
+                "fat": 4.1,
+                "carbohydrate": 22.3,
+                "protein": 32.8
             }
         }
     ]

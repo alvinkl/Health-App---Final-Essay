@@ -699,7 +699,7 @@ export const extractKeywords = (restaurants = []) => {
 export const getRestaurantNearby = async location => {
     const { lat, lon } = location
     const radius = 500 // .5km
-    const count = 3
+    const count = 5
 
     const aggregateQuery = [
         {
@@ -725,7 +725,7 @@ export const getRestaurantNearby = async location => {
         ...binus,
         lat,
         lon,
-        count: 3,
+        count,
         radius,
     })
 
@@ -795,7 +795,7 @@ export const getMenusFromRestaurant = async restaurant_ids => {
         {
             $match: {
                 'menus.nutritions.calories': {
-                    $gte: 500,
+                    $gte: 300,
                 },
             },
         },

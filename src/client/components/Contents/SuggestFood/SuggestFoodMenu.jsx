@@ -37,6 +37,10 @@ const style = {
         color: 'white',
         textAlign: 'center',
     },
+    colorGreyLight: {
+        opacity: 0.5,
+        fontWeight: 100,
+    },
 }
 
 const checkedIcon = <div className={styles.selectedRadio} />
@@ -192,7 +196,14 @@ export class SuggestFood extends Component {
                                 key={i}
                                 className={styles.radio}
                                 value={JSON.stringify(key)}
-                                label={key.name}
+                                label={
+                                    <span>
+                                        {key.name}&nbsp;
+                                        <span style={style.colorGreyLight}>
+                                            ({key.nutritions.calories} calories)
+                                        </span>
+                                    </span>
+                                }
                                 checkedIcon={checkedIcon}
                                 uncheckedIcon={uncheckedIcon}
                                 iconStyle={style.iconStyle}

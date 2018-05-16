@@ -66,6 +66,14 @@ export class SuggestFood extends Component {
         food: {},
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { suggested_calories } = this.props
+        const { suggested_calories: next_s_c } = nextProps
+
+        if (next_s_c !== 0 && next_s_c !== suggested_calories)
+            this.handleSuggestFoodClick()
+    }
+
     handleSuggestFoodClick = () => {
         const { fetchRestaurantNearby } = this.props
         fetchRestaurantNearby({
@@ -80,6 +88,7 @@ export class SuggestFood extends Component {
         const {
             suggestFood: { restaurant_nearby },
             fetchMenuFromRestaurant,
+            suggested_calories,
         } = this.props
         const cuisine = e.target.value
 
@@ -87,7 +96,10 @@ export class SuggestFood extends Component {
             r => r.restaurant_id
         )
 
-        await fetchMenuFromRestaurant(restaurant_ids)
+        await fetchMenuFromRestaurant({
+            restaurant_ids,
+            calories: suggested_calories,
+        })
 
         return this.setState({
             cuisine,
@@ -146,6 +158,7 @@ export class SuggestFood extends Component {
     renderStep = step => {
         const {
             suggestFood: { cuisines, restaurant_nearby, menus },
+            onClick,
         } = this.props
 
         switch (step) {
@@ -153,7 +166,8 @@ export class SuggestFood extends Component {
                 return (
                     <RaisedButton
                         className={styles.buttonSuggest}
-                        onClick={this.handleSuggestFoodClick}
+                        // onClick={this.handleSuggestFoodClick}
+                        onClick={onClick}
                     >
                         Suggest Food
                     </RaisedButton>
@@ -254,6 +268,8 @@ export class SuggestFood extends Component {
 }
 
 SuggestFood.propTypes = {
+    suggested_calories: T.number.isRequired,
+
     suggestFood: T.shape({
         cuisines: T.array,
         restaurant_nearby: T.object,
@@ -261,6 +277,9 @@ SuggestFood.propTypes = {
         loading: T.bool,
         error: T.bool,
     }).isRequired,
+
+    onClick: T.func.isRequired,
+
     fetchRestaurantNearby: T.func.isRequired,
     fetchMenuFromRestaurant: T.func.isRequired,
     addToDiary: T.func.isRequired,

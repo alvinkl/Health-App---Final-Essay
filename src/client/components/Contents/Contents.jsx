@@ -24,6 +24,10 @@ class Contents extends Component {
         open_delete_dialog: false,
         delete_event: null,
         DeleteConfirmationComp: null,
+
+        open_suggest_food_dialog: false,
+        suggested_calories: 0,
+        SuggestCalorieDialog: null,
     }
 
     static initialAction = store => {
@@ -100,6 +104,47 @@ class Contents extends Component {
     handleCloseDeleteConfirmation = () =>
         this.setState({ open_delete_dialog: false, delete_event: null })
 
+    handleOpenSuggestCaloriesDialog = () => {
+        console.log('handleOpenSuggest')
+        const { SuggestCalorieDialog } = this.state
+        let newState = {
+            open_suggest_food_dialog: true,
+        }
+
+        if (!SuggestCalorieDialog)
+            newState = {
+                ...newState,
+                SuggestCalorieDialog: require('@components/Dialogs/Content')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseSuggestCaloriesDialog = () =>
+        this.setState({
+            open_suggest_food_dialog: false,
+            suggested_calories: 0,
+        })
+
+    handleSubmitSuggestCalories = suggested_calories =>
+        this.setState({ suggested_calories, open_suggest_food_dialog: false })
+
+    renderSuggestCaloriesDialog = () => {
+        const { SuggestCalorieDialog, open_suggest_food_dialog } = this.state
+
+        return (
+            SuggestCalorieDialog && (
+                <SuggestCalorieDialog
+                    open_dialog={open_suggest_food_dialog}
+                    dialog_data={{ title: 'Calories needed', value: 500 }}
+                    increment_decrement_value={50}
+                    handleCloseDialog={this.handleCloseSuggestCaloriesDialog}
+                    handleSubmit={this.handleSubmitSuggestCalories}
+                />
+            )
+        )
+    }
+
     render() {
         const { feeds } = this.props
         const {
@@ -110,6 +155,7 @@ class Contents extends Component {
             DeleteConfirmationComp,
             open_delete_dialog,
             delete_event,
+            suggested_calories,
         } = this.state
 
         return (
@@ -120,7 +166,10 @@ class Contents extends Component {
                         handleOpenDialog: this.handleOpenDialog,
                     }}
                 />
-                <SuggestFood />
+                <SuggestFood
+                    onClick={this.handleOpenSuggestCaloriesDialog}
+                    suggested_calories={suggested_calories}
+                />
                 <Feeds
                     data={feeds}
                     handleOpenDeleteConfirmation={
@@ -158,6 +207,8 @@ class Contents extends Component {
                         }}
                     />
                 )}
+
+                {this.renderSuggestCaloriesDialog()}
             </Fragment>
         )
     }

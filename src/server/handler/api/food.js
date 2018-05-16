@@ -151,13 +151,11 @@ export const handleGetNearbyRestaurant = async (req, res) => {
 }
 
 export const handleGetMenusFromRestaurant = async (req, res) => {
-    const [err, restaurant_ids] = validations.validateSanitizeRestaurantIds(
-        req.query
-    )
+    const [err, p] = validations.validateSanitizeRestaurantIds(req.query)
     if (err) return responseError(res, 400, err)
 
     const [errGetMenus, menus] = await to(
-        funcs.getMenusFromRestaurant(restaurant_ids)
+        funcs.getMenusFromRestaurant(p.restaurant_ids, p.calories)
     )
     if (errGetMenus)
         return responseError(res, errGetMenus.code, errGetMenus.message)

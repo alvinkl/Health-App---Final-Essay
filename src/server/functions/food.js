@@ -784,7 +784,7 @@ export const getRestaurantNearby = async location => {
     return Promise.resolve(restaurant_data)
 }
 
-export const getMenusFromRestaurant = async restaurant_ids => {
+export const getMenusFromRestaurant = async (restaurant_ids, calories) => {
     const query = [
         {
             $match: { restaurant_id: { $in: restaurant_ids } },
@@ -795,7 +795,7 @@ export const getMenusFromRestaurant = async restaurant_ids => {
         {
             $match: {
                 'menus.nutritions.calories': {
-                    $gte: 300,
+                    $lte: calories,
                 },
             },
         },

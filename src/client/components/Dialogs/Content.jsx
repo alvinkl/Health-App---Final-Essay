@@ -124,7 +124,6 @@ Content.propTypes = {
     open_dialog: T.bool.isRequired,
     dialog_data: T.object.isRequired,
     increment_decrement_value: T.number.isRequired,
-    type: T.string.isRequired,
 
     handleCloseDialog: T.func.isRequired,
     handleSubmit: T.func.isRequired,

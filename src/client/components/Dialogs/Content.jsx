@@ -14,7 +14,7 @@ const style = {
     },
 }
 
-class DialogContent extends Component {
+class Content extends Component {
     state = {
         value: 0,
     }
@@ -39,20 +39,28 @@ class DialogContent extends Component {
     }
 
     handleIncreaseValue = () => {
-        const { increment_decrement_value } = this.props
+        const { increment_decrement_value, max_value } = this.props
+        const { value } = this.state
+
+        const new_value = parseFloat(
+            (this.state.value + increment_decrement_value).toFixed(1)
+        )
+
         this.setState({
-            value: parseFloat(
-                (this.state.value + increment_decrement_value).toFixed(1)
-            ),
+            value: new_value > max_value ? value : new_value,
         })
     }
 
     handleDecreaseValue = () => {
-        const { increment_decrement_value } = this.props
+        const { increment_decrement_value, min_value } = this.props
+        const { value } = this.state
+
+        const new_value = parseFloat(
+            (this.state.value - increment_decrement_value).toFixed(1)
+        )
+
         this.setState({
-            value: parseFloat(
-                (this.state.value - increment_decrement_value).toFixed(1)
-            ),
+            value: new_value < min_value ? value : new_value,
         })
     }
 
@@ -120,14 +128,20 @@ class DialogContent extends Component {
     }
 }
 
-DialogContent.propTypes = {
+Content.propTypes = {
     open_dialog: T.bool.isRequired,
     dialog_data: T.object.isRequired,
     increment_decrement_value: T.number.isRequired,
-    type: T.string.isRequired,
+    min_value: T.number.isRequired,
+    max_value: T.number.isRequired,
 
     handleCloseDialog: T.func.isRequired,
     handleSubmit: T.func.isRequired,
 }
 
-export default DialogContent
+Content.defaultProps = {
+    min_value: 100,
+    max_value: 1000,
+}
+
+export default Content

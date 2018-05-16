@@ -10,19 +10,24 @@
     },
     "scripts": {
         "start": "node build/server.build.js",
-        "build": "better-npm-run build",
-        "watch-dev": "better-npm-run watch-development",
+        "build": "better-npm-run clean && better-npm-run build",
+        "watch-dev": "better-npm-run clean && better-npm-run watch-development",
         "start-dev": "better-npm-run start-development",
-        "build-dev": "better-npm-run build-development",
+        "build-dev": "better-npm-run clean && better-npm-run build-development",
         "start-nodemon": "nodemon src/server/index.js --exec babel-node",
         "lint": "eslint ./src/*",
         "generate-debug": "donejs add vscode",
-        "debug": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js",
-        "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
+        "debug":
+            "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js",
+        "heroku-postbuild":
+            "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
     },
     "betterScripts": {
+        "clean": {
+            "command": "rimraf ./build && rimraf ./public/build"
+        },
         "watch-development": {
-            "command": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js",
+            "command": "webpack --config webpack.dev.config.js",
             "env": {
                 "NODE_ENV": "development"
             }
@@ -34,7 +39,7 @@
             }
         },
         "build-development": {
-            "command": "rimraf ./build && rimraf ./public/build && webpack -p --config webpack.prod.config.js --progress",
+            "command": "webpack -p --config webpack.prod.config.js --progress",
             "env": {
                 "NODE_ENV": "development"
             }
@@ -46,7 +51,7 @@
             }
         },
         "build": {
-            "command": "rimraf ./build && rimraf ./public/build && webpack -p --config webpack.prod.config.js --progress",
+            "command": "webpack -p --config webpack.prod.config.js --progress",
             "env": {
                 "NODE_ENV": "production"
             }
@@ -56,10 +61,7 @@
         "type": "git",
         "url": "git+https://github.com/alvinkl/Health-App---Final-Essay.git"
     },
-    "keywords": [
-        "Final",
-        "Essay"
-    ],
+    "keywords": ["Final", "Essay"],
     "author": "Alvin Kristanto",
     "license": "ISC",
     "bugs": {

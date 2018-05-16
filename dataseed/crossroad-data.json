@@ -1,0 +1,302 @@
+{
+    "restaurant_id": 18580607,
+    "menus": [
+        {
+            "name": "Nasi Putih",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 166.5,
+                "fat": 0.1,
+                "carbohydrate": 38.5,
+                "protein": 2.9
+            }
+        },
+        {
+            "name": "Nasi Ayam Goreng Kremes",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 380,
+                "fat": 25,
+                "carbohydrate": 60,
+                "protein": 18
+            }
+        },
+        {
+            "name": "Nasi Ayam Bakar",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 620,
+                "fat": 8.3,
+                "carbohydrate": 48,
+                "protein": 13
+            }
+        },
+        {
+            "name": "Nasi Ayam Penyet Cabe Hijau/Merah",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 650,
+                "fat": 25,
+                "carbohydrate": 50,
+                "protein": 35
+            }
+        },
+        {
+            "name": "Nasi Goreng Special + telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 808,
+                "fat": 33.2,
+                "carbohydrate": 93.4,
+                "protein": 33.7
+            }
+        },
+        {
+            "name": "Nasi Goreng Ikan Asin + telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 808,
+                "fat": 33.2,
+                "carbohydrate": 93.4,
+                "protein": 33.7
+            }
+        },
+        {
+            "name": "Nasi Soto Ayam + telur rebus",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 401.5,
+                "fat": 3.1,
+                "carbohydrate": 83,
+                "protein": 15.4
+            }
+        },
+        {
+            "name": "Ayam Goreng (1 potong)",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 232,
+                "fat": 12,
+                "carbohydrate": 9,
+                "protein": 22
+            }
+        },
+        {
+            "name": "Soto Ayam + Telur rebus",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 300,
+                "fat": 14.3,
+                "carbohydrate": 18,
+                "protein": 25.3
+            }
+        },
+        {
+            "name": "Telur Mata Sapi/Dadar (1 butir)",
+            "serving_size": 1,
+            "unit": "piece",
+            "nutritions": {
+                "calories": 70,
+                "fat": 5,
+                "carbohydrate": 0.4,
+                "protein": 6.3
+            }
+        },
+        {
+            "name": "Mie Ramen Katsu",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
+            }
+        },
+        {
+            "name": "Mie Ramen Katsu Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
+            }
+        },
+        {
+            "name": "Mie Ramen Sosis Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
+            }
+        },
+        {
+            "name": "Mie Ramen + 2 Bakso + Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 578.4,
+                "fat": 16.1,
+                "carbohydrate": 63.3,
+                "protein": 38.8
+            }
+        },
+        {
+            "name": "Mie Ayam Special/Cwiemie",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Mie Ayam + 2 Bskso",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Mie Goreng / Mie Rebus + Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Kwee Tiauw Goreng / Rebus + Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Bihun Goreng / Rebus + Telur",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 421,
+                "fat": 18.7,
+                "carbohydrate": 46,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Kentang / French Fries Polos",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 197.2,
+                "fat": 11.1,
+                "carbohydrate": 22.5,
+                "protein": 2
+            }
+        },
+        {
+            "name": "Kentang / Fries dengan Cheese",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Kentang / Fries + Chily",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Kentang / Fries + Chily + Cheese",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 280,
+                "fat": 27,
+                "carbohydrate": 55,
+                "protein": 16
+            }
+        },
+        {
+            "name": "Kentang Bolognaise",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 203,
+                "fat": 4.1,
+                "carbohydrate": 29.4,
+                "protein": 12.3
+            }
+        },
+        {
+            "name": "Kentang Mayonaise",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 203,
+                "fat": 4.1,
+                "carbohydrate": 29.4,
+                "protein": 12.3
+            }
+        },
+        {
+            "name": "Pop Chicken",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 160,
+                "fat": 7,
+                "carbohydrate": 13,
+                "protein": 12
+            }
+        },
+        {
+            "name": "Chicken Katsu Polos",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 268.4,
+                "fat": 4.1,
+                "carbohydrate": 22.3,
+                "protein": 32.8
+            }
+        }
+    ]
+}

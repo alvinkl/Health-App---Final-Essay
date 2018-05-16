@@ -101,13 +101,17 @@ export const fetchRestaurantNearby = ({ lon, lat }) => async dispatch => {
     })
 }
 
-export const fetchMenuFromRestaurant = restaurant_ids => async dispatch => {
+export const fetchMenuFromRestaurant = ({
+    restaurant_ids,
+    calories,
+}) => async dispatch => {
     dispatch({ type: FETCHING_SUGGEST })
 
     const r_ids = restaurant_ids.join(',')
 
     const query = qs({
         restaurant_ids: r_ids,
+        calories,
     })
 
     const [err, res] = await to(

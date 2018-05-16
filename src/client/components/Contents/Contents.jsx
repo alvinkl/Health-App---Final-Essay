@@ -19,7 +19,16 @@ class Contents extends Component {
 
         open_dialog: false,
         dialog_data: {},
+        dialog_type: '',
         DialogComp: null,
+
+        open_delete_dialog: false,
+        delete_event: null,
+        DeleteConfirmationComp: null,
+
+        open_suggest_food_dialog: false,
+        suggested_calories: 0,
+        SuggestCalorieDialog: null,
     }
 
     static initialAction = store => {
@@ -52,7 +61,7 @@ class Contents extends Component {
         if (!DialogComp) {
             newState = {
                 ...newState,
-                DialogComp: require('./DialogContent').default,
+                DialogComp: require('@components/Dialogs/Content').default,
             }
         }
 
@@ -76,9 +85,141 @@ class Contents extends Component {
         this.handleCloseDialog()
     }
 
+    handleOpenDeleteConfirmation = delete_event => {
+        const { DeleteConfirmationComp } = this.state
+
+        let newState = {
+            open_delete_dialog: true,
+            delete_event,
+        }
+
+        if (!DeleteConfirmationComp)
+            newState = {
+                ...newState,
+                DeleteConfirmationComp: require('@components/Dialogs/DeleteConfirmation')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseDeleteConfirmation = () =>
+        this.setState({ open_delete_dialog: false, delete_event: null })
+
+    handleOpenSuggestCaloriesDialog = () => {
+        console.log('handleOpenSuggest')
+        const { SuggestCalorieDialog } = this.state
+        let newState = {
+            open_suggest_food_dialog: true,
+        }
+
+        if (!SuggestCalorieDialog)
+            newState = {
+                ...newState,
+                SuggestCalorieDialog: require('@components/Dialogs/Content')
+                    .default,
+            }
+
+        this.setState(newState)
+    }
+    handleCloseSuggestCaloriesDialog = () =>
+        this.setState({
+            open_suggest_food_dialog: false,
+            suggested_calories: 0,
+        })
+
+    handleSubmitSuggestCalories = suggested_calories =>
+        this.setState({ suggested_calories, open_suggest_food_dialog: false })
+
+    renderSuggestCaloriesDialog = () => {
+        const { SuggestCalorieDialog, open_suggest_food_dialog } = this.state
+
+        return (
+            SuggestCalorieDialog && (
+                <SuggestCalorieDialog
+                    open_dialog={open_suggest_food_dialog}
+                    dialog_data={{ title: 'Calories needed', value: 500 }}
+                    increment_decrement_value={50}
+                    handleCloseDialog={this.handleCloseSuggestCaloriesDialog}
+                    handleSubmit={this.handleSubmitSuggestCalories}
+                />
+            )
+        )
+    }
+
+    renderDialogContent = () => {
+        const {
+            user: {
+                diet_plan: {
+                    current_weight: { value: cw },
+                    target_weight: { value: tw },
+                },
+            },
+        } = this.props
+        const { DialogComp, open_dialog, dialog_data, dialog_type } = this.state
+
+        let increment_decrement_value = 0
+        let min_value = 0
+        let max_value = 0
+        if (~dialog_type.indexOf('weight')) {
+            increment_decrement_value = increment_decrement_weight
+            if (~dialog_type.indexOf('target')) {
+                min_value = cw
+                max_value = 200
+            } else {
+                min_value = 45
+                max_value = tw
+            }
+        } else {
+            increment_decrement_value = increment_decrement_calories
+            min_value = 500
+            max_value = 5000
+        }
+
+        return (
+            !!DialogComp && (
+                <DialogComp
+                    key="content-dialog"
+                    {...{
+                        open_dialog,
+                        dialog_data,
+                        handleCloseDialog: this.handleCloseDialog,
+                        handleSubmit: ~dialog_type.indexOf('weight')
+                            ? this.handleSubmitWeightChange
+                            : this.handleSubmitCaloriesChange,
+                        type: dialog_type,
+                        increment_decrement_value,
+                        min_value,
+                        max_value,
+                    }}
+                />
+            )
+        )
+    }
+
+    renderDeleteConfirmation = () => {
+        const {
+            DeleteConfirmationComp,
+            open_delete_dialog,
+            delete_event,
+        } = this.state
+
+        return (
+            !!DeleteConfirmationComp && (
+                <DeleteConfirmationComp
+                    key="delete-confirmation-content"
+                    {...{
+                        open: open_delete_dialog,
+                        deleteEvent: delete_event,
+                        handleClose: this.handleCloseDeleteConfirmation,
+                    }}
+                />
+            )
+        )
+    }
+
     render() {
         const { feeds } = this.props
-        const { DialogComp, open_dialog, dialog_data, dialog_type } = this.state
+        const { suggested_calories } = this.state
 
         return (
             <Fragment>
@@ -88,28 +229,22 @@ class Contents extends Component {
                         handleOpenDialog: this.handleOpenDialog,
                     }}
                 />
-                <SuggestFood />
-                <Feeds data={feeds} />
+                <SuggestFood
+                    onClick={this.handleOpenSuggestCaloriesDialog}
+                    suggested_calories={suggested_calories}
+                />
+                <Feeds
+                    data={feeds}
+                    handleOpenDeleteConfirmation={
+                        this.handleOpenDeleteConfirmation
+                    }
+                />
 
-                {!!DialogComp && (
-                    <DialogComp
-                        key="content-dialog"
-                        {...{
-                            open_dialog,
-                            dialog_data,
-                            handleCloseDialog: this.handleCloseDialog,
-                            increment_decrement_value: ~dialog_type.indexOf(
-                                'weight'
-                            )
-                                ? increment_decrement_weight
-                                : increment_decrement_calories,
-                            handleSubmit: ~dialog_type.indexOf('weight')
-                                ? this.handleSubmitWeightChange
-                                : this.handleSubmitCaloriesChange,
-                            type: dialog_type,
-                        }}
-                    />
-                )}
+                {this.renderDialogContent()}
+
+                {this.renderDeleteConfirmation()}
+
+                {this.renderSuggestCaloriesDialog()}
             </Fragment>
         )
     }

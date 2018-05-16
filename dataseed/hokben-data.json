@@ -1,0 +1,115 @@
+{
+    "restaurant_id": 7418848,
+    "menus": [
+        {
+            "name": "Bento Special 1",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 451,
+                "fat": 19.3,
+                "carbohydrate": 51.8,
+                "protein": 16.2
+            }
+        },
+        {
+            "name": "Bento Special 2",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 451,
+                "fat": 19.3,
+                "carbohydrate": 51.8,
+                "protein": 16.2
+            }
+        },
+        {
+            "name": "Bento Special 3",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 451,
+                "fat": 19.3,
+                "carbohydrate": 51.8,
+                "protein": 16.2
+            }
+        },
+        {
+            "name": "Bento Special 4",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 451,
+                "fat": 19.3,
+                "carbohydrate": 51.8,
+                "protein": 16.2
+            }
+        },
+        {
+            "name": "Gyu Soboro",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 350,
+                "fat": 30,
+                "carbohydrate": 0,
+                "protein": 50
+            }
+        },
+        {
+            "name": "Tori Soboro",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 350,
+                "fat": 30,
+                "carbohydrate": 0,
+                "protein": 50
+            }
+        },
+        {
+            "name": "Ori Chicken Steak",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 350,
+                "fat": 30,
+                "carbohydrate": 0,
+                "protein": 50
+            }
+        },
+        {
+            "name": "Chicken Katsu Tare",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 286.4,
+                "fat": 4.1,
+                "carbohydrate": 22.3,
+                "protein": 32.8
+            }
+        },
+        {
+            "name": "Chicken Karaage",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 417,
+                "fat": 31.5,
+                "carbohydrate": 8.1,
+                "protein": 21.5
+            }
+        },
+        {
+            "name": "Hot Chicken Steak",
+            "serving_size": 1,
+            "unit": "serving",
+            "nutritions": {
+                "calories": 249,
+                "fat": 12.5,
+                "carbohydrate": 11.3,
+                "protein": 21.5
+            }
+        }
+    ]
+}

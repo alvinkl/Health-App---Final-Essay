@@ -200,21 +200,29 @@ export const validateSanitizeLatLong = query => {
 
 const restaurantIdsType = {
     restaurant_ids: '',
+    calories: 0,
 }
 
 export const validateSanitizeRestaurantIds = query => {
     if (!eq(query, restaurantIdsType)) return ['restaurant_ids is required']
 
-    const { restaurant_ids } = query
+    const { restaurant_ids, calories } = query
     if (!restaurant_ids.length) return ['restaurant_ids is invalid']
 
     let r_ids = []
-
     try {
         r_ids = restaurant_ids.split(',').map(id => parseInt(id))
     } catch (err) {
         return ['restaurant_ids is invalid']
     }
 
-    return [false, r_ids]
+    let cal = 0
+    try {
+        cal = parseInt(calories)
+        if (cal == 0) return ['calories must be greater than 0!']
+    } catch (err) {
+        return ['calories is invalid!']
+    }
+
+    return [false, { restaurant_ids: r_ids, calories: cal }]
 }

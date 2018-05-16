@@ -3,9 +3,10 @@ import T from 'prop-types'
 
 import DatePicker from 'material-ui/DatePicker'
 
-import FoodCharts from './FoodCharts'
+import Charts from './Charts'
 
 import { fetchDiaryReport } from '@actions/diary'
+import { fetchWorkoutReport } from '@actions/workout'
 
 import styles from './report.css'
 
@@ -29,8 +30,9 @@ class Report extends Component {
     // }
 
     componentDidMount() {
-        const { fetchDiaryReport } = this.props
+        const { fetchDiaryReport, fetchWorkoutReport } = this.props
         fetchDiaryReport()
+        fetchWorkoutReport()
     }
 
     handleChangeDate = (_, date) =>
@@ -59,7 +61,7 @@ class Report extends Component {
                 >
                     {this.renderDatePicker()}
                 </div>
-                <FoodCharts />
+                <Charts />
             </Fragment>
         )
     }
@@ -68,6 +70,7 @@ class Report extends Component {
 Report.propTypes = {
     muiTheme: T.object.isRequired,
     fetchDiaryReport: T.func.isRequired,
+    fetchWorkoutReport: T.func.isRequired,
 }
 
 import { connect } from 'react-redux'
@@ -75,6 +78,7 @@ import muiThemeable from 'material-ui/styles/muiThemeable'
 
 const mapDispatchToProps = dispatch => ({
     fetchDiaryReport: event => dispatch(fetchDiaryReport(event)),
+    fetchWorkoutReport: event => dispatch(fetchWorkoutReport(event)),
 })
 
 export default muiThemeable()(connect(null, mapDispatchToProps)(Report))

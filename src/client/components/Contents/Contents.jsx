@@ -19,6 +19,7 @@ class Contents extends Component {
 
         open_dialog: false,
         dialog_data: {},
+        dialog_type: '',
         DialogComp: null,
 
         open_delete_dialog: false,
@@ -145,18 +146,80 @@ class Contents extends Component {
         )
     }
 
-    render() {
-        const { feeds } = this.props
+    renderDialogContent = () => {
         const {
-            DialogComp,
-            open_dialog,
-            dialog_data,
-            dialog_type,
+            user: {
+                diet_plan: {
+                    current_weight: { value: cw },
+                    target_weight: { value: tw },
+                },
+            },
+        } = this.props
+        const { DialogComp, open_dialog, dialog_data, dialog_type } = this.state
+
+        let increment_decrement_value = 0
+        let min_value = 0
+        let max_value = 0
+        if (~dialog_type.indexOf('weight')) {
+            increment_decrement_value = increment_decrement_weight
+            if (~dialog_type.indexOf('target')) {
+                min_value = cw
+                max_value = 200
+            } else {
+                min_value = 45
+                max_value = tw
+            }
+        } else {
+            increment_decrement_value = increment_decrement_calories
+            min_value = 500
+            max_value = 5000
+        }
+
+        return (
+            !!DialogComp && (
+                <DialogComp
+                    key="content-dialog"
+                    {...{
+                        open_dialog,
+                        dialog_data,
+                        handleCloseDialog: this.handleCloseDialog,
+                        handleSubmit: ~dialog_type.indexOf('weight')
+                            ? this.handleSubmitWeightChange
+                            : this.handleSubmitCaloriesChange,
+                        type: dialog_type,
+                        increment_decrement_value,
+                        min_value,
+                        max_value,
+                    }}
+                />
+            )
+        )
+    }
+
+    renderDeleteConfirmation = () => {
+        const {
             DeleteConfirmationComp,
             open_delete_dialog,
             delete_event,
-            suggested_calories,
         } = this.state
+
+        return (
+            !!DeleteConfirmationComp && (
+                <DeleteConfirmationComp
+                    key="delete-confirmation-content"
+                    {...{
+                        open: open_delete_dialog,
+                        deleteEvent: delete_event,
+                        handleClose: this.handleCloseDeleteConfirmation,
+                    }}
+                />
+            )
+        )
+    }
+
+    render() {
+        const { feeds } = this.props
+        const { suggested_calories } = this.state
 
         return (
             <Fragment>
@@ -177,36 +240,9 @@ class Contents extends Component {
                     }
                 />
 
-                {!!DialogComp && (
-                    <DialogComp
-                        key="content-dialog"
-                        {...{
-                            open_dialog,
-                            dialog_data,
-                            handleCloseDialog: this.handleCloseDialog,
-                            increment_decrement_value: ~dialog_type.indexOf(
-                                'weight'
-                            )
-                                ? increment_decrement_weight
-                                : increment_decrement_calories,
-                            handleSubmit: ~dialog_type.indexOf('weight')
-                                ? this.handleSubmitWeightChange
-                                : this.handleSubmitCaloriesChange,
-                            type: dialog_type,
-                        }}
-                    />
-                )}
+                {this.renderDialogContent()}
 
-                {!!DeleteConfirmationComp && (
-                    <DeleteConfirmationComp
-                        key="delete-confirmation-content"
-                        {...{
-                            open: open_delete_dialog,
-                            deleteEvent: delete_event,
-                            handleClose: this.handleCloseDeleteConfirmation,
-                        }}
-                    />
-                )}
+                {this.renderDeleteConfirmation()}
 
                 {this.renderSuggestCaloriesDialog()}
             </Fragment>

@@ -17,10 +17,8 @@
         "start-nodemon": "nodemon src/server/index.js --exec babel-node",
         "lint": "eslint ./src/*",
         "generate-debug": "donejs add vscode",
-        "debug":
-            "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js",
-        "heroku-postbuild":
-            "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
+        "debug": "rimraf ./build && rimraf ./public/build && webpack --config webpack.dev.config.js && node --inspect--brk=9229 src/server/server.js",
+        "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production && yarn build"
     },
     "betterScripts": {
         "clean": {
@@ -61,7 +59,10 @@
         "type": "git",
         "url": "git+https://github.com/alvinkl/Health-App---Final-Essay.git"
     },
-    "keywords": ["Final", "Essay"],
+    "keywords": [
+        "Final",
+        "Essay"
+    ],
     "author": "Alvin Kristanto",
     "license": "ISC",
     "bugs": {
@@ -132,6 +133,7 @@
         "request-promise": "^4.2.2",
         "rmc-picker": "^5.0.4",
         "sass-loader": "^6.0.6",
+        "spdy": "^3.4.7",
         "style-loader": "^0.20.1",
         "sugarss": "^1.0.1",
         "web-push": "^3.3.0",

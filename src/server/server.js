@@ -6,6 +6,8 @@ import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
 import sslRedirect from 'heroku-ssl-redirect'
+import spdy from 'spdy'
+import fs from 'fs'
 // import Loadable from 'react-loadable'
 
 import routes from './routes'
@@ -99,4 +101,18 @@ const PORT = process.env.PORT || 8000
 app.listen(PORT, () => {
     console.log('Server running on port:', PORT)
 })
+// })
+
+// const spdy_options = {
+//     key: fs.readFileSync(__dirname + '/../../server.key'),
+//     cert: fs.readFileSync(__dirname + '/../../server.crt'),
+// }
+
+// spdy.createServer(spdy_options, app).listen(PORT, error => {
+//     if (error) {
+//         console.error(error)
+//         return process.exit(1)
+//     }
+
+//     console.log('Listening on port: ', PORT)
 // })

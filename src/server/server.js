@@ -1,15 +1,23 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import cookieSession from 'cookie-session'
+// import cookieSession from 'cookie-session'
 import compression from 'compression'
 import passport from 'passport'
 import path from 'path'
 import helmet from 'helmet'
 import sslRedirect from 'heroku-ssl-redirect'
 // import Loadable from 'react-loadable'
+import session from 'express-session'
 
 import routes from './routes'
-import { cookieKey, mongoURI } from './config/keys'
+import { cookieKey, mongoURI, redisURI } from './config/keys'
+
+// session handling
+const RedisStore = require('connect-redis')(session)
+const sessionRedisOptions = {
+    url: redisURI,
+    logErrors: true,
+}
 
 // Database
 import mongoose from 'mongoose'
@@ -62,10 +70,17 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // Cookie Session
+// app.use(
+//     cookieSession({
+//         maxAge: 30 * 24 * 60 * 60 * 1000,
+//         keys: [cookieKey],
+//     })
+// )
 app.use(
-    cookieSession({
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: [cookieKey],
+    session({
+        store: new RedisStore(sessionRedisOptions),
+        secret: cookieKey,
+        resave: false,
     })
 )
 

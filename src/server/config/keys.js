@@ -4,6 +4,7 @@ if (process.env.NODE_ENV === 'development') {
     module.exports = {
         cookieKey: process.env.COOKIE_KEY,
         mongoURI: process.env.MONGO_URI,
+        redisURI: process.env.REDIS_URL,
         GoogleClientID: process.env.GOOGLE_CLIENT_ID,
         GoogleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
         NutritionXAppID: process.env.NUTRITIONX_APP_ID,

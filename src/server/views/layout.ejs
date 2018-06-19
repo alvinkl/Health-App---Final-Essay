@@ -35,7 +35,7 @@
     <script src="/static/cdnjs/utilities.js"></script>
     <script type="text/javascript" defer>
         var swRegistration = null;
-        var isSubscribed = false
+        var isSubscribed = false;
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
@@ -52,8 +52,6 @@
         window.__VAPID_PUBLIC_KEYS__ = <%- vapidPublicKeys %>;
     </script>
 
-
-    
 </body>
 
 </html>

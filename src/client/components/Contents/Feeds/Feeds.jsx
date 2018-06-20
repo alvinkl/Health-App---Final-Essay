@@ -148,13 +148,7 @@ const Feeds = (
                     onClick={linkSpecificFeed.bind(null, router, d.post_id)}
                 >
                     <div className={styles.imageWrapper}>
-                        <img
-                            src={d.image}
-                            alt=""
-                            height={309}
-                            width={400}
-                            onLoadStart={() => console.log('loading')}
-                        />
+                        <img src={d.image} alt="" height={309} width={400} />
                     </div>
                 </CardMedia>
                 <CardActions className={cn(styles.likesButton)}>

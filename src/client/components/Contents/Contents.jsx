@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import T from 'prop-types'
 
+import Divider from 'material-ui/Divider'
+
 import ContentHeader from './ContentHeader'
 import SuggestFood from './SuggestFood/SuggestFoodMenu'
 import Feeds from './Feeds'
@@ -8,7 +10,8 @@ import Feeds from './Feeds'
 import { fetchUserData } from '@actions/user'
 import { fetchFeed } from '@actions/feeds'
 import { fetchDailyCalories } from '@actions/diary'
-// import styles from './contents.css'
+
+import styles from './contents.css'
 
 const increment_decrement_weight = 0.1
 const increment_decrement_calories = 50
@@ -106,7 +109,6 @@ class Contents extends Component {
         this.setState({ open_delete_dialog: false, delete_event: null })
 
     handleOpenSuggestCaloriesDialog = () => {
-        console.log('handleOpenSuggest')
         const { SuggestCalorieDialog } = this.state
         let newState = {
             open_suggest_food_dialog: true,
@@ -218,7 +220,7 @@ class Contents extends Component {
     }
 
     render() {
-        const { feeds } = this.props
+        const { feeds, lazy_loading } = this.props
         const { suggested_calories } = this.state
 
         return (
@@ -240,6 +242,13 @@ class Contents extends Component {
                     }
                 />
 
+                {lazy_loading && (
+                    <div className={styles.loadingMoreContent}>
+                        <Divider />
+                        <h4>Loading more content...</h4>
+                    </div>
+                )}
+
                 {this.renderDialogContent()}
 
                 {this.renderDeleteConfirmation()}
@@ -254,6 +263,7 @@ Contents.propTypes = {
     // from redux
     user: T.object.isRequired,
     feeds: T.array.isRequired,
+    lazy_loading: T.bool.isRequired,
 
     fetchUserData: T.func.isRequired,
     fetchFeed: T.func.isRequired,
@@ -267,9 +277,10 @@ Contents.propTypes = {
 import { connect } from 'react-redux'
 import { updateUserWeight, updateUserTargetCalories } from '@actions/user'
 
-const mapStateToProps = ({ user, feeds: { feeds } }) => ({
+const mapStateToProps = ({ user, feeds: { feeds, lazy_loading } }) => ({
     user,
     feeds,
+    lazy_loading,
 })
 
 const mapDispatchToProps = dispatch => ({

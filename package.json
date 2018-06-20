@@ -129,6 +129,7 @@
         "react-router-redux": "^4.0.8",
         "react-router-transition": "^1.2.1",
         "react-transition-group": "^2.2.1",
+        "react-visibility-sensor": "^3.11.0",
         "recharts": "^1.0.0-beta.10",
         "redux": "^3.7.2",
         "redux-thunk": "^2.2.0",

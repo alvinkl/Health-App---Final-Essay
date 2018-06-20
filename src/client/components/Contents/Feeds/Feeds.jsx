@@ -2,6 +2,7 @@ import React from 'react'
 import T from 'prop-types'
 import cn from 'classnames'
 import { Link } from 'react-router-dom'
+import VisibilitySensor from 'react-visibility-sensor'
 
 import { LIKE } from '@constant'
 
@@ -41,10 +42,13 @@ const linkSpecificFeed = (router, post_id) =>
 const Feeds = (
     {
         loading,
+        has_next,
+        lazy_loading,
         is_online,
         error,
         data,
         user,
+        lazyFetchFeeds,
         toggleLike,
         deleteFeed,
         deleteSyncFeed,
@@ -52,7 +56,11 @@ const Feeds = (
     },
     { router }
 ) => {
-    return data.map(d => {
+    const last_index = data.length - 1
+    const lazyFetch = visible => {
+        if (visible && !lazy_loading) lazyFetchFeeds()
+    }
+    return data.map((d, index) => {
         if (d.waiting_for_sync) {
             return (
                 <Card
@@ -106,68 +114,97 @@ const Feeds = (
         }
 
         return (
-            <Card
+            <VisibilitySensor
                 key={d.post_id}
-                className={styles.feedCards}
-                expanded
-                initiallyExpanded
+                onChange={lazyFetch}
+                active={index === last_index && has_next && is_online}
+                partialVisibility
+                offset={{
+                    top: 20,
+                }}
             >
-                <CardHeader
-                    title={d.user.username}
-                    subtitle={d.create_time}
-                    avatar={
-                        <Link
-                            to={d.own_feed ? '/myfeed' : '/user/' + d.user._id}
-                        >
-                            <Avatar src={d.user.avatar} />
-                        </Link>
-                    }
-                    showExpandableButton={false}
-                    closeIcon
-                >
-                    {d.own_feed && (
-                        <FlatButton
-                            className={styles.deleteButton}
-                            disabled={!is_online}
-                            icon={DeleteIcon}
-                            onClick={handleOpenDeleteConfirmation.bind(
-                                null,
-                                deleteFeed.bind(null, {
-                                    post_id: d.post_id,
-                                    user_id: d.user._id,
-                                })
-                            )}
-                        />
-                    )}
-                </CardHeader>
-                <CardMedia
-                    expandable={true}
-                    overlay={
-                        <CardTitle title={d.title} subtitle={d.subtitle} />
-                    }
-                    onClick={linkSpecificFeed.bind(null, router, d.post_id)}
-                >
-                    <div className={styles.imageWrapper}>
-                        <img src={d.image} alt="" height={309} width={400} />
-                    </div>
-                </CardMedia>
-                <CardActions className={cn(styles.likesButton)}>
-                    <IconButton
-                        onClick={toggleLike.bind(null, d.post_id)}
-                        disabled={!is_online}
+                <Card className={styles.feedCards} expanded initiallyExpanded>
+                    <CardHeader
+                        title={d.user.username}
+                        subtitle={d.create_time}
+                        avatar={
+                            <Link
+                                to={
+                                    d.own_feed
+                                        ? '/myfeed'
+                                        : '/user/' + d.user._id
+                                }
+                            >
+                                <Avatar src={d.user.avatar} />
+                            </Link>
+                        }
+                        showExpandableButton={false}
+                        closeIcon
                     >
-                        <FontIcon
-                            className="material-icons"
-                            color={d.like_status ? 'red' : 'grey'}
+                        {d.own_feed && (
+                            <FlatButton
+                                className={styles.deleteButton}
+                                disabled={!is_online}
+                                icon={DeleteIcon}
+                                onClick={handleOpenDeleteConfirmation.bind(
+                                    null,
+                                    deleteFeed.bind(null, {
+                                        post_id: d.post_id,
+                                        user_id: d.user._id,
+                                    })
+                                )}
+                            />
+                        )}
+                    </CardHeader>
+                    <CardMedia
+                        expandable={true}
+                        overlay={
+                            <CardTitle title={d.title} subtitle={d.subtitle} />
+                        }
+                        onClick={linkSpecificFeed.bind(null, router, d.post_id)}
+                    >
+                        <div className={styles.imageWrapper}>
+                            <img
+                                src={d.image}
+                                alt=""
+                                height={309}
+                                width={400}
+                            />
+                        </div>
+                    </CardMedia>
+                    <CardActions className={cn(styles.likesButton)}>
+                        <IconButton
+                            onClick={toggleLike.bind(null, d.post_id)}
+                            disabled={!is_online}
                         >
-                            thumb_up
-                        </FontIcon>
-                    </IconButton>
-                    {d.comments.length > 0 ? (
-                        <Badge
-                            className={styles.badgeComments}
-                            badgeContent={d.comments.length}
-                        >
+                            <FontIcon
+                                className="material-icons"
+                                color={d.like_status ? 'red' : 'grey'}
+                            >
+                                thumb_up
+                            </FontIcon>
+                        </IconButton>
+                        {d.comments.length > 0 ? (
+                            <Badge
+                                className={styles.badgeComments}
+                                badgeContent={d.comments.length}
+                            >
+                                <IconButton
+                                    onClick={linkSpecificFeed.bind(
+                                        null,
+                                        router,
+                                        d.post_id
+                                    )}
+                                >
+                                    <FontIcon
+                                        className="material-icons"
+                                        color="grey"
+                                    >
+                                        comment
+                                    </FontIcon>
+                                </IconButton>
+                            </Badge>
+                        ) : (
                             <IconButton
                                 onClick={linkSpecificFeed.bind(
                                     null,
@@ -182,23 +219,13 @@ const Feeds = (
                                     comment
                                 </FontIcon>
                             </IconButton>
-                        </Badge>
-                    ) : (
-                        <IconButton
-                            onClick={linkSpecificFeed.bind(
-                                null,
-                                router,
-                                d.post_id
-                            )}
-                        >
-                            <FontIcon className="material-icons" color="grey">
-                                comment
-                            </FontIcon>
-                        </IconButton>
+                        )}
+                    </CardActions>
+                    {!!label && (
+                        <CardText style={style.likes}>{label}</CardText>
                     )}
-                </CardActions>
-                {!!label && <CardText style={style.likes}>{label}</CardText>}
-            </Card>
+                </Card>
+            </VisibilitySensor>
         )
     })
 }
@@ -209,8 +236,11 @@ Feeds.propTypes = {
     error: T.bool.isRequired,
     data: T.array.isRequired,
     user: T.object.isRequired,
+    has_next: T.bool.isRequired,
+    lazy_loading: T.bool.isRequired,
 
     handleOpenDeleteConfirmation: T.func.isRequired,
+    lazyFetchFeeds: T.func.isRequired,
     toggleLike: T.func.isRequired,
     deleteFeed: T.func.isRequired,
     deleteSyncFeed: T.func.isRequired,
@@ -221,19 +251,27 @@ Feeds.contextTypes = {
 }
 
 import { connect } from 'react-redux'
-import { toggleLike, deleteFeed, deleteSyncFeed } from '@actions/feeds'
+import {
+    lazyFetchFeeds,
+    toggleLike,
+    deleteFeed,
+    deleteSyncFeed,
+} from '@actions/feeds'
 
 const mapStateToProps = ({
-    feeds: { loading, error },
+    feeds: { loading, error, has_next, lazy_loading },
     user,
     common: { is_online },
 }) => ({
     loading,
     error,
+    has_next,
+    lazy_loading,
     user: { name: user.name, avatar: user.profile_img },
     is_online,
 })
 const mapDispatchToProps = dispatch => ({
+    lazyFetchFeeds: event => dispatch(lazyFetchFeeds(event)),
     toggleLike: event => dispatch(toggleLike(event)),
     deleteFeed: event => dispatch(deleteFeed(event)),
     deleteSyncFeed: event => dispatch(deleteSyncFeed(event)),

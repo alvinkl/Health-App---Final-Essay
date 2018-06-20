@@ -87,3 +87,13 @@
     left: 5px !important;
     top: 100px !important;
 }
+
+.loadingMoreContent {
+    text-align: center;
+    color: gainsboro;
+
+}
+
+.loadingMoreContent > h4 {
+    font-weight: 100 !important;
+}

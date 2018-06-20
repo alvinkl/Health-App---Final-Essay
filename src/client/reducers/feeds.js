@@ -18,13 +18,20 @@ import {
     RECEIVED_FEED_FROM_STORE,
     REMOVE_CURRENT_FEED,
     COMMENT_ADDED,
+    LAZY_FETCH_FEEDS,
+    LAZY_FETCHED_FEEDS,
+    FAILED_LAZY_FETCH_FEEDS,
+    NO_NEXT_LAZY_DATA,
 } from '@actions/feeds'
 import { LIKE, UNLIKE } from '@constant'
 
 export const initial_state = {
     loading: false,
+    lazy_loading: false,
     error: false,
     feeds: [],
+    page: 1,
+    has_next: true,
 
     current_feed: {},
 
@@ -56,6 +63,7 @@ export default (state = initial_state, action) => {
                 loading: false,
                 error: false,
                 feeds: action.feeds,
+                page: action.page,
             }
         case FETCHED_PERSONAL_FEEDS:
             return {
@@ -184,6 +192,29 @@ export default (state = initial_state, action) => {
                 ...state,
                 loading: false,
                 current_feed: action.feed,
+            }
+        case LAZY_FETCH_FEEDS:
+            return {
+                ...state,
+                lazy_loading: true,
+            }
+        case FAILED_LAZY_FETCH_FEEDS:
+            return {
+                ...state,
+                lazy_loading: false,
+            }
+        case LAZY_FETCHED_FEEDS:
+            return {
+                ...state,
+                lazy_loading: false,
+                feeds: [...state.feeds, ...action.feeds],
+                page: action.page,
+            }
+        case NO_NEXT_LAZY_DATA:
+            return {
+                ...state,
+                lazy_loading: false,
+                has_next: false,
             }
         default:
             return state

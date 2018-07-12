@@ -25,7 +25,7 @@ const HeaderHelmet = () => (
 
         <meta httpEquiv="X-UA-Compatible" content="ie-edge" />
 
-        <link rel="manifest" href="/static/manifest.json" />
+        {/* <link rel="manifest" href="/static/manifest.json" /> */}
 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />

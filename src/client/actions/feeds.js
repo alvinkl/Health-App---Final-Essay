@@ -87,15 +87,15 @@ export const fetchFeed = (
     }
 
     // fetch from indexedDB if any
-    let idb_feeds = await readAllData('feeds')
-    if (myfeed) idb_feeds = idb_feeds.filter(d => d.own_feed)
-    else if (is_personal)
-        idb_feeds = idb_feeds.filter(d => d.user._id === user_id)
-    dispatch({
-        type: FETCHED_FEEDS_IDB,
-        page,
-        feeds: [...idb_offline_feeds, ...idb_feeds],
-    })
+    // let idb_feeds = await readAllData('feeds')
+    // if (myfeed) idb_feeds = idb_feeds.filter(d => d.own_feed)
+    // else if (is_personal)
+    //     idb_feeds = idb_feeds.filter(d => d.user._id === user_id)
+    // dispatch({
+    //     type: FETCHED_FEEDS_IDB,
+    //     page,
+    //     feeds: [...idb_offline_feeds, ...idb_feeds],
+    // })
 
     const [err, res] = await to(
         fetch(getFeeds + qs(query), {

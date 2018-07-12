@@ -43,8 +43,8 @@ export const fetchDiary = (
     })
 
     // Fetch from IDB
-    const idb_diary = (await readData('diary', query)) || {}
-    dispatch({ type: FETCHED_DIARY_IDB, diary: idb_diary.data })
+    // const idb_diary = (await readData('diary', query)) || {}
+    // dispatch({ type: FETCHED_DIARY_IDB, diary: idb_diary.data })
 
     const [err, data] = await to(
         fetch(getFoodDiary + query, {

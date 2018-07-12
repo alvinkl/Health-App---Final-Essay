@@ -37,14 +37,14 @@
         var swRegistration = null;
         var isSubscribed = false;
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
-                .then(function (swReg) { 
-                    console.log('[Service Worker] Registered');
-                    swRegistration = swReg;
-                })
-                .catch(function(err) { console.log('[Service Worker] Fails to register', err)  });
-        }
+        // if ('serviceWorker' in navigator) {
+        //     navigator.serviceWorker.register('/sw.js', { scope: '/ ' })
+        //         .then(function (swReg) { 
+        //             console.log('[Service Worker] Registered');
+        //             swRegistration = swReg;
+        //         })
+        //         .catch(function(err) { console.log('[Service Worker] Fails to register', err)  });
+        // }
     </script>
 
     <script>

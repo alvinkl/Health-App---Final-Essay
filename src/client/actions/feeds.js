@@ -50,18 +50,21 @@ export const REMOVE_CURRENT_FEED = 'REMOVE_CURRENT_FEED'
 export const ADD_COMMENT = 'ADD_COMMENT'
 export const FAILED_ADD_COMMENT = 'FAILED_ADD_COMMENT'
 export const COMMENT_ADDED = 'COMMENT_ADDED'
+export const LAZY_FETCH_FEEDS = 'FETCH_LAZY_FEEDS'
+export const FAILED_LAZY_FETCH_FEEDS = 'FAILED_LAZY_FETCH_FEEDS'
+export const LAZY_FETCHED_FEEDS = 'LAZY_FETCHED_FEEDS'
+export const NO_NEXT_LAZY_DATA = 'NO_NEXT_LAZY_DATA'
 
-export const fetchFeed = ({ page = 1, user_id } = { page: 1 }) => async (
-    dispatch,
-    getState
-) => {
+export const fetchFeed = (
+    { page = 1, user_id, amt = 3 } = { page: 1, amt: 3 }
+) => async (dispatch, getState) => {
     dispatch({ type: FETCH_FEEDS })
 
     const { googleID, name, profile_img } = getState().user
     let myfeed = user_id === googleID
     let is_personal = !!user_id
 
-    let query = { page }
+    let query = { page, amt }
     if (is_personal) query = { ...query, user_id }
 
     // offline feeds not yet posted
@@ -90,6 +93,7 @@ export const fetchFeed = ({ page = 1, user_id } = { page: 1 }) => async (
         idb_feeds = idb_feeds.filter(d => d.user._id === user_id)
     dispatch({
         type: FETCHED_FEEDS_IDB,
+        page,
         feeds: [...idb_offline_feeds, ...idb_feeds],
     })
 
@@ -117,7 +121,50 @@ export const fetchFeed = ({ page = 1, user_id } = { page: 1 }) => async (
 
     return dispatch({
         type: FETCHED_FEEDS,
+        page,
         feeds: [...idb_offline_feeds, ...feeds],
+    })
+}
+
+export const lazyFetchFeeds = (amt = 3) => async (dispatch, getState) => {
+    dispatch({ type: LAZY_FETCH_FEEDS })
+    const { page } = getState().feeds
+
+    const next_page = page + 1
+    const query = qs({ page: next_page, amt })
+    const [err, res] = await to(
+        fetch(getFeeds + query, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+    )
+
+    if (err) {
+        dispatch(showSnackbar('Failed to fetch more feeds!'))
+        return dispatch({
+            type: FAILED_LAZY_FETCH_FEEDS,
+        })
+    }
+
+    const feeds = await res.json()
+
+    if (feeds.length) {
+        feeds.map((feed, index) =>
+            writeData('feeds', { ...feed, id: index + feed.post_id })
+        )
+
+        return dispatch({
+            type: LAZY_FETCHED_FEEDS,
+            page: next_page,
+            feeds,
+        })
+    }
+
+    return dispatch({
+        type: NO_NEXT_LAZY_DATA,
     })
 }
 

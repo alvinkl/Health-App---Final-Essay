@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-// import cookieSession from 'cookie-session'
+import cookieSession from 'cookie-session'
 import compression from 'compression'
 import passport from 'passport'
 import path from 'path'
@@ -13,11 +13,11 @@ import routes from './routes'
 import { cookieKey, mongoURI, redisURI } from './config/keys'
 
 // session handling
-const RedisStore = require('connect-redis')(session)
-const sessionRedisOptions = {
-    url: redisURI,
-    logErrors: true,
-}
+// const RedisStore = require('connect-redis')(session)
+// const sessionRedisOptions = {
+//     url: redisURI,
+//     logErrors: true,
+// }
 
 // Database
 import mongoose from 'mongoose'
@@ -70,19 +70,19 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // Cookie Session
-// app.use(
-//     cookieSession({
-//         maxAge: 30 * 24 * 60 * 60 * 1000,
-//         keys: [cookieKey],
-//     })
-// )
 app.use(
-    session({
-        store: new RedisStore(sessionRedisOptions),
-        secret: cookieKey,
-        resave: false,
+    cookieSession({
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        keys: [cookieKey],
     })
 )
+// app.use(
+//     session({
+//         store: new RedisStore(sessionRedisOptions),
+//         secret: cookieKey,
+//         resave: false,
+//     })
+// )
 
 // Initialize Passport
 import './services/passport'

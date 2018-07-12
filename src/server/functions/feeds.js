@@ -14,8 +14,15 @@ import qs from '@helper/queryString'
 import Feeds from '@model/Feeds'
 import User from '@model/User'
 
-export const getFeeds = async (current_user = '', user_id = '', page = 1) => {
-    const offset = page * 10 - 10
+export const getFeeds = async (
+    current_user = '',
+    user_id = '',
+    page = 1,
+    amt = 10
+) => {
+    const ammount = parseInt(amt)
+    const pg = parseInt(page)
+    const offset = pg * ammount - ammount
 
     let queryFeeds = {
         status: FEED_AVAILABLE,
@@ -26,7 +33,7 @@ export const getFeeds = async (current_user = '', user_id = '', page = 1) => {
     const [err, data] = await to(
         Feeds.find(queryFeeds)
             .skip(offset)
-            .limit(10)
+            .limit(ammount)
             .sort({ create_time: -1 })
     )
     if (err) return Promise.reject({ code: 500, message: err })

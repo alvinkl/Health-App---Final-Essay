@@ -25,13 +25,13 @@ export const handleGetFeeds = async (req, res) => {
     let err
     let data
 
-    const { post_id, user_id, page } = req.query
+    const { post_id, user_id, page, amt } = req.query
     if (post_id && user_id) {
         ;[err, data] = await to(getOneFeed(post_id, user_id, true))
     } else if (post_id) {
         ;[err, data] = await to(getOneFeed(post_id, googleID, true))
     } else {
-        ;[err, data] = await to(getFeeds(googleID, user_id))
+        ;[err, data] = await to(getFeeds(googleID, user_id, page, amt))
     }
 
     if (err) return responseError(res, err.code, err.message)

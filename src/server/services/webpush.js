@@ -8,10 +8,35 @@ import { VapidPrivateKeys, VapidPublicKeys, credentials } from '@config/keys'
 // set webpush vapid keys
 webpush.setVapidDetails(credentials.email, VapidPublicKeys, VapidPrivateKeys)
 
-export const sendPushNotification = async ({ title, content, url, image }) => {
+export const sendPushNotification = async (
+    { title, content, url, image },
+    user_id = ''
+) => {
     const data = await Subscription.find()
 
-    data.map(({ endpoint, auth, p256dh }) =>
+    if (user_id) {
+        const index = data.findIndex(d => d.user_id === user_id)
+        if (index !== -1) {
+            const { endpoint, auth, p256dh } = data[index]
+            return webpush.sendNotification(
+                {
+                    endpoint,
+                    keys: {
+                        auth,
+                        p256dh,
+                    },
+                },
+                JSON.stringify({
+                    title,
+                    content,
+                    url,
+                    image,
+                })
+            )
+        }
+    }
+
+    return data.map(({ endpoint, auth, p256dh }) => {
         webpush.sendNotification(
             {
                 endpoint,
@@ -27,7 +52,7 @@ export const sendPushNotification = async ({ title, content, url, image }) => {
                 image,
             })
         )
-    )
+    })
 }
 
 // set webpush routes

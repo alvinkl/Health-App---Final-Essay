@@ -226,6 +226,23 @@ export const addComment = async (feed, { googleID, content }) => {
     const [err, res] = await to(feed.save())
     if (err) return Promise.reject({ code: 500, message: err })
 
+    const { user_id } = feed
+    if (googleID !== user_id) {
+        let username = 'Someone'
+        const [errUser, comment_user] = await to(User.findOne({ googleID }))
+        if (!errUser && comment_user) username = comment_user.name
+
+        sendPushNotification(
+            {
+                title: feed.title,
+                content: username + ' commented ' + content,
+                image: feed.image,
+                url: '/',
+            },
+            user_id
+        )
+    }
+
     return Promise.resolve(res._id)
 }
 
@@ -239,7 +256,7 @@ export const toggleLike = async (googleID, post_id) => {
             message: 'Feed with post_id: ' + post_id + ', not found!',
         })
 
-    const { likes } = feed
+    const { likes, user_id } = feed
     const oldLikes = likes.length
     const indexLikes = likes.indexOf(googleID)
 
@@ -255,6 +272,22 @@ export const toggleLike = async (googleID, post_id) => {
     feed.save()
 
     const like_status = newLikes > oldLikes ? LIKE : UNLIKE
+
+    if (like_status === LIKE && googleID !== user_id) {
+        let username = 'Someone'
+        const [errUser, user] = await to(User.findOne({ googleID }))
+        if (!errUser && user) username = user.name
+
+        sendPushNotification(
+            {
+                title: feed.title,
+                content: username + ' likes your picture!',
+                image: feed.image,
+                url: '/',
+            },
+            user_id
+        )
+    }
 
     return Promise.resolve({
         total_likes: newLikes,

@@ -25,6 +25,7 @@ const loadRoute = cb => {
 }
 
 const DynamicLoadingComponent = props => {
+    console.log(props)
     if (props.error || props.timedOut) return Offline
 
     if (props.pastDelay) return Loader
@@ -45,8 +46,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Contents" */ '@components/Contents'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Contents'],
                     webpack: () => [
                         require.resolveWeak('@components/Contents'),
@@ -62,8 +63,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Specific_Feed" */ '@components/Contents/Feeds/SpecificFeed'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Contents/Feeds/SpecificFeed'],
                     webpack: () => [
                         require.resolveWeak(
@@ -81,8 +82,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Personal_Feeds" */ '@components/PersonalFeeds'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/PersonalFeeds'],
                     webpack: () => [
                         require.resolveWeak('@components/PersonalFeeds'),
@@ -98,8 +99,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/* webpackChunkName: "Personal_Feeds" */ '@components/PersonalFeeds'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/PersonalFeeds'],
                     webpack: () => [
                         require.resolveWeak('@components/PersonalFeeds'),
@@ -121,8 +122,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Diary */ '@components/Diary'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Diary'],
                     webpack: () => [require.resolveWeak('@components/Diary')],
                     loading: DynamicLoadingComponent,
@@ -136,8 +137,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Report */ '@components/Report'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Report'],
                     webpack: () => [require.resolveWeak('@components/Report')],
                     loading: DynamicLoadingComponent,
@@ -151,8 +152,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: AddFeed */ '@components/AddFeed'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/AddFeed'],
                     webpack: () => [require.resolveWeak('@components/AddFeed')],
                     loading: DynamicLoadingComponent,
@@ -166,8 +167,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Workout */ '@components/Workout'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Workout'],
                     webpack: () => [require.resolveWeak('@components/Workout')],
                     loading: DynamicLoadingComponent,
@@ -182,8 +183,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: Landing */ '@components/Landing'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Landing'],
                     webpack: () => [require.resolveWeak('@components/Landing')],
                     loading: DynamicLoadingComponent,
@@ -197,8 +198,8 @@ const route = [
                 component: Loadable({
                     loader: () =>
                         import(/*  webpackChunkName: GettingStarted */ '@components/Landing/GettingStarted'),
-                    pastDelay: 1000,
-                    timeout: 100000,
+                    pastDelay: 2000,
+                    timeout: 10000,
                     modules: ['@components/Landing/GettingStarted'],
                     webpack: () => [
                         require.resolveWeak(

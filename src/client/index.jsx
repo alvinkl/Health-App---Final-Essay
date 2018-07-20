@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AppContainer } from 'react-hot-loader'
 
 // React Loadable
-// import Loadable from 'react-loadable'
+import Loadable from 'react-loadable'
 
 import { Provider } from 'react-redux'
 import configureStore from './store'
@@ -35,26 +35,26 @@ const scrollToElement = (element, target, duration) => {
     scrollTo(element, target, duration)
 }
 
-// Loadable.preloadReady().then(() => {
-hydrate(
-    <AppContainer>
-        <Provider store={store}>
-            <BrowserRouter
-                onUpdate={() =>
-                    scrollToElement(
-                        document.documentElement,
-                        document.querySelector('body'),
-                        600
-                    )
-                }
-            >
-                <App />
-            </BrowserRouter>
-        </Provider>
-    </AppContainer>,
-    document.getElementById('root')
-)
-// })
+Loadable.preloadReady().then(() => {
+    hydrate(
+        <AppContainer>
+            <Provider store={store}>
+                <BrowserRouter
+                    onUpdate={() =>
+                        scrollToElement(
+                            document.documentElement,
+                            document.querySelector('body'),
+                            600
+                        )
+                    }
+                >
+                    <App />
+                </BrowserRouter>
+            </Provider>
+        </AppContainer>,
+        document.getElementById('root')
+    )
+})
 
 if (module.hot) {
     module.hot.accept('./App', () => {

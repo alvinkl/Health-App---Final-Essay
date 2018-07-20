@@ -10,9 +10,8 @@ import renderRoutes from '@client/routes/renderRoutes'
 import routes from '@client/routes'
 
 // React Loadable
-// import Loadable from 'react-loadable'
-// import { getBundles } from 'react-loadable/webpack'
-// import stats from '@root/build/react-loadable.json'
+import Loadable from 'react-loadable'
+import { getBundles } from 'react-loadable/webpack'
 
 // Redux
 import { Provider } from 'react-redux'
@@ -61,22 +60,23 @@ const setupTemplate = (
     /* End of Setting up React Router and initial actions */
 
     // React loadable
-    // let modules = []
+    let modules = []
 
     return Promise.all(initial_actions).then(() => {
         const markup = renderToString(
-            // <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-            <Provider store={store}>
-                <StaticRouter location={url} context={static_context}>
-                    {renderRoutes(routes)}
-                </StaticRouter>
-            </Provider>
-            // </Loadable.Capture>
+            <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+                <Provider store={store}>
+                    <StaticRouter location={url} context={static_context}>
+                        {renderRoutes(routes)}
+                    </StaticRouter>
+                </Provider>
+            </Loadable.Capture>
         )
 
-        // if (!stats) stats = require('./react-loadable.json')
+        const stats = require('../../../build/react-loadable.json')
 
-        // let bundles = getBundles(stats, modules)
+        let bundles = getBundles(stats, modules)
+        console.log(bundles)
 
         const finalState = store.getState()
 
@@ -87,12 +87,12 @@ const setupTemplate = (
             helmet,
             preloadedState: JSON.stringify(finalState).replace(/</g, '\\u003c'),
             vapidPublicKeys: JSON.stringify(VapidPublicKeys),
-            // preloadedBundles: bundles
-            //     .map(
-            //         bundle =>
-            //             `<script src="/static/build/${bundle.file}"></script>`
-            //     )
-            //     .join('\n'),
+            preloadedBundles: bundles
+                .map(
+                    bundle =>
+                        `<script src="/static/build/${bundle.file}"></script>`
+                )
+                .join('\n'),
         }
     })
 }

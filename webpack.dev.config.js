@@ -245,6 +245,9 @@ const clientConfig = {
                 to: 'style/rmc-mobile.css',
             },
         ]),
+        new ReactLoadablePlugin({
+            filename: './build/react-loadable.json',
+        }),
     ],
 
     devServer: {

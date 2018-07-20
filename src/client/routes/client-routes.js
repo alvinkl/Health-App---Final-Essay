@@ -25,7 +25,6 @@ const loadRoute = cb => {
 }
 
 const DynamicLoadingComponent = props => {
-    console.log(props)
     if (props.error || props.timedOut) return Offline
 
     if (props.pastDelay) return Loader

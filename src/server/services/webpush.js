@@ -16,24 +16,24 @@ export const sendPushNotification = async (
 
     if (user_id) {
         const index = data.findIndex(d => d.user_id === user_id)
-        if (index !== -1) {
-            const { endpoint, auth, p256dh } = data[index]
-            return webpush.sendNotification(
-                {
-                    endpoint,
-                    keys: {
-                        auth,
-                        p256dh,
-                    },
+        if (index === -1) return
+
+        const { endpoint, auth, p256dh } = data[index]
+        return webpush.sendNotification(
+            {
+                endpoint,
+                keys: {
+                    auth,
+                    p256dh,
                 },
-                JSON.stringify({
-                    title,
-                    content,
-                    url,
-                    image,
-                })
-            )
-        }
+            },
+            JSON.stringify({
+                title,
+                content,
+                url,
+                image,
+            })
+        )
     }
 
     return data.map(({ endpoint, auth, p256dh }) => {

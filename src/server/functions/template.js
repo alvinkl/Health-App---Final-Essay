@@ -30,7 +30,7 @@ export default async ({ user = {}, diary = {} }, userAgent, url) => {
     return render
 }
 
-// let stats = null
+let stats = null
 
 const setupTemplate = (
     { userAgent, url },
@@ -73,10 +73,9 @@ const setupTemplate = (
             </Loadable.Capture>
         )
 
-        const stats = require('../../../build/react-loadable.json')
+        if (!stats) stats = module_exists('../../../build/react-loadable.json')
 
         let bundles = getBundles(stats, modules)
-        console.log(bundles)
 
         const finalState = store.getState()
 
@@ -95,4 +94,12 @@ const setupTemplate = (
                 .join('\n'),
         }
     })
+}
+
+function module_exists(name) {
+    try {
+        return require(name)
+    } catch (e) {
+        return false
+    }
 }

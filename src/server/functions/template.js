@@ -89,7 +89,9 @@ const setupTemplate = (
             preloadedBundles: bundles
                 .map(
                     bundle =>
-                        `<script src="/static/build/${bundle.file}"></script>`
+                        `<script src="/static/build/${
+                            bundle.file
+                        }" defer></script>`
                 )
                 .join('\n'),
         }

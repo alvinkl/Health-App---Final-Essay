@@ -14,30 +14,10 @@ export const sendPushNotification = async (
 ) => {
     const data = await Subscription.find()
 
-    if (user_id) {
-        const index = data.findIndex(d => d.user_id === user_id)
-        if (index === -1) return
+    return data.map(({ endpoint, auth, p256dh, user_id: current_user }) => {
+        if (user_id && current_user !== user_id) return
 
-        const { endpoint, auth, p256dh } = data[index]
         return webpush.sendNotification(
-            {
-                endpoint,
-                keys: {
-                    auth,
-                    p256dh,
-                },
-            },
-            JSON.stringify({
-                title,
-                content,
-                url,
-                image,
-            })
-        )
-    }
-
-    return data.map(({ endpoint, auth, p256dh }) => {
-        webpush.sendNotification(
             {
                 endpoint,
                 keys: {

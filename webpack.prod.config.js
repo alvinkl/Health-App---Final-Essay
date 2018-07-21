@@ -235,7 +235,7 @@ const clientConfig = {
             },
         ]),
         new ReactLoadablePlugin({
-            filename: './build/react-loadable.json',
+            filename: './src/server/react-loadable.json',
         }),
     ],
 

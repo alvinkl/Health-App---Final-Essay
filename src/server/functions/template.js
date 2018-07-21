@@ -73,7 +73,7 @@ const setupTemplate = (
             </Loadable.Capture>
         )
 
-        if (!stats) stats = module_exists('../../../build/react-loadable.json')
+        if (!stats) stats = require('../../server/react-loadable.json')
 
         let bundles = getBundles(stats, modules)
 

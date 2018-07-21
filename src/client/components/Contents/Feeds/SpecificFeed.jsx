@@ -178,7 +178,7 @@ class SpecificFeed extends Component {
             else label = 'You liked this post!'
         } else {
             if (feed.total_likes > 0)
-                label = feed.total_likes + ' people liked this, ' + 'Like'
+                label = feed.total_likes + ' people liked this!'
         }
 
         return (
